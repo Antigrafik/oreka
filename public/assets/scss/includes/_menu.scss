@@ -1,0 +1,20 @@
+@use '../abstracts' as a;
+
+.menu {
+  position: sticky;
+  width: 100%;
+  height: auto;
+  align-items: center;
+  background-color: a.$menu-bg-color;
+  padding: a.$menu-item-padding;
+
+  .menu-item {
+    margin: a.$menu-item-margin;
+    color: a.$menu-item-color;
+    text-decoration: none;
+
+    &:hover {
+      color: a.$menu-item-hover-color;
+    }
+  }
+}

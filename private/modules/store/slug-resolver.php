@@ -1,0 +1,1 @@
+// slug-resolver.php

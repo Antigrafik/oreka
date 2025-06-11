@@ -1,0 +1,14 @@
+# Activar motor de reescritura
+RewriteEngine On
+
+# Si ya estás dentro de /public, no reescribas
+RewriteCond %{REQUEST_URI} ^/public/
+RewriteRule ^ - [L]
+
+# Redirigir todo lo que no sea archivo o carpeta hacia /public/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ public/$1 [L,QSA]
+
+# Opcional: evitar listado de carpetas
+Options -Indexes

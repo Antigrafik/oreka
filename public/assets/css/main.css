@@ -1,0 +1,22 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: aqua;
+}
+
+.menu {
+  position: sticky;
+  width: 100%;
+  height: auto;
+  align-items: center;
+  background-color: #f8f8f8;
+  padding: 10px 20px;
+}
+.menu .menu-item {
+  margin: 10px;
+  color: #333;
+  text-decoration: none;
+}
+.menu .menu-item:hover {
+  color: #007bff;
+}/*# sourceMappingURL=main.css.map */
