@@ -1,10 +1,10 @@
 # TODO / Lista de cambios pendientes
 
 ## Pendiente
-- [ ] Intra para poder crear cupones
-
+- [ ] Crear "paginas" submenu intra > admin
+- [ ] Conexión bbdd
 ## En progreso
-- [ ] Un solo uso por cupón (No va)
+
 
 ## Hecho
-- [x] Ace of Space (quitar S)
+- [x]
