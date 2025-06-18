@@ -1,5 +1,5 @@
 <?php
-$baseUrl = 'http://oreka.test';
+$baseUrl = 'http://oreka.test:8080';
 
 $globalConfig = [
     'site_title' => 'Oreka',
