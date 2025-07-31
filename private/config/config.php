@@ -1,5 +1,8 @@
 <?php
-$baseUrl = 'http://oreka.test';
+
+include("db_connect.php");
+
+$baseUrl = 'http://localhost';
 
 $globalConfig = [
     'site_title' => 'Oreka',
