@@ -1,12 +1,8 @@
 <?php
-<<<<<<< HEAD
 
 include("db_connect.php");
 
 $baseUrl = 'http://localhost';
-=======
-$baseUrl = 'http://oreka.test:8080';
->>>>>>> 33c1d1ae7923ca1ac7ee6e1da93f4d6e28720010
 
 $globalConfig = [
     'site_title' => 'Oreka',
