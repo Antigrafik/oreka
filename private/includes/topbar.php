@@ -24,9 +24,17 @@ $stmt = $pdo->query("SELECT SYSTEM_USER AS usuario_sql, ORIGINAL_LOGIN() AS logi
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 echo "Usuario real en SQL Server: " . $row['usuario_sql'] . "<br>";
 echo "Login original: " . $row['login_inicial'] . "<br>";
+
+
+$stmt = $pdo->query("SELECT SYSTEM_USER AS usuario_sql");
+echo "SQL Server ejecuta como: " . $stmt->fetchColumn();
+
+
 ?>
 
 <p>Hola <?= htmlspecialchars($user) ?> | <?= htmlspecialchars($puntos) ?> puntos</p>
+
+
 
 
 

@@ -13,10 +13,8 @@ $dbHost = getenv("DB_HOST");
 $dbPort = getenv("DB_PORT") ?: "1433";
 $dbDatabase = getenv("DB_DATABASE");
 
-// DSN sin IntegratedSecurity (incompatible con pdo_sqlsrv)
 $dsn = "sqlsrv:Server=$dbHost,$dbPort;Database=$dbDatabase";
 
-// Intenta autenticación sin UID/PWD si usas autenticación de Windows
 try {
     $pdo = new PDO($dsn, null, null, [
         PDO::SQLSRV_ATTR_DIRECT_QUERY => true,
@@ -26,3 +24,4 @@ try {
 } catch (PDOException $e) {
     die("Error en la conexión PDO: " . $e->getMessage());
 }
+
