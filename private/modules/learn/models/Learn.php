@@ -1,24 +1,22 @@
 <?php
+require_once __DIR__ . '/../../../config/db_connect.php';
+
 class Learn {
-    public function getAll() {
+    public function getAll(): array {
         global $pdo;
-
-        if (!isset($pdo)) {
-            // Devolver datos de prueba o un array vacío
-            return [
-                ['id' => 1, 'title' => 'Foro de ejemplo', 'created_at' => date('Y-m-d')],
-                ['id' => 2, 'title' => 'Otro tema', 'created_at' => date('Y-m-d')]
-            ];
-        }
-
-        $stmt = $pdo->query("SELECT * FROM learn ORDER BY created_at DESC");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $sql = "
+            SELECT 
+                l.id,
+                COALESCE(c.name, CONCAT('Curso #', l.id)) AS title,
+                c.description                             AS description,
+                l.url,
+                i.path                                    AS image_path,
+                l.status
+            FROM dbo.learn l
+            LEFT JOIN dbo.categories c ON c.id = l.id_category
+            LEFT JOIN dbo.image i      ON i.id = l.id_image
+            WHERE ISNULL(l.status,'active') <> 'hidden'
+            ORDER BY l.id DESC";
+        return $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-?>
-<div id="learn">
-    <h1>LEARN</h1>
-    <p>En esta sección solo se muestran los cursos.</p>
-    <p>Este apartado redirecciona a la web de los cursos.</p>
-    <p>Los puntos obtenidos nos los facilita la empresa de cursos.</p>
-</div>

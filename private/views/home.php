@@ -4,3 +4,5 @@
     <p>Explora el contenido que hemos preparado para ti.</p>
 </section>
 
+<?= $learnSection ?>
+
