@@ -4,32 +4,118 @@ body {
   background-color: aqua;
 }
 
-.menu {
-  position: sticky;
-  width: 100%;
-  height: auto;
-  align-items: center;
-  background-color: #f8f8f8;
-  padding: 10px 20px;
-}
-.menu .menu-item {
-  margin: 10px;
-  color: #333;
-  text-decoration: none;
-}
-.menu .menu-item:hover {
-  color: #007bff;
-}/*# sourceMappingURL=main.css.map */
-
-
-/* Inicio Estilos de Aula */
-
 :root{
   --red:#c40000; /* único color de acento */
   --text:#000000;
   --bg:#ffffff;
   --radius:16px;
 }
+
+
+
+
+/* Inicio Estilos de TOPBAR.PHP */
+
+.main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: white;
+    position: relative;
+}
+
+.logo-left img {
+    height: 40px;
+}
+
+.user-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.logo-right-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-right {
+    height: 30px;
+}
+
+/* Fin Estilos de Topbar */
+
+
+/*Inicio Menu.php*/
+
+/* Contenedor del menú */
+.menu{
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-top: 4px solid var(--red);
+  border-bottom: 4px solid var(--red);
+  padding: 8px 0;
+}
+
+/* Barra centrada */
+
+html { scroll-behavior: smooth; }
+
+/* que los anchors tengan margen superior automático al hacer anchor */
+#learn, #forum, #community { scroll-margin-top: 80px; } /* ajusta 80px si tu menú es más alto */
+
+
+.menu-inner{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0; /* separadores se encargan del espacio */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 12px;
+}
+
+/* Enlaces */
+.menu-item{
+  color: var(--text);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 999px;
+  line-height: 1;
+  font-weight: 600;
+  transition: background .15s ease;
+}
+
+/* Hover */
+.menu-item:hover{
+  background: rgba(196,0,0,.08);
+}
+
+/* Activo (píldora roja) */
+.menu-item.active{
+  background: var(--red);
+  color: #fff;
+}
+
+/* Separadores verticales (las “I”) */
+.sep{
+  display: inline-block;
+  width: 2px;
+  height: 16px;
+  background: var(--red);
+  margin: 0 10px;
+  border-radius: 2px;
+}
+
+/*Fin Menu.php*/
+
+
+/* Inicio Estilos de Aula */
 
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -89,4 +175,217 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
 .site-footer{border-top:4px solid var(--red);padding:12px 16px;text-align:center;margin-top:32px}
 .empty{border:2px dashed var(--red);border-radius:var(--radius);padding:24px;text-align:center}
 
+      /* Estilo Slider Aula */
+
+    .learn-slider{
+      max-width: 1200px;
+      margin: 0 auto 40px;
+      display: grid;
+      grid-template-columns: 48px 1fr 48px;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .learn-slider .viewport{
+      overflow: hidden;
+      width: 100%;
+      background: #fff;
+      border-radius: 18px;
+      padding: 0;               /* sin padding en el viewport */
+    }
+
+    .learn-slider .track{
+      display: flex;
+    }
+
+    .learn-slider .slide{
+      list-style: none;
+      margin: 0 12px;         /* gutter */
+      padding: 0;
+      box-sizing: border-box;
+      flex: 0 0 auto;         /* <-- no encoger, ancho viene del JS */
+    }
+
+    .learn-slider .slide .card{
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    /* Marco de imagen con relación de aspecto fija */
+    .learn-slider .card-media{
+      width: 100% !important;
+      aspect-ratio: 16 / 9 !important;   /* cambia a 1/1 o 4/3 si prefieres */
+      background: #fff !important;
+      overflow: hidden !important;
+      display: block !important;
+    }
+
+    /* La imagen se recorta para cubrir todo el marco */
+    .learn-slider .card-media-img{
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain !important;   /* <= “ajusta al hueco” */
+      object-position: center !important;
+      display: block !important;
+    }
+
+
+    .learn-slider .card{
+      width: 100%;
+      height: 100%;
+    }
+
+    .learn-slider .nav{
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      font-size: 28px;
+      line-height: 48px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform .1s ease, opacity .2s;
+    }
+    .learn-slider .nav:hover{ transform: scale(1.05); }
+    .learn-slider .nav:active{ transform: scale(0.98); }
+
+    @media (max-width: 1024px){
+      .learn-slider{ grid-template-columns: 40px 1fr 40px; }
+      .learn-slider .nav{ width:40px; height:40px; line-height:40px; font-size:24px; }
+    }
+    @media (max-width: 640px){
+      .learn-slider{ grid-template-columns: 36px 1fr 36px; }
+      .learn-slider .nav{ width:36px; height:36px; line-height:36px; font-size:22px; }
+      .learn-slider .slide{ margin: 0 8px; } /* gutter algo menor en móvil */
+    }
+
+    /* Fin Estilo Slider Aula */
+
 /* Fin Estilos de Aula */
+
+/* Inicio Estilos de Foro */
+
+/* ===== Foro Oreka ===== */
+.forum-hero{
+  text-align:center;
+  margin:24px 0 12px;
+}
+.forum-hero h1{
+  font-size:40px;
+  margin:0 0 6px;
+}
+.forum-hero p{
+  margin:0 auto 20px;
+  max-width:720px;
+}
+
+.forum-list{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px 32px;
+  display: grid;
+  gap: 16px;
+}
+
+.forum-item{
+  display: grid;
+  grid-template-columns: 120px 1fr 200px;
+  align-items: center;
+  background:#fff;
+  border: 2px solid var(--red);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.forum-date{
+  background: var(--red);
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:18px 0;
+}
+.forum-date .day{ font-size:42px; line-height:1; font-weight:800; }
+.forum-date .mon{ font-size:14px; letter-spacing:1px; }
+
+.forum-body{ padding: 18px 20px; }
+.forum-meta{ display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+.tag{
+  display:inline-block; font-size:12px; padding:4px 8px; border-radius:999px;
+  border:2px solid var(--red); color: var(--text);
+}
+.meta{ font-size:13px; color:#555; }
+.forum-title{ margin:6px 0 6px; }
+.forum-desc{ margin:0; color:#333; }
+
+.forum-cta{
+  display:flex; align-items:center; justify-content:center; padding:0 16px;
+  border-left: 2px solid var(--red);
+}
+.forum-join.btn{
+  background: var(--red); color:#fff; border:none;
+  padding:10px 16px; border-radius:999px; text-decoration:none; cursor:pointer;
+}
+.forum-join.btn[disabled]{ opacity:.5; cursor:not-allowed; }
+
+@media (max-width: 900px){
+  .forum-item{
+    grid-template-columns: 100px 1fr;
+    grid-template-rows: auto auto;
+  }
+  .forum-cta{ grid-column: 1 / -1; border-left:none; border-top:2px solid var(--red); padding:12px; }
+}
+/* Fin Estilos de Foro */
+
+/* Inicio Estilos de Comunidad */
+/*
+  .community-hero{text-align:center;margin:24px 0 12px}
+  .community-hero h1{font-size:40px;margin:0 0 6px}
+  .community-hero p{margin:0 auto 16px;max-width:720px}
+
+  .recs-block{max-width:1200px;margin:0 auto 32px;padding:0 16px}
+  .block-title{text-align:center;margin:0 0 6px}
+  .block-sub{text-align:center;margin:0 0 18px;color:#444}
+
+  .recs-filters{
+    display:flex; flex-wrap:wrap; gap:12px 16px;
+    align-items:center; justify-content:flex-start;
+    border:2px solid var(--red); border-radius:12px; padding:12px;
+    margin-bottom:14px;
+  }
+  .recs-filters label{display:flex;align-items:center;gap:6px;font-weight:600}
+  .recs-filters select, .recs-filters input[type="search"]{
+    padding:6px 8px; border:2px solid var(--red); border-radius:10px; outline:0;
+  }
+
+
+  .recs-slider{
+    display:grid; grid-template-columns:48px 1fr 48px; gap:12px;
+    align-items:center;
+  }
+  .recs-slider .viewport{overflow:hidden;width:100%}
+  .recs-slider .track{display:flex;will-change:transform;backface-visibility:hidden;transform:translate3d(0,0,0)}
+  .recs-slider .slide{list-style:none;flex:0 0 auto}
+  .recs-slider .nav{
+    width:48px;height:48px;border-radius:50%;background:var(--red);color:#fff;border:none;
+    font-size:28px;line-height:48px;cursor:pointer;
+  }
+  @media (max-width:1024px){ .recs-slider{grid-template-columns:40px 1fr 40px}.recs-slider .nav{width:40px;height:40px;line-height:40px;font-size:24px}}
+  @media (max-width:640px){  .recs-slider{grid-template-columns:36px 1fr 36px}.recs-slider .nav{width:36px;height:36px;line-height:36px;font-size:22px}}
+
+  .recs-slider .card{border:2px solid var(--red);border-radius:16px;overflow:hidden;background:#fff;display:flex;flex-direction:column;height:100%}
+  .recs-slider .card .card-body{padding:14px}
+  .recs-slider .card .card-title{margin:6px 0 6px}
+  .pill-row{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+  .badge{display:inline-block;border:2px solid var(--red);padding:2px 10px;border-radius:999px;font-size:12px}
+  .badge.outline{background:#fff}
+  .meta{color:#666;font-size:13px;margin:0 0 6px}
+  .media-placeholder{height:120px;display:flex;align-items:center;justify-content:center;color:var(--red);font-weight:700;border-bottom:2px solid var(--red)}
+  .progress{height:6px;background:#fff;border:2px solid var(--red);border-radius:999px;overflow:hidden;margin:10px 0 14px}
+  .progress .bar{height:100%;background:var(--red);width:0%}
+  .btn{display:inline-block;background:var(--red);color:#fff;border:none;padding:10px 14px;border-radius:999px;text-decoration:none;cursor:pointer}
+*/
+/*Fin Comunidad → Recomendaciones */

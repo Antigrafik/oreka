@@ -1,4 +1,3 @@
-<?php include_once PRIVATE_PATH . '/config/config.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,6 +8,6 @@
 
     <!-- Estilos -->
     <link rel="stylesheet" href="<?=$baseUrl . $globalConfig['stylesheet'] ?>">
-
+    <link rel="stylesheet" href="/assets/css/main.css">
 </head>
 <body>

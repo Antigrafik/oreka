@@ -1,14 +1,17 @@
 <?php
+
 class HomeController {
     public function index() {
 
-        // Cargar el controlador del módulo Learn
         require_once PRIVATE_PATH . '/modules/learn/controllers/LearnController.php';
-
-        // Obtener el HTML del módulo Learn
         $learnSection = (new LearnController())->render();
 
-        // Pasar a la vista principal
+        //require_once PRIVATE_PATH . '/modules/forum/controllers/ForumController.php';
+        //$forumSection = (new ForumController())->render();
+
+        // require_once PRIVATE_PATH . '/modules/community/controllers/CommunityController.php';
+        // $communitySection = (new CommunityController())->render();
+
         include PRIVATE_PATH . '/views/home.php';
     }
 }

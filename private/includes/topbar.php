@@ -48,4 +48,17 @@ if ($user) {
 }
 ?>
 
-<p>Hola <?= htmlspecialchars($user) ?> | <?= htmlspecialchars($totalPuntos) ?> puntos</p>
+<!-- Encabezado -->
+<header class="main-header">
+    <div class="logo-left">
+        <img src="/assets/images/logo_oreka.png" alt="Oreka Logo">
+    </div>
+
+    <div class="user-center">
+        <span><?= htmlspecialchars($user) ?> | <?= htmlspecialchars($totalPuntos) ?> puntos</span>
+    </div>
+
+    <div class="logo-right-container">
+        <img src="/assets/images/logo_kutxa.jpg" alt="Kutxa Logo" class="logo-right">
+    </div>
+</header>

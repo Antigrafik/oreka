@@ -1,14 +1,14 @@
-
 <?php
+// Rutas absolutas
+define('BASE_PATH', dirname(__DIR__));
+define('PRIVATE_PATH', BASE_PATH . '/private');
 
-$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
-$_GET['url'] = $requestUri;
+// A partir de aquí ya puedes incluir usando PRIVATE_PATH
+require_once PRIVATE_PATH . '/config/config.php';
 
-define('PRIVATE_PATH', dirname(__DIR__) . '/private');
-
-include PRIVATE_PATH . '/includes/header.php';
-include PRIVATE_PATH . '/includes/topbar.php';
-include PRIVATE_PATH . '/includes/menu.php';
-include PRIVATE_PATH . '/app/Router.php';
-include PRIVATE_PATH . '/includes/footer.php';
-include PRIVATE_PATH . '/includes/close.php';
+require PRIVATE_PATH . '/includes/header.php';
+require PRIVATE_PATH . '/includes/topbar.php';
+require PRIVATE_PATH . '/includes/menu.php';
+require PRIVATE_PATH . '/app/Router.php';
+require PRIVATE_PATH . '/includes/footer.php';
+require PRIVATE_PATH . '/includes/close.php';
