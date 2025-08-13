@@ -37,7 +37,7 @@ if (!function_exists('learnCategoryImage')) {
 </section>
 
 <?php if (empty($learns)): ?>
-  <div class="empty">Todavía no hay cursos disponibles.</div>
+  <div class="empty"><?php echo $language['learn']['empty']; ?></div>
 <?php else: ?>
 <section class="learn-slider">
   <button class="nav prev" aria-label="Anterior">‹</button>
@@ -58,21 +58,21 @@ if (!function_exists('learnCategoryImage')) {
               <span class="badge"><?= htmlspecialchars($c['category_name'] ?? 'Bienestar') ?></span>
               <h3 class="card-title"><?= htmlspecialchars($c['title']) ?></h3>
               <p class="card-text">
-                <?= nl2br(htmlspecialchars($c['description'] ?: 'Curso disponible en la sección Learn Oreka.')) ?>
+                <?= nl2br(htmlspecialchars($c['description'] ?: $language['learn']['description'])) ?>
               </p>
 
               <?php if ($c['duration'] !== null && $c['duration'] !== ''): ?>
                 <div class="meta duration">
-                  Duración: <?= is_numeric($c['duration']) ? (int)$c['duration'].' min' : htmlspecialchars($c['duration']) ?>
+                  <?php echo $language['learn']['duration']; ?> <?= is_numeric($c['duration']) ? (int)$c['duration'].' min' : htmlspecialchars($c['duration']) ?>
                 </div>
               <?php endif; ?>
 
               <div class="progress"><div class="bar" style="width:0%"></div></div>
 
               <?php if (!empty($c['url'])): ?>
-                <a class="btn" href="<?= htmlspecialchars($c['url']) ?>" target="_blank" rel="noopener">Ir al curso</a>
+                <a class="btn" href="<?= htmlspecialchars($c['url']) ?>" target="_blank" rel="noopener"><?php echo $language['learn']['button_go']; ?></a>
               <?php else: ?>
-                <button class="btn" disabled>Próximamente</button>
+                <button class="btn" disabled><?php echo $language['learn']['soon']; ?></button>
               <?php endif; ?>
             </div>
           </article>

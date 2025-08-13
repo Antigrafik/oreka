@@ -13,8 +13,8 @@ $baseUrl = 'http://localhost';
 if (!defined('DEFAULT_LANG')) {
 
     //IMPORTANTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CAMBIAR
-  define('DEFAULT_LANG', 'es'); //AQUI SE CAMBIA EL IDIOMA, CUANDO AVERIGÜEMOS CÓMO COGERLO DE SU INTRANET, ENLAZAR AQUÍ
-  
+  define('DEFAULT_LANG', 'eu'); //AQUI SE CAMBIA EL IDIOMA, CUANDO AVERIGÜEMOS CÓMO COGERLO DE SU INTRANET, ENLAZAR AQUÍ
+
 }
 if (!defined('SUPPORTED_LANGS')) {
   define('SUPPORTED_LANGS', ['es', 'eu']);

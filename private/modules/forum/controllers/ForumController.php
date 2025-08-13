@@ -3,13 +3,18 @@ require_once __DIR__ . '/../models/Forum.php';
 
 class ForumController
 {
-    /** Devuelve el HTML del bloque Foro para incrustarlo en home.php */
     public function render(): string
     {
-        $events = (new Forum())->getAll();
+        $lang     = defined('DEFAULT_LANG') ? strtolower(DEFAULT_LANG) : 'es';
+        $fallback = 'es';
+
+        $events = (new Forum())->getAll($lang, $fallback);
+
+        // que el view tenga $language disponible
+        $language = $GLOBALS['language'] ?? [];
 
         ob_start();
-        include __DIR__ . '/../views/forum.php';  // usa $events
+        include __DIR__ . '/../views/forum.php';
         return ob_get_clean();
     }
 }

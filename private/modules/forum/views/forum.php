@@ -1,9 +1,12 @@
 <?php
-// ---- Formateador de mes corto en español (p.ej., JUN) ----
+// Locale según idioma activo
+$locale = (defined('DEFAULT_LANG') && strtolower(DEFAULT_LANG) === 'eu') ? 'eu_ES' : 'es_ES';
+
+// Formateador de mes corto (Ene/Jan → siempre mayúsculas)
 $fmtMes = null;
 if (class_exists('IntlDateFormatter')) {
     $fmtMes = new IntlDateFormatter(
-        'es_ES',
+        $locale,
         IntlDateFormatter::NONE,
         IntlDateFormatter::NONE,
         date_default_timezone_get(),
@@ -14,31 +17,25 @@ if (class_exists('IntlDateFormatter')) {
 ?>
 
 <section id="forum" class="forum-hero">
-  <h1>FORO OREKA</h1>
-  <p>Aquí encontrarás todos nuestros webinars, talleres y actividades. ¡Participa!</p>
+  <h1><?= htmlspecialchars($language['forum']['title'] ?? 'FORO OREKA') ?></h1>
+  <p><?= htmlspecialchars($language['forum']['subtitle'] ?? 'Aquí encontrarás todos nuestros webinars, talleres y actividades. ¡Participa!') ?></p>
 </section>
 
 <section class="forum-list">
   <?php if (empty($events)): ?>
-    <div class="empty">No hay eventos publicados todavía.</div>
+    <div class="empty"><?= htmlspecialchars($language['forum']['empty'] ?? 'No hay eventos publicados todavía.') ?></div>
   <?php else: ?>
-    <?php foreach ($events as $e): 
-      // Fechas seguras
+    <?php foreach ($events as $e):
       $dtStart = !empty($e['date_start'])  ? new DateTime($e['date_start'])  : null;
       $dtEnd   = !empty($e['date_finish']) ? new DateTime($e['date_finish']) : null;
 
-      // Día y mes (sin strftime)
       if ($dtStart) {
           $day = $dtStart->format('d');
-          $mon = $fmtMes ? strtoupper($fmtMes->format($dtStart))
-               : strtoupper($dtStart->format('M'));
-
+          $mon = $fmtMes ? strtoupper($fmtMes->format($dtStart)) : strtoupper($dtStart->format('M'));
       } else {
-          $day = '--';
-          $mon = '--';
+          $day = '--'; $mon = '--';
       }
 
-      // Horas
       $horaIni = $dtStart ? $dtStart->format('H:i') : '';
       $horaFin = $dtEnd   ? $dtEnd->format('H:i')   : '';
     ?>
@@ -50,7 +47,7 @@ if (class_exists('IntlDateFormatter')) {
 
         <div class="forum-body">
           <div class="forum-meta">
-            <span class="tag">Taller</span>
+            <span class="tag"><?= htmlspecialchars($language['forum']['tag'] ?? 'Taller') ?></span>
             <?php if ($horaIni || $horaFin): ?>
               <span class="meta">⏰ <?= htmlspecialchars(trim($horaIni . ($horaFin ? ' - ' . $horaFin : ''))) ?>h</span>
             <?php endif; ?>
@@ -65,9 +62,11 @@ if (class_exists('IntlDateFormatter')) {
 
         <div class="forum-cta">
           <?php if (!empty($e['url'])): ?>
-            <a class="btn forum-join" href="<?= htmlspecialchars($e['url']) ?>" target="_blank" rel="noopener">Apuntarme</a>
+            <a class="btn forum-join" href="<?= htmlspecialchars($e['url']) ?>" target="_blank" rel="noopener">
+              <?= htmlspecialchars($language['forum']['cta'] ?? 'Apuntarme') ?>
+            </a>
           <?php else: ?>
-            <button class="btn forum-join" disabled>Próximamente</button>
+            <button class="btn forum-join" disabled><?= htmlspecialchars($language['forum']['soon'] ?? 'Próximamente') ?></button>
           <?php endif; ?>
         </div>
       </article>

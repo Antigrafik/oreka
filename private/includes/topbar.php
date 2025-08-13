@@ -19,7 +19,7 @@ if ($user) {
 
         if (!$userData) {
             // Usuario no permitido → mostrar mensaje y salir
-            echo "<h1 style='color:red; text-align:center;'>No tienes permitido entrar</h1>";
+            echo "<h1 style='color:red; text-align:center;'>" . $language['topbar']['without_permission'] . "</h1>";
             exit;
         }
 
@@ -43,7 +43,7 @@ if ($user) {
     }
 } else {
     // No hay usuario autenticado
-    echo "<h1 style='color:red; text-align:center;'>No tienes permitido entrar</h1>";
+    echo "<h1 style='color:red; text-align:center;'>" . $language['topbar']['without_permission'] . "</h1>";
     exit;
 }
 ?>
@@ -55,7 +55,7 @@ if ($user) {
     </div>
 
     <div class="user-center">
-        <span><?= htmlspecialchars($user) ?> | <?= htmlspecialchars($totalPuntos) ?> puntos</span>
+        <span><?= htmlspecialchars($user) ?> | <?= htmlspecialchars($totalPuntos) ?> <?php echo $language['topbar']['points']; ?></span>
     </div>
 
     <div class="logo-right-container">

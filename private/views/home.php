@@ -1,5 +1,4 @@
 <!-- Bienvenida -->
 
 <?= $learnSection ?>
-
-
+<?= $forumSection ?>
