@@ -34,6 +34,18 @@
             'title'     => 'COMUNIDAD OREKA',
             'subtitle'  => 'El espacio para compartir, descubrir y motivarse juntos.',
         ],
+        'recommendations' => [
+            'title'     => 'Tus recomendaciones',
+            'subtitle'  => 'Si hay algo que te inspira en nutrición, bienestar emocional o físico, compártelo con la comunidad.',
+            'empty'     => 'Aún no hay recomendaciones.',
+            'theme'     => 'Tema',
+            'support'   => 'Soporte',
+            'all'       => 'Todo',
+            'sort_by'      => 'Ordenar por',
+            'recent'    => 'Más recientes',
+            'search'    => 'Buscar por título o autor…',
+            'like'      => 'Me gusta',
+        ]
 
     ];
 ?>

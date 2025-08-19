@@ -33,5 +33,17 @@
             'title'     => 'OREKA KOMUNITATEA',
             'subtitle'  => 'Elkarrekin partekatzeko, deskubritzeko eta motibatzeko espazioa.',
         ],
+        'recommendations' => [
+            'title'     => 'Zure gomendioak',
+            'subtitle'  => 'Nutrizioan, ongizate emozionalean edo fisikoan inspiratzen zaituen zerbait badago, partekatu komunitatearekin.',
+            'empty'     => 'Oraindik ez dago gomendiorik.',
+            'theme'     => 'Gaia',
+            'support'   => 'Euskarria',
+            'all'       => 'Dena',
+            'sort_by'   => 'Ordenatu',
+            'recent'    => 'Berriagoak',
+            'search'    => 'Izenburuaren edo egilearen arabera bilatu...',
+            'like'      => 'Gustatzen zait',
+        ]
     ];
 ?>

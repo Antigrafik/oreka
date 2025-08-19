@@ -3,7 +3,7 @@ session_start();
 
 $isAdmin = false;
 if (!empty($user)) {
-    $stmt = $pdo->prepare("SELECT roles FROM users WHERE name = :name");
+    $stmt = $pdo->prepare("SELECT roles FROM [user] WHERE name = :name");
     $stmt->execute([':name' => $user]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($row && strtolower($row['roles']) === 'admin') $isAdmin = true;

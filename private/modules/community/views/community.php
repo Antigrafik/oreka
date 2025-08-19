@@ -1,46 +1,46 @@
 <section id="community" class="community-hero">
-  <h1>COMUNIDAD OREKA</h1>
-  <p>El espacio para compartir, descubrir y motivarse juntos.</p>
+  <h1><?php echo $language['community']['title']; ?></h1>
+  <p><?php echo $language['community']['subtitle']; ?></p>
 </section>
 
 <section class="recs-block">
-  <h2 class="block-title">Tus recomendaciones</h2>
-  <p class="block-sub">Si hay algo que te inspira en nutrición, bienestar emocional o físico, compártelo con la comunidad.</p>
+  <h2 class="block-title"><?php echo $language['recommendations']['title']; ?></h2>
+  <p class="block-sub"><?php echo $language['recommendations']['subtitle']; ?></p>
 
   <!-- Filtros -->
   <div class="recs-filters">
-    <label>Tema
+    <label><?php echo $language['recommendations']['theme']; ?>
       <select id="rec-filter-theme">
-        <option value="">Todo</option>
+        <option value=""><?php echo $language['recommendations']['all']; ?></option>
         <?php foreach ($themes as $t): ?>
           <option value="<?= htmlspecialchars($t['name']) ?>"><?= htmlspecialchars($t['name']) ?></option>
         <?php endforeach; ?>
       </select>
     </label>
 
-    <label>Soporte
+    <label><?php echo $language['recommendations']['support']; ?>
       <select id="rec-filter-support">
-        <option value="">Todo</option>
+        <option value=""><?php echo $language['recommendations']['all']; ?></option>
         <?php foreach ($supports as $s): ?>
           <option value="<?= htmlspecialchars($s['name']) ?>"><?= htmlspecialchars($s['name']) ?></option>
         <?php endforeach; ?>
       </select>
     </label>
 
-    <label>Ordenar por
+    <label><?php echo $language['recommendations']['sort_by']; ?>
       <select id="rec-sort">
-        <option value="recent">Más recientes</option>
+        <option value="recent"><?php echo $language['recommendations']['recent']; ?></option>
         <option value="az">A-Z</option>
         <option value="za">Z-A</option>
       </select>
     </label>
 
-    <input id="rec-search" type="search" placeholder="Buscar por título o autor…">
+    <input id="rec-search" type="search" placeholder="<?php echo $language['recommendations']['search']; ?>">
   </div>
 
   <!-- Carrusel -->
   <?php if (empty($recs)): ?>
-    <div class="empty">Aún no hay recomendaciones.</div>
+    <div class="empty"><?php echo $language['recommendations']['empty']; ?></div>
   <?php else: ?>
   <section class="recs-slider">
     <button class="nav prev" aria-label="Anterior">‹</button>
@@ -73,7 +73,7 @@
               <?php if ($author): ?><p class="meta">Por <?= htmlspecialchars($author) ?></p><?php endif; ?>
               <?php if ($excerpt): ?><p class="card-text"><?= htmlspecialchars($excerpt) ?></p><?php endif; ?>
               <div class="progress"><div class="bar" style="width:0%"></div></div>
-              <button class="btn">Me gusta</button>
+              <button class="btn"><?php echo $language['recommendations']['like']; ?></button>
             </div>
           </article>
         </li>

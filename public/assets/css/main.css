@@ -341,7 +341,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
 /* Fin Estilos de Foro */
 
 /* Inicio Estilos de Comunidad */
-/*
+
   .community-hero{text-align:center;margin:24px 0 12px}
   .community-hero h1{font-size:40px;margin:0 0 6px}
   .community-hero p{margin:0 auto 16px;max-width:720px}
@@ -387,5 +387,5 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
   .progress{height:6px;background:#fff;border:2px solid var(--red);border-radius:999px;overflow:hidden;margin:10px 0 14px}
   .progress .bar{height:100%;background:var(--red);width:0%}
   .btn{display:inline-block;background:var(--red);color:#fff;border:none;padding:10px 14px;border-radius:999px;text-decoration:none;cursor:pointer}
-*/
+
 /*Fin Comunidad → Recomendaciones */

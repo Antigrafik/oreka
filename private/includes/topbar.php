@@ -13,11 +13,11 @@ if ($user && strpos($user, '\\') !== false) {
 if ($user) {
     try {
         // Comprobar si el usuario existe
-        $checkUser = $pdo->prepare("SELECT id FROM dbo.users WHERE name = :name");
+        $checkUser = $pdo->prepare("SELECT id FROM [user] WHERE name = :name");
         $checkUser->execute([':name' => $user]);
         $userData = $checkUser->fetch(PDO::FETCH_ASSOC);
 
-        if (!$userData) {
+       if (!$userData) {
             // Usuario no permitido → mostrar mensaje y salir
             echo "<h1 style='color:red; text-align:center;'>" . $language['topbar']['without_permission'] . "</h1>";
             exit;
@@ -25,10 +25,10 @@ if ($user) {
 
         // Total de puntos del usuario (todas sus actividades)
         $sql = "
-            SELECT COALESCE(SUM(p.puntos), 0) AS total_puntos
-            FROM dbo.users u
-            JOIN dbo.user_activity ua ON ua.id_user = u.id
-            JOIN dbo.points p        ON p.id = ua.id_points
+            SELECT COALESCE(SUM(p.points), 0) AS total_puntos
+            FROM [user] u
+            JOIN user_activity ua ON ua.id_user = u.id
+            JOIN point p        ON p.id = ua.id_point
             WHERE u.name = :name
         ";
         $stmt = $pdo->prepare($sql);
