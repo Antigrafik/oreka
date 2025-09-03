@@ -1,34 +1,77 @@
 <?php
+declare(strict_types=1);
 session_start();
 
+/**
+ * Si ya tienes $pdo disponible en el include anterior, comenta esta línea.
+ * Ruta pensada para: private/includes/menu.php -> private/config/db_connect.php
+ */
+if (!isset($pdo)) {
+    @require_once __DIR__ . '/../config/db_connect.php';
+}
+
 $isAdmin = false;
-if (!empty($user)) {
-    $stmt = $pdo->prepare("SELECT roles FROM [user] WHERE name = :name");
-    $stmt->execute([':name' => $user]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($row && strtolower($row['roles']) === 'admin') $isAdmin = true;
+
+/* ----------------------------------------------------------
+   Resolver identidad del usuario
+   - Preferimos id en sesión; si no, email/usuario.
+   - Acepta AUTH_USER/REMOTE_USER (IIS) tipo DOMAIN\cuenta.
+---------------------------------------------------------- */
+$userId   = $_SESSION['user_id'] ?? null;
+$userName = $GLOBALS['user']
+         ?? ($_SESSION['email'] ?? $_SESSION['user'] ?? $_SERVER['AUTH_USER'] ?? $_SERVER['REMOTE_USER'] ?? null);
+
+if ($userName) {
+    $userName = trim((string)$userName);
+    // Si viene como DOMAIN\usuario -> quedarnos con "usuario"
+    if (strpos($userName, '\\') !== false) {
+        $userName = substr($userName, strrpos($userName, '\\') + 1);
+    }
+}
+
+try {
+    if ($userId) {
+        $stmt = $pdo->prepare("SELECT roles FROM [user] WHERE id = :id");
+        $stmt->execute([':id' => $userId]);
+    } elseif (!empty($userName)) {
+        $stmt = $pdo->prepare("SELECT roles FROM [user] WHERE name = :name");
+        $stmt->execute([':name' => $userName]);
+    }
+
+    if (isset($stmt)) {
+        $role = $stmt->fetchColumn();
+        if ($role !== false) {
+            $v = strtolower(trim((string)$role));
+            // Acepta 'admin' textual o 1/true numérico/booleano
+            $isAdmin = ($v === 'admin' || $v === '1' || $v === 'true');
+        }
+    }
+} catch (Throwable $e) {
+    // Si quieres depurar:
+    // error_log('menu role check: ' . $e->getMessage());
 }
 ?>
+
 <div class="menu">
   <nav class="menu-inner">
 
-    <a id="menu-learn" class="menu-item" href="/#learn"><?php echo $language['menu']['learn']; ?></a>
+    <a id="menu-learn" class="menu-item" href="/#learn"><?= htmlspecialchars($language['menu']['learn'] ?? 'Aula') ?></a>
     <span class="sep" aria-hidden="true"></span>
 
-    <a id="menu-forum" class="menu-item" href="/#forum"><?php echo $language['menu']['forum']; ?></a>
+    <a id="menu-forum" class="menu-item" href="/#forum"><?= htmlspecialchars($language['menu']['forum'] ?? 'Foro') ?></a>
     <span class="sep" aria-hidden="true"></span>
 
-    <a id="menu-community" class="menu-item" href="/#community"><?php echo $language['menu']['community']; ?></a>
+    <a id="menu-community" class="menu-item" href="/#community"><?= htmlspecialchars($language['menu']['community'] ?? 'Comunidad') ?></a>
     <span class="sep" aria-hidden="true"></span>
 
-    <a class="menu-item" href="/store"><?php echo $language['menu']['shop']; ?></a>
+    <a class="menu-item" href="/store"><?= htmlspecialchars($language['menu']['shop'] ?? 'Tienda') ?></a>
     <span class="sep" aria-hidden="true"></span>
 
-    <a class="menu-item" href="/mi-espacio"><?php echo $language['menu']['my_space']; ?></a>
+    <a class="menu-item" href="/mi-espacio"><?= htmlspecialchars($language['menu']['my_space'] ?? 'Mi espacio') ?></a>
 
     <?php if ($isAdmin): ?>
       <span class="sep" aria-hidden="true"></span>
-      <a class="menu-item" href="/admin"><?php echo $language['menu']['admin']; ?></a>
+      <a class="menu-item" href="/admin"><?= htmlspecialchars($language['menu']['admin'] ?? 'Admin') ?></a>
     <?php endif; ?>
   </nav>
 </div>
@@ -74,13 +117,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Espera un tick por si el layout aún no ha pintado
         setTimeout(() => scrollToHash(hash), 0);
       }
-      // Si NO estamos en home, dejamos navegar a "/#hash" y al cargar hará scroll automático (abajo).
+      // Si NO estamos en home, dejamos navegar a "/#hash" y al cargar hará scroll automático
     });
   });
 
   // Al cargar, si viene con hash (p.ej. desde /store -> click AULA) haz scroll
   if (location.hash && document.querySelector(location.hash)) {
-    // pequeño delay para asegurarnos de que las secciones ya están renderizadas
     setTimeout(() => {
       markActive(location.hash);
       scrollToHash(location.hash);
@@ -97,5 +139,3 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
-
-
