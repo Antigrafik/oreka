@@ -114,6 +114,7 @@ html { scroll-behavior: smooth; }
 
 /*Fin Menu.php*/
 
+.hidden { display: none !important; }
 
 /* Inicio Estilos de Aula */
 

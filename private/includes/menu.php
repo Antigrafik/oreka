@@ -71,7 +71,7 @@ try {
 
     <?php if ($isAdmin): ?>
       <span class="sep" aria-hidden="true"></span>
-      <a class="menu-item" href="/admin"><?= htmlspecialchars($language['menu']['admin'] ?? 'Admin') ?></a>
+      <a id="menu-admin" class="menu-item" href="/#admin"><?= htmlspecialchars($language['menu']['admin'] ?? 'Admin') ?></a>
     <?php endif; ?>
   </nav>
 </div>
@@ -79,7 +79,7 @@ try {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   // ids de los anchors y sus enlaces en el menú
-  const map = { '#learn':'menu-learn', '#forum':'menu-forum', '#community':'menu-community' };
+  const map = { '#learn':'menu-learn', '#forum':'menu-forum', '#community':'menu-community', '#admin':'menu-admin' };
 
   // Marca activo según hash actual
   function markActive(hash) {
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Si ya estamos en HOME, intercepta el click y haz scroll sin recargar
-  document.querySelectorAll('#menu-learn, #menu-forum, #menu-community').forEach(a => {
+  document.querySelectorAll('#menu-learn, #menu-forum, #menu-community, #menu-admin').forEach(a => {
     a.addEventListener('click', (ev) => {
       const href = a.getAttribute('href') || '';
       const m = href.match(/#\w+/);
@@ -112,9 +112,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const onHome = location.pathname === '/' || /\/index(\.php)?$/.test(location.pathname);
       if (onHome) {
         ev.preventDefault();
-        history.replaceState(null, '', '/' + hash); // actualiza la URL con el hash
+
+        // 🔧 CAMBIO: en vez de replaceState, usa location.hash para que dispare 'hashchange'
+        if (location.hash !== hash) {
+          location.hash = hash;          // dispara 'hashchange' -> home.php hace toggle y scroll
+        } else {
+          // Si ya estamos en el mismo hash, fuerza el ciclo igualmente
+          window.dispatchEvent(new HashChangeEvent('hashchange'));
+        }
+
+        // Opcional: si quieres mantener el marcado activo inmediato
         markActive(hash);
-        // Espera un tick por si el layout aún no ha pintado
+        // El scroll ya lo hace el listener de home.php; si quieres mantenerlo aquí, déjalo:
         setTimeout(() => scrollToHash(hash), 0);
       }
       // Si NO estamos en home, dejamos navegar a "/#hash" y al cargar hará scroll automático

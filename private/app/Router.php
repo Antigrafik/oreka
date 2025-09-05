@@ -15,10 +15,10 @@ switch ($uri) {
         (new UserController())->index();
         break;
 
-    case 'admin':
+    /*case 'admin':
         require_once PRIVATE_PATH . '/modules/intra/controllers/AdminController.php';
         (new AdminController())->index();
-        break;
+        break;*/
     
     case 'store':
         require_once PRIVATE_PATH . '/modules/store/controllers/ProductController.php';
