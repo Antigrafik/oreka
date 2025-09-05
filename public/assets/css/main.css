@@ -9,6 +9,8 @@ body {
   --text:#000000;
   --bg:#ffffff;
   --radius:16px;
+  --topbarH: 56px;   /* altura fija del topbar */
+  --menuH:   48px;   /* altura fija del menú  */
 }
 
 
@@ -16,13 +18,17 @@ body {
 
 /* Inicio Estilos de TOPBAR.PHP */
 
-.main-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 16px;
-    background: white;
-    position: relative;
+.main-header{
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  background: var(--bg);
+  height: var(--topbarH);
+  box-sizing: border-box;          /* incluye padding/bordes en la altura fija */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
 }
 
 .logo-left img {
@@ -54,12 +60,14 @@ body {
 /* Contenedor del menú */
 .menu{
   position: sticky;
-  top: 0;
-  z-index: 100;
+  top: var(--topbarH);             /* se pega bajo el topbar fijo */
+  z-index: 1000;
   background: var(--bg);
+  height: var(--menuH);
+  box-sizing: border-box;
   border-top: 4px solid var(--red);
   border-bottom: 4px solid var(--red);
-  padding: 8px 0;
+  padding: 8px 0;                  /* mantén constante */
 }
 
 /* Barra centrada */
@@ -67,8 +75,9 @@ body {
 html { scroll-behavior: smooth; }
 
 /* que los anchors tengan margen superior automático al hacer anchor */
-#learn, #forum, #community { scroll-margin-top: 80px; } /* ajusta 80px si tu menú es más alto */
-
+#learn, #forum, #community, #admin{
+  scroll-margin-top: calc(var(--topbarH) + var(--menuH) + 8px);
+}
 
 .menu-inner{
   display: flex;
@@ -78,6 +87,7 @@ html { scroll-behavior: smooth; }
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 12px;
+  height: 100%; 
 }
 
 /* Enlaces */

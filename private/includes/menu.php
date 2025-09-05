@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('#menu-learn, #menu-forum, #menu-community, #menu-admin').forEach(a => {
     a.addEventListener('click', (ev) => {
       const href = a.getAttribute('href') || '';
-      const m = href.match(/#\w+/);
+      const m = href.match(/#[-\w/]+/);
       if (!m) return;
       const hash = m[0];
 

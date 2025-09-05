@@ -21,32 +21,25 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // Contenedores de módulo
   const $learnModule = document.getElementById('module-learn');
   const $forumModule = document.getElementById('module-forum');
   const $adminModule = document.getElementById('module-admin');
 
-  function show(el)   { if (el) el.classList.remove('hidden'); }
-  function hide(el)   { if (el) el.classList.add('hidden'); }
+  function show(el){ if(el) el.classList.remove('hidden'); }
+  function hide(el){ if(el) el.classList.add('hidden'); }
 
   function toggleByHash(hash) {
-    const isAdmin = (hash === '#admin');
+    const isAdmin = (hash === '#admin' || (hash && hash.startsWith('#admin/')));
 
     if (isAdmin) {
-      show($adminModule);
-      hide($learnModule);
-      hide($forumModule);
+      show($adminModule); hide($learnModule); hide($forumModule);
     } else {
-      hide($adminModule);
-      show($learnModule);
-      show($forumModule);
+      hide($adminModule); show($learnModule); show($forumModule);
     }
   }
 
-  // Estado inicial
   toggleByHash(location.hash || '#learn');
-
-  // Reacciona a cambios del hash
   window.addEventListener('hashchange', () => toggleByHash(location.hash));
 });
 </script>
+
