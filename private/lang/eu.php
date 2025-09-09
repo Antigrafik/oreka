@@ -19,14 +19,12 @@
             'description' => 'Oreka Gela atalean eskuragarri dagoen ikastaroa',
             'duration'   => 'Iraupena: ',
             'button_go'        => 'Ikastarora joan',
-            'soon'      => 'Laster',
         ],
         'forum' => [
             'title'     => 'OREKA FOROA',
             'subtitle'  => 'Hemen aurkituko dituzu gure webinars guztiak, tailerrak eta jarduerak. Parte hartu!',
             'empty'    => 'Oraindik ez dago ekitaldirik argitaratuta.',
             'cta'      => 'Izena eman',
-            'soon'     => 'Laster',
         ],
         'community' => [
             'title'     => 'OREKA KOMUNITATEA',

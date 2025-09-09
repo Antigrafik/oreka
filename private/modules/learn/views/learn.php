@@ -56,7 +56,7 @@ if (!function_exists('learnCategoryImage')) {
             </div>
             <div class="card-body">
               <span class="badge"><?= htmlspecialchars($c['category_name'] ?? 'Bienestar') ?></span>
-              <h3 class="card-title"><?= htmlspecialchars($c['title']) ?></h3>
+              <h3 class="card-title"><?= htmlspecialchars($c['learn_title']) ?></h3>
               <p class="card-text">
                 <?= nl2br(htmlspecialchars($c['description'] ?: $language['learn']['description'])) ?>
               </p>
@@ -69,11 +69,8 @@ if (!function_exists('learnCategoryImage')) {
 
               <div class="progress"><div class="bar" style="width:0%"></div></div>
 
-              <?php if (!empty($c['url'])): ?>
-                <a class="btn" href="<?= htmlspecialchars($c['url']) ?>" target="_blank" rel="noopener"><?php echo $language['learn']['button_go']; ?></a>
-              <?php else: ?>
-                <button class="btn" disabled><?php echo $language['learn']['soon']; ?></button>
-              <?php endif; ?>
+              <a class="btn" href="<?= htmlspecialchars($c['url']) ?>" target="_blank" rel="noopener"><?php echo $language['learn']['button_go']; ?></a>
+
             </div>
           </article>
         </li>
