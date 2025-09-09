@@ -19,16 +19,12 @@
             'description' => 'Curso disponible en la sección Aula Oreka',
             'duration'   => 'Duración: ',
             'button_go'        => 'Ir al curso',
-            'soon'      => 'Próximamente',
-
         ],
         'forum' => [
             'title'     => 'FORO OREKA',
             'subtitle'  => 'Aquí encontrarás todos nuestros webinars, talleres y actividades. ¡Participa!',
             'empty'     => 'No hay eventos publicados todavía.',
-            'tag'       => 'Taller',
             'cta'       => 'Apuntarme',
-            'soon'      => 'Próximamente',
         ],
         'community' => [
             'title'     => 'COMUNIDAD OREKA',
@@ -45,6 +41,14 @@
             'recent'    => 'Más recientes',
             'search'    => 'Buscar por título o autor…',
             'like'      => 'Me gusta',
+        ],
+        'menu_admin' => [
+            'dashboard' => 'Dashboard',
+            'users'     => 'Usuarios',
+            'store'     => 'Tienda',
+            'learn'     => 'Aula',
+            'forum'     => 'Foro',
+            'community' => 'Comunidad',
         ]
 
     ];

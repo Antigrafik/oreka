@@ -10,6 +10,9 @@
   <?= $forumSection ?>
 </div>
 
+<!-- Contenedor del módulo Community -->
+
+
 <?php if (!empty($adminSection)): ?>
   <!-- Contenedor del módulo Admin -->
   <div id="module-admin">
@@ -23,6 +26,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const $learnModule = document.getElementById('module-learn');
   const $forumModule = document.getElementById('module-forum');
+  const $communityModule = document.getElementById('module-community');
   const $adminModule = document.getElementById('module-admin');
 
   function show(el){ if(el) el.classList.remove('hidden'); }
@@ -32,9 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const isAdmin = (hash === '#admin' || (hash && hash.startsWith('#admin/')));
 
     if (isAdmin) {
-      show($adminModule); hide($learnModule); hide($forumModule);
+      show($adminModule); hide($learnModule); hide($forumModule); hide($communityModule);
     } else {
-      hide($adminModule); show($learnModule); show($forumModule);
+      hide($adminModule); show($learnModule); show($forumModule); show($communityModule);
     }
   }
 

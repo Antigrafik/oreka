@@ -4,12 +4,12 @@
     <aside class="admin-sidebar">
       <h2 class="admin-title">Admin</h2>
       <nav class="admin-nav">
-        <a href="#admin" data-tab="dashboard" class="admin-link">Dashboard</a>
-        <a href="#admin/users" data-tab="users" class="admin-link">Usuarios</a>
-        <a href="#admin/store" data-tab="store" class="admin-link">Tienda</a>
-        <a href="#admin/learn" data-tab="learn" class="admin-link">Aula</a>
-        <a href="#admin/forum" data-tab="forum" class="admin-link">Foro</a>
-        <a href="#admin/community" data-tab="community" class="admin-link">Comunidad</a>
+        <a href="#admin" data-tab="dashboard" class="admin-link"><?php echo $language['menu_admin']['dashboard']; ?></a>
+        <a href="#admin/users" data-tab="users" class="admin-link"><?php echo $language['menu_admin']['users']; ?></a>
+        <a href="#admin/store" data-tab="store" class="admin-link"><?php echo $language['menu_admin']['store']; ?></a>
+        <a href="#admin/learn" data-tab="learn" class="admin-link"><?php echo $language['menu_admin']['learn']; ?></a>
+        <a href="#admin/forum" data-tab="forum" class="admin-link"><?php echo $language['menu_admin']['forum']; ?></a>
+        <a href="#admin/community" data-tab="community" class="admin-link"><?php echo $language['menu_admin']['community']; ?></a>
       </nav>
     </aside>
 
@@ -90,7 +90,7 @@
 .admin-sidebar{
   grid-column: 1 / 2; /* reserva la primera pista del grid */
   position: fixed;
-  top: calc(var(--menuH, 0px) + 81px);
+  top: calc(var(--menuH, 0px) + 74px);
   left: var(--adminLeft, 0px);
   width: var(--adminWidth, 240px);
   z-index: 10;

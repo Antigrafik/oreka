@@ -1,1 +1,1 @@
-// footer.php
+<script src="/assets/js/learn-slider.js" defer></script>

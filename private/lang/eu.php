@@ -25,7 +25,6 @@
             'title'     => 'OREKA FOROA',
             'subtitle'  => 'Hemen aurkituko dituzu gure webinars guztiak, tailerrak eta jarduerak. Parte hartu!',
             'empty'    => 'Oraindik ez dago ekitaldirik argitaratuta.',
-            'tag'      => 'Tailerra',
             'cta'      => 'Izena eman',
             'soon'     => 'Laster',
         ],
@@ -44,6 +43,14 @@
             'recent'    => 'Berriagoak',
             'search'    => 'Izenburuaren edo egilearen arabera bilatu...',
             'like'      => 'Gustatzen zait',
+        ],
+        'menu_admin' => [
+            'dashboard' => 'Dashboard',
+            'users'     => 'Erabiltzaileak',
+            'store'     => 'Denda',
+            'learn'     => 'Ikasgela',
+            'forum'     => 'Foroa',
+            'community' => 'Komunitatea',
         ]
     ];
 ?>

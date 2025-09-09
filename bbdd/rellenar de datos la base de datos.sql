@@ -44,26 +44,26 @@ INSERT INTO dbo.category (entity_type, status) VALUES (N'learn', 'publicado'); S
 
 -- Traducciones ES/EU
 INSERT INTO dbo.category_translation (id_category, lang, name, description, slug) VALUES
- (@cat_aula,      'es', N'Aula',       N'SecciÛn de aprendizaje',      N'aula'),
+ (@cat_aula,      'es', N'Aula',       N'Secci√≥n de aprendizaje',      N'aula'),
  (@cat_aula,      'eu', N'Gela',       N'Ikaskuntza atala',            N'gela'),
 
  (@cat_bienestar, 'es', N'Bienestar',  N'Contenido de bienestar',      N'bienestar'),
  (@cat_bienestar, 'eu', N'Ongizatea',  N'Ongizate edukia',             N'ongizatea'),
 
- (@cat_product,   'es', N'Productividad', N'H·bitos y foco',           N'productividad'),
+ (@cat_product,   'es', N'Productividad', N'H√°bitos y foco',           N'productividad'),
  (@cat_product,   'eu', N'Produktibitatea', N'Ohiturak eta fokua',     N'produktibitatea'),
 
- (@cat_nutri,     'es', N'NutriciÛn',  N'AlimentaciÛn saludable',      N'nutricion'),
+ (@cat_nutri,     'es', N'Nutrici√≥n',  N'Alimentaci√≥n saludable',      N'nutricion'),
  (@cat_nutri,     'eu', N'Nutrizioa',  N'Elikadura osasuntsua',        N'nutrizioa');
 
--- RelaciÛn jer·rquica: Aula -> (Bienestar, Productividad, NutriciÛn)
+-- Relaci√≥n jer√°rquica: Aula -> (Bienestar, Productividad, Nutrici√≥n)
 INSERT INTO dbo.category_relation (id_parent, id_child) VALUES
  (@cat_aula, @cat_bienestar),
  (@cat_aula, @cat_product),
  (@cat_aula, @cat_nutri);
 
 ------------------------------------------------------------
--- 5) IMAGES (algunas asociadas a categorÌas)
+-- 5) IMAGES (algunas asociadas a categor√≠as)
 ------------------------------------------------------------
 DECLARE @img_bien INT, @img_prod INT, @img_nutr INT, @img_forum INT;
 
@@ -120,15 +120,15 @@ INSERT INTO dbo.routine (frequency, duration) VALUES (3, 30);   SET @rt2 = SCOPE
 -- 10) TRIAL (retos/pruebas)
 ------------------------------------------------------------
 DECLARE @trial1 INT, @trial2 INT;
-INSERT INTO dbo.trial (id_image, content) VALUES (@img_bien, N'Reto 7 dÌas de respiraciÛn'); SET @trial1 = SCOPE_IDENTITY();
-INSERT INTO dbo.trial (id_image, content) VALUES (@img_prod, N'Reto 3 dÌas sin notificaciones'); SET @trial2 = SCOPE_IDENTITY();
+INSERT INTO dbo.trial (id_image, content) VALUES (@img_bien, N'Reto 7 d√≠as de respiraci√≥n'); SET @trial1 = SCOPE_IDENTITY();
+INSERT INTO dbo.trial (id_image, content) VALUES (@img_prod, N'Reto 3 d√≠as sin notificaciones'); SET @trial2 = SCOPE_IDENTITY();
 
 ------------------------------------------------------------
 -- 11) MEETING (quedadas/citas)
 ------------------------------------------------------------
 DECLARE @meet1 INT, @meet2 INT;
 INSERT INTO dbo.meeting (place, date_start, date_finish, email)
-VALUES (N'Centro CÌvico', '2025-09-20 10:00:00', '2025-09-20 11:00:00', N'contacto@oreka.local');
+VALUES (N'Centro C√≠vico', '2025-09-20 10:00:00', '2025-09-20 11:00:00', N'contacto@oreka.local');
 SET @meet1 = SCOPE_IDENTITY();
 
 INSERT INTO dbo.meeting (place, date_start, date_finish, email)
@@ -188,7 +188,7 @@ INSERT INTO dbo.category_link (id_link, id_category) VALUES
  (@lk_forum1, @cat_bienestar),
  (@lk_forum2, @cat_product);
 
--- Recomendaciones, Rutinas, Retos, Meetings (elige categorÌas generales)
+-- Recomendaciones, Rutinas, Retos, Meetings (elige categor√≠as generales)
 INSERT INTO dbo.category_link (id_link, id_category) VALUES
  (@lk_rec1,   @cat_aula),
  (@lk_rec2,   @cat_aula),
@@ -200,34 +200,34 @@ INSERT INTO dbo.category_link (id_link, id_category) VALUES
  (@lk_meet2,  @cat_aula);
 
 ------------------------------------------------------------
--- 14) TRANSLATION (tÌtulos y descripciones por link)
+-- 14) TRANSLATION (t√≠tulos y descripciones por link)
 ------------------------------------------------------------
 -- Aprende (ES/EU)
 INSERT INTO dbo.translation (id_link, lang, title, content) VALUES
- (@lk_learn1, 'es', N'RespiraciÛn consciente', N'GuÌa breve para mejorar tu respiraciÛn.'),
+ (@lk_learn1, 'es', N'Respiraci√≥n consciente', N'Gu√≠a breve para mejorar tu respiraci√≥n.'),
  (@lk_learn1, 'eu', N'Arnasaz kontziente',     N'Arnasketa hobetzeko gida laburra.'),
- (@lk_learn2, 'es', N'Foco profundo',          N'TÈcnicas para reducir distracciones.'),
- (@lk_learn3, 'es', N'Desayunos saludables',    N'Ideas r·pidas y equilibradas.');
+ (@lk_learn2, 'es', N'Foco profundo',          N'T√©cnicas para reducir distracciones.'),
+ (@lk_learn3, 'es', N'Desayunos saludables',    N'Ideas r√°pidas y equilibradas.');
 
 -- Foros
 INSERT INTO dbo.translation (id_link, lang, title, content) VALUES
- (@lk_forum1, 'es', N'Foro de Bienestar', N'Encuentro para compartir pr·cticas saludables.'),
- (@lk_forum2, 'es', N'Foro de Productividad', N'Estrategias de enfoque y organizaciÛn.');
+ (@lk_forum1, 'es', N'Foro de Bienestar', N'Encuentro para compartir pr√°cticas saludables.'),
+ (@lk_forum2, 'es', N'Foro de Productividad', N'Estrategias de enfoque y organizaci√≥n.');
 
 -- Resto
 INSERT INTO dbo.translation (id_link, lang, title, content) VALUES
  (@lk_rec1, 'es', N'Libros recomendados', N'Lista curada por la comunidad.'),
  (@lk_rec2, 'es', N'Podcast de la semana', N'Episodio destacado y debate.'),
  (@lk_rt1,  'es', N'Rutina diaria',        N'10 minutos de estiramientos.'),
- (@lk_rt2,  'es', N'Rutina semanal',       N'Plan de 30 minutos para el s·bado.'),
- (@lk_trial1,'es',N'Reto de respiraciÛn',  N'Completa 7 dÌas seguidos.'),
- (@lk_trial2,'es',N'Reto sin notificaciones', N'Minimiza interrupciones por 3 dÌas.'),
- (@lk_meet1,'es', N'Quedada en Centro CÌvico', N'Actividad grupal.'),
+ (@lk_rt2,  'es', N'Rutina semanal',       N'Plan de 30 minutos para el s√°bado.'),
+ (@lk_trial1,'es',N'Reto de respiraci√≥n',  N'Completa 7 d√≠as seguidos.'),
+ (@lk_trial2,'es',N'Reto sin notificaciones', N'Minimiza interrupciones por 3 d√≠as.'),
+ (@lk_meet1,'es', N'Quedada en Centro C√≠vico', N'Actividad grupal.'),
  (@lk_meet2,'es', N'Paseo en Parque Norte',   N'Marcha suave y charla.');
 
 -- Legal/Banner
 INSERT INTO dbo.translation (id_link, lang, title, content) VALUES
- (@lk_legal1,  'es', N'Aviso legal', N'TÈrminos y condiciones.'),
+ (@lk_legal1,  'es', N'Aviso legal', N'T√©rminos y condiciones.'),
  (@lk_banner1, 'es', N'Sorteo activo', N'Participa y gana puntos.');
 
 ------------------------------------------------------------
@@ -240,7 +240,7 @@ INSERT INTO dbo.point (id_link, points) VALUES (@lk_learn2, 12); SET @pt_learn2 
 INSERT INTO dbo.point (id_link, points) VALUES (@lk_forum1,  5); SET @pt_forum1 = SCOPE_IDENTITY();
 INSERT INTO dbo.point (id_link, points) VALUES (@lk_trial1,  8); SET @pt_trial1 = SCOPE_IDENTITY();
 
--- M·s puntos opcionales
+-- M√°s puntos opcionales
 INSERT INTO dbo.point (id_link, points) VALUES
  (@lk_forum2, 5),
  (@lk_trial2, 7),
@@ -248,7 +248,7 @@ INSERT INTO dbo.point (id_link, points) VALUES
  (@lk_rt2,    6);
 
 ------------------------------------------------------------
--- 16) USER_ACTIVITY (quÈ hizo cada usuario)
+-- 16) USER_ACTIVITY (qu√© hizo cada usuario)
 ------------------------------------------------------------
 INSERT INTO dbo.user_activity (id_user, id_point, status) VALUES
  (@u_ezequiel, @pt_learn1, 'finalizado'),

@@ -26,8 +26,12 @@ if (class_exists('IntlDateFormatter')) {
     <div class="empty"><?= htmlspecialchars($language['forum']['empty'] ?? 'No hay eventos publicados todavía.') ?></div>
   <?php else: ?>
     <?php foreach ($events as $e):
+      // Claves esperadas: category_name, forum_title, description, url, date_start, date_finish
       $dtStart = !empty($e['date_start'])  ? new DateTime($e['date_start'])  : null;
       $dtEnd   = !empty($e['date_finish']) ? new DateTime($e['date_finish']) : null;
+
+      // (Por si el filtro de la SQL fallara) excluir eventos terminados
+      if ($dtEnd && $dtEnd <= new DateTime()) { continue; }
 
       if ($dtStart) {
           $day = $dtStart->format('d');
@@ -47,13 +51,15 @@ if (class_exists('IntlDateFormatter')) {
 
         <div class="forum-body">
           <div class="forum-meta">
-            <span class="tag"><?= htmlspecialchars($language['forum']['tag'] ?? 'Taller') ?></span>
+            <?php if (!empty($e['category_name'])): ?>
+              <span class="tag"><?= htmlspecialchars($e['category_name']) ?></span>
+            <?php endif; ?>
             <?php if ($horaIni || $horaFin): ?>
               <span class="meta">⏰ <?= htmlspecialchars(trim($horaIni . ($horaFin ? ' - ' . $horaFin : ''))) ?>h</span>
             <?php endif; ?>
           </div>
 
-          <h3 class="forum-title"><?= htmlspecialchars($e['title']) ?></h3>
+          <h3 class="forum-title"><?= htmlspecialchars($e['forum_title'] ?? '') ?></h3>
 
           <?php if (!empty($e['description'])): ?>
             <p class="forum-desc"><?= nl2br(htmlspecialchars($e['description'])) ?></p>
@@ -61,15 +67,12 @@ if (class_exists('IntlDateFormatter')) {
         </div>
 
         <div class="forum-cta">
-          <?php if (!empty($e['url'])): ?>
-            <a class="btn forum-join" href="<?= htmlspecialchars($e['url']) ?>" target="_blank" rel="noopener">
+            <a class="btn forum-join" href="" target="_blank" rel="noopener">
               <?= htmlspecialchars($language['forum']['cta'] ?? 'Apuntarme') ?>
             </a>
-          <?php else: ?>
-            <button class="btn forum-join" disabled><?= htmlspecialchars($language['forum']['soon'] ?? 'Próximamente') ?></button>
-          <?php endif; ?>
         </div>
       </article>
     <?php endforeach; ?>
   <?php endif; ?>
 </section>
+
