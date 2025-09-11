@@ -17,11 +17,11 @@ if ($user) {
         $checkUser->execute([':name' => $user]);
         $userData = $checkUser->fetch(PDO::FETCH_ASSOC);
 
-       if (!$userData) {
+       /*if (!$userData) {
             // Usuario no permitido → mostrar mensaje y salir
             echo "<h1 style='color:red; text-align:center;'>" . $language['topbar']['without_permission'] . "</h1>";
             exit;
-        }
+        }*/
 
         // Total de puntos del usuario (todas sus actividades)
         $sql = "
