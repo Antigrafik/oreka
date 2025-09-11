@@ -9,8 +9,8 @@ class HomeController {
         require_once PRIVATE_PATH . '/modules/forum/controllers/ForumController.php';
         $forumSection = (new ForumController())->render();
 
-        //require_once PRIVATE_PATH . '/modules/community/controllers/CommunityController.php';
-        //$communitySection = (new CommunityController())->render();
+        require_once PRIVATE_PATH . '/modules/community/controllers/CommunityController.php';
+        $communitySection = (new CommunityController())->render();
 
         $adminSection = '';
         if ($this->userIsAdmin()) {

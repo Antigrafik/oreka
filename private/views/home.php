@@ -11,6 +11,9 @@
 </div>
 
 <!-- Contenedor del módulo Community -->
+<div id="module-community">
+  <?= $communitySection ?>
+</div>
 
 
 <?php if (!empty($adminSection)): ?>

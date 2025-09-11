@@ -222,7 +222,9 @@ public/assets/images/
 #### 📁 JavaScript
 ```
 public/assets/js/
-└── 📄 main.js           # JavaScript principal
+├── 📄 learn-slider.js
+├── 📄 main.js           # JavaScript principal
+└── 📄 recommendation-likes.js
 ```
 
 #### 📁 SCSS (Sass)
@@ -288,29 +290,7 @@ uploads/
 
 ---
 
-## 📊 Resumen del Proyecto
 
-### **Total de Archivos y Carpetas:**
-- **Archivos:** 106 archivos
-- **Carpetas:** 35 carpetas
-
-### **Tipos de Archivos:**
-- **PHP:** 54 archivos (lógica backend)
-- **SCSS:** 24 archivos (estilos)
-- **SQL:** 3 archivos (base de datos)
-- **CSS:** 2 archivos (estilos compilados)
-- **JavaScript:** 1 archivo
-- **Imágenes:** 5 archivos
-- **Configuración:** 17 archivos varios
-
-### **Módulos Principales:**
-1. **Banner** - Gestión de banners
-2. **Categories** - Sistema de categorías
-3. **Community** - Comunidad de usuarios
-4. **Forum** - Sistema de foros
-5. **Intra** - Panel de administración
-6. **Learn** - Sistema de aprendizaje
-7. **Store** - Tienda online
 
 ### **Características del Proyecto:**
 - ✅ Arquitectura MVC (Modelo-Vista-Controlador)

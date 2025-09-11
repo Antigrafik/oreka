@@ -1,208 +1,116 @@
-<section id="community" class="community-hero">
-  <h1><?php echo $language['community']['title']; ?></h1>
-  <p><?php echo $language['community']['subtitle']; ?></p>
+<?php
+global $language;
+
+if (!function_exists('lower_ascii')) {
+  function lower_ascii(string $s): string { return strtolower(trim($s)); }
+}
+?>
+
+<section id="community" class="hero">
+  <h1><?= htmlspecialchars($language['community']['title']) ?></h1>
+  <p><?= htmlspecialchars($language['community']['subtitle']) ?></p>
 </section>
 
-<section class="recs-block">
-  <h2 class="block-title"><?php echo $language['recommendations']['title']; ?></h2>
-  <p class="block-sub"><?php echo $language['recommendations']['subtitle']; ?></p>
+<section class="recommendations">
+  <h2><?= htmlspecialchars($language['recommendations']['title']) ?></h2>
+  <p class="lead"><?= htmlspecialchars($language['recommendations']['subtitle']) ?></p>
 
-  <!-- Filtros -->
-  <div class="recs-filters">
-    <label><?php echo $language['recommendations']['theme']; ?>
-      <select id="rec-filter-theme">
-        <option value=""><?php echo $language['recommendations']['all']; ?></option>
-        <?php foreach ($themes as $t): ?>
-          <option value="<?= htmlspecialchars($t['name']) ?>"><?= htmlspecialchars($t['name']) ?></option>
-        <?php endforeach; ?>
-      </select>
-    </label>
-
-    <label><?php echo $language['recommendations']['support']; ?>
-      <select id="rec-filter-support">
-        <option value=""><?php echo $language['recommendations']['all']; ?></option>
-        <?php foreach ($supports as $s): ?>
-          <option value="<?= htmlspecialchars($s['name']) ?>"><?= htmlspecialchars($s['name']) ?></option>
-        <?php endforeach; ?>
-      </select>
-    </label>
-
-    <label><?php echo $language['recommendations']['sort_by']; ?>
-      <select id="rec-sort">
-        <option value="recent"><?php echo $language['recommendations']['recent']; ?></option>
-        <option value="az">A-Z</option>
-        <option value="za">Z-A</option>
-      </select>
-    </label>
-
-    <input id="rec-search" type="search" placeholder="<?php echo $language['recommendations']['search']; ?>">
-  </div>
-
-  <!-- Carrusel -->
-  <?php if (empty($recs)): ?>
-    <div class="empty"><?php echo $language['recommendations']['empty']; ?></div>
+  <?php if (empty($recommendations)): ?>
+    <div class="empty"><?= htmlspecialchars($language['recommendations']['empty']) ?></div>
   <?php else: ?>
-  <section class="recs-slider">
-    <button class="nav prev" aria-label="Anterior">‹</button>
-    <div class="viewport">
-      <ul class="track" id="rec-track">
-        <?php foreach ($recs as $r): 
-          $title   = $r['title'] ?: ('Recomendación #' . $r['id']);
-          $author  = $r['author'] ?: '';
-          $excerpt = $r['content'] ? mb_substr($r['content'], 0, 140) . (mb_strlen($r['content'])>140?'…':'') : '';
-          $theme   = $r['theme'] ?: 'General';
-          $support = $r['support'] ?: 'Otro';
-          $dateISO = !empty($r['created_at']) ? (new DateTime($r['created_at']))->format('Y-m-d') : '';
-        ?>
-        <li class="slide"
-            data-theme="<?= htmlspecialchars($theme) ?>"
-            data-support="<?= htmlspecialchars($support) ?>"
-            data-title="<?= htmlspecialchars(mb_strtolower($title)) ?>"
-            data-author="<?= htmlspecialchars(mb_strtolower($author)) ?>"
-            data-date="<?= htmlspecialchars($dateISO) ?>">
-          <article class="card">
-            <div class="card-media">
-              <div class="media-placeholder">❤️</div>
-            </div>
-            <div class="card-body">
-              <div class="pill-row">
-                <span class="badge"><?= htmlspecialchars($theme) ?></span>
-                <span class="badge outline"><?= htmlspecialchars($support) ?></span>
-              </div>
-              <h3 class="card-title"><?= htmlspecialchars($title) ?></h3>
-              <?php if ($author): ?><p class="meta">Por <?= htmlspecialchars($author) ?></p><?php endif; ?>
-              <?php if ($excerpt): ?><p class="card-text"><?= htmlspecialchars($excerpt) ?></p><?php endif; ?>
-              <div class="progress"><div class="bar" style="width:0%"></div></div>
-              <button class="btn"><?php echo $language['recommendations']['like']; ?></button>
-            </div>
-          </article>
-        </li>
-        <?php endforeach; ?>
-      </ul>
+
+    <div class="filters">
+      <label class="filter">
+        <span><?= htmlspecialchars($language['recommendations']['theme']) ?></span>
+        <select id="filter-tema">
+          <option value=""><?= htmlspecialchars($language['recommendations']['all']) ?></option>
+          <?php foreach (($themes ?? []) as $t): ?>
+            <option value="<?= (int)$t['id'] ?>"><?= htmlspecialchars($t['name']) ?></option>
+          <?php endforeach; ?>
+        </select>
+      </label>
+
+      <label class="filter">
+        <span><?= htmlspecialchars($language['recommendations']['support']) ?></span>
+        <select id="filter-soporte">
+          <option value=""><?= htmlspecialchars($language['recommendations']['all']) ?></option>
+          <?php foreach (($supports ?? []) as $s): ?>
+            <option value="<?= (int)$s['id'] ?>"><?= htmlspecialchars($s['name']) ?></option>
+          <?php endforeach; ?>
+        </select>
+      </label>
+
+      <label class="filter">
+        <span><?= htmlspecialchars($language['recommendations']['sort_by']) ?></span>
+        <select id="order-by">
+          <option value="likes">Más likes</option>
+          <option value="recent"><?= htmlspecialchars($language['recommendations']['recent']) ?></option>
+        </select>
+      </label>
+
+      <label class="filter search">
+        <input id="search-recs" type="search"
+               placeholder="<?= htmlspecialchars($language['recommendations']['search']) ?>"
+               autocomplete="off">
+      </label>
     </div>
-    <button class="nav next" aria-label="Siguiente">›</button>
-  </section>
+
+    <section class="learn-slider recomendation-slider">
+      <button class="nav prev" aria-label="Anterior">‹</button>
+
+      <div class="viewport">
+        <ul class="track">
+          <?php foreach ($recommendations as $r): ?>
+            <?php
+              $tema_id    = (int)($r['tema_id'] ?? 0);
+              $soporte_id = (int)($r['soporte_id'] ?? 0);
+              $tema       = $r['tema'] ?? '';
+              $soporte    = $r['soporte'] ?? '';
+              $title      = $r['title'] ?? '';
+              $desc       = $r['description'] ?? '';
+              $author     = $r['content_author'] ?? '';
+              $by_user    = $r['recommended_by'] ?? '';
+              $likes      = (int)($r['likes'] ?? 0);
+              $dateSort   = $r['date_start'] ?? '';
+            ?>
+            <li class="slide"
+                data-tema-id="<?= $tema_id ?>"
+                data-soporte-id="<?= $soporte_id ?>"
+                data-likes="<?= $likes ?>"
+                data-date="<?= htmlspecialchars($dateSort) ?>">
+              <article class="card">
+                <div class="card-body">
+                  <?php if ($tema): ?><span class="badge"><?= htmlspecialchars($tema) ?></span><?php endif; ?>
+                  <h3 class="card-title"><?= htmlspecialchars($title) ?></h3>
+                  <?php if ($soporte): ?><p class="card-subtitle"><?= htmlspecialchars($soporte) ?></p><?php endif; ?>
+                  <?php if ($desc): ?><p class="card-text"><?= nl2br(htmlspecialchars($desc)) ?></p><?php endif; ?>
+
+                  <div class="card-footer">
+                    <div class="bylines">
+                      <span class="byline"><?= 'Autoría de ' . htmlspecialchars($author ?: '—') ?>.</span>
+                      <span class="byline"><?= 'Recomendado por ' . htmlspecialchars($by_user ?: '—') ?>.</span>
+                    </div>
+                    <span class="likes"
+                          role="button"
+                          title="<?= htmlspecialchars($language['recommendations']['like']) ?>"
+                          data-rec-id="<?= (int)($r['recommendation_id'] ?? 0) ?>"
+                          data-link-id="<?= (int)($r['link_id'] ?? 0) ?>"
+                          aria-pressed="false">
+                      <svg class="heart" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                        <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z"></path>
+                      </svg>
+                      <span class="likes-count"><?= number_format($likes, 0, ',', '.') ?></span>
+                    </span>
+                  </div>
+                </div>
+              </article>
+            </li>
+          <?php endforeach; ?>
+        </ul>
+      </div>
+
+      <button class="nav next" aria-label="Siguiente">›</button>
+    </section>
   <?php endif; ?>
 </section>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  // ------ Filtros / Orden / Búsqueda (en cliente) ------
-  const track   = document.getElementById('rec-track');
-  if (!track) return;
-  const slides  = Array.from(track.children);
-  const fTheme  = document.getElementById('rec-filter-theme');
-  const fSup    = document.getElementById('rec-filter-support');
-  const fSort   = document.getElementById('rec-sort');
-  const fSearch = document.getElementById('rec-search');
-
-  function applyFilters(){
-    const theme  = (fTheme?.value || '').toLowerCase();
-    const sup    = (fSup?.value   || '').toLowerCase();
-    const q      = (fSearch?.value|| '').trim().toLowerCase();
-
-    slides.forEach(li => {
-      const okTheme = !theme || (li.dataset.theme || '').toLowerCase() === theme;
-      const okSup   = !sup   || (li.dataset.support|| '').toLowerCase() === sup;
-      const hay     = (li.dataset.title + ' ' + li.dataset.author).includes(q);
-      li.style.display = (okTheme && okSup && hay) ? '' : 'none';
-    });
-  }
-
-  function applySort(){
-    const mode = fSort?.value || 'recent';
-    const visibles = slides.filter(li => li.style.display !== 'none');
-    visibles.sort((a,b)=>{
-      if (mode === 'az' || mode === 'za') {
-        const ta = (a.dataset.title||'').localeCompare(b.dataset.title||'','es',{sensitivity:'base'});
-        return mode==='az' ? ta : -ta;
-      } else { // recent
-        return (b.dataset.date||'').localeCompare(a.dataset.date||'');
-      }
-    });
-    visibles.forEach(li => track.appendChild(li));
-  }
-
-  [fTheme,fSup,fSearch].forEach(el => el && el.addEventListener('input', ()=>{applyFilters(); applySort();}));
-  fSort && fSort.addEventListener('change', ()=>{applySort();});
-
-  // Primera aplicación
-  applyFilters(); applySort();
-
-  // ------ Carrusel 3/2/1 como Learn ------
-  const slider   = document.querySelector('.recs-slider');
-  const viewport = slider?.querySelector('.viewport');
-  const prevBtn  = slider?.querySelector('.prev');
-  const nextBtn  = slider?.querySelector('.next');
-
-  if (!slider || !viewport) return;
-
-  const state = { index: 0, total: 0, anim: true, step: 0 };
-  let perView = 3, GUTTER = 24, SIDE = 12;
-
-  const setPerView = () => {
-    const w = window.innerWidth;
-    perView = (w <= 640) ? 1 : (w <= 1024 ? 2 : 3);
-    GUTTER  = (w <= 640) ? 16 : 24;
-    SIDE    = (w <= 640) ? 8  : 12;
-  };
-
-  const computeSizes = () => {
-    const items = Array.from(track.children);
-    track.style.padding = `0 ${SIDE}px`;
-
-    const inner = viewport.clientWidth - (SIDE*2) - ((perView-1)*GUTTER);
-    const slideWidth = Math.floor(inner / perView);
-
-    items.forEach(li=>{
-      li.style.flex     = `0 0 ${slideWidth}px`;
-      li.style.minWidth = `${slideWidth}px`;
-      li.style.maxWidth = `${slideWidth}px`;
-      li.style.margin   = `0 ${GUTTER/2}px`;
-    });
-
-    state.step = slideWidth + GUTTER;
-  };
-
-  const rebuild = () => {
-    // quitar clones
-    const originals = Array.from(track.querySelectorAll('.slide:not(.clone)'));
-    track.innerHTML = '';
-    originals.forEach(el => track.appendChild(el));
-
-    const slidesAll = Array.from(track.children);
-    const head = slidesAll.slice(0, perView).map(s=>{const c=s.cloneNode(true); c.classList.add('clone'); return c;});
-    const tail = slidesAll.slice(-perView).map(s=>{const c=s.cloneNode(true); c.classList.add('clone'); return c;});
-    tail.forEach(c => track.insertBefore(c, track.firstChild));
-    head.forEach(c => track.appendChild(c));
-
-    state.total = slidesAll.length;
-    state.index = perView;
-
-    computeSizes(); jump();
-  };
-
-  const jump = () => {
-    track.style.transition = state.anim ? 'transform .35s ease' : 'none';
-    const x = -(state.index * state.step);
-    track.style.transform = `translate3d(${x}px,0,0)`;
-  };
-
-  const next = () => { state.anim = true; state.index++; jump(); };
-  const prev = () => { state.anim = true; state.index--; jump(); };
-
-  track.addEventListener('transitionend', () => {
-    const maxIndex = state.total + perView - 1;
-    if (state.index > maxIndex) {
-      state.anim = false; state.index = perView; jump();
-    } else if (state.index < perView) {
-      state.anim = false; state.index = state.total + perView - 1; jump();
-    }
-  });
-  nextBtn?.addEventListener('click', next);
-  prevBtn?.addEventListener('click', prev);
-  window.addEventListener('resize', ()=>{ setPerView(); computeSizes(); jump(); });
-
-  setPerView(); rebuild();
-});
-</script>
