@@ -1,6 +1,5 @@
 <?php
-require_once PRIVATE_PATH . '/config/db_connect.php';  // ✅ en vez de __DIR__ . '/../../../../config/db_connect.php'
-
+require_once PRIVATE_PATH . '/config/db_connect.php';
 
 class Recommendations
 {
