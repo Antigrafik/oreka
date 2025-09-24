@@ -9,4 +9,4 @@
 
 <?= $htmlSections['recommendations'] ?? '' ?>
 <?= $htmlSections['routines'] ?? '' ?>
-<?= $htmlSections['trials'] ?? '' ?>
+<?= $htmlSections['trial'] ?? '' ?>

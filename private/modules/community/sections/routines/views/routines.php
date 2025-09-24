@@ -1,14 +1,25 @@
-
 <section id="routines" class="max-w-5xl mx-auto my-10 px-4">
   <h2 class="text-center text-3xl font-semibold mb-2">Tus rutinas</h2>
   <p class="text-center text-gray-600 mb-6">Calcula tus puntos según tu actividad semanal.</p>
 
-  <?php if (!empty($_SESSION['flash_msg'])): ?>
-    <div class="text-center mb-4"><?= htmlspecialchars($_SESSION['flash_msg']) ?></div>
-    <?php unset($_SESSION['flash_msg']); ?>
+  <?php
+    // Flash SOLO de esta sección
+    $success = $_SESSION['flash_success_routines'] ?? null;
+    $error   = $_SESSION['flash_error_routines']   ?? null;
+    unset($_SESSION['flash_success_routines'], $_SESSION['flash_error_routines']);
+  ?>
+
+  <?php if ($success): ?>
+    <div class="text-center mb-4 alert success"><?= htmlspecialchars($success) ?></div>
+  <?php endif; ?>
+  <?php if ($error): ?>
+    <div class="text-center mb-4 alert error"><?= htmlspecialchars($error) ?></div>
   <?php endif; ?>
 
   <form method="post" id="routine-form" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+    <!-- Identificador del formulario para que SOLO RoutinesController procese este POST -->
+    <input type="hidden" name="form" value="routines_submit">
+
     <!-- Tipo -->
     <div>
       <label class="block mb-1 font-medium">Tipo:</label>
@@ -69,9 +80,7 @@
       const catSel  = document.getElementById('category_id');
 
       // Mapa precargado desde PHP: { [idTipo]: [{id, name, slug}, ...] }
-      const CATS_BY_TYPE = <?=
-        json_encode($catsByType, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
-      ?>;
+      const CATS_BY_TYPE = <?= json_encode($catsByType, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
 
       function resetCategories(placeholder) {
         catSel.innerHTML = '';
@@ -114,3 +123,10 @@
     })();
   </script>
 </section>
+
+<!-- BONUS: estilos de alertas (si no están ya globales) -->
+<style>
+  .alert { padding:10px 12px; border-radius:8px; margin:10px 0; }
+  .alert.success { background:#e7f7ee; border:1px solid #8ad1a3; color:#216b3a; }
+  .alert.error   { background:#fdeaea; border:1px solid #f5b5b5; color:#7d1f1f; }
+</style>

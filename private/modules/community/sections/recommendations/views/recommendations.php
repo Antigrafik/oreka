@@ -3,6 +3,14 @@
 /** @var array $themes */
 /** @var array $supports */
 /** @var array $language */
+
+// --- Flash / errores / old de ESTA sección (y limpiarlos) ---
+$flash  = $_SESSION['flash_msg_reco'] ?? null;
+$errors = $_SESSION['errors_reco']    ?? [];
+$old    = $_SESSION['old_reco']       ?? [];
+
+unset($_SESSION['flash_msg_reco'], $_SESSION['errors_reco'], $_SESSION['old_reco']);
+
 if (!function_exists('lower_ascii')) {
   function lower_ascii(string $s): string { return strtolower(trim($s)); }
 }
@@ -130,7 +138,7 @@ if (!function_exists('lower_ascii')) {
   <?php endif; ?>
 
   <form id="form-recommendation" class="rec-form" method="post" action="">
-    <!-- Identificador para el controller -->
+    <!-- Identificador para el controller (solo esta sección procesa el POST) -->
     <input type="hidden" name="form" value="new_recommendation">
     <!-- CSRF si lo usas -->
     <?php if (!empty($_SESSION['csrf'])): ?>
@@ -141,9 +149,7 @@ if (!function_exists('lower_ascii')) {
       <!-- Idioma -->
       <label class="field">
         <span>Idioma</span>
-        <?php
-          $post_lang = $_POST['lang'] ?? ($lang ?? 'es');
-        ?>
+        <?php $post_lang = $old['lang'] ?? ($lang ?? 'es'); ?>
         <select name="lang" required>
           <option value="es" <?= ($post_lang === 'es' ? 'selected' : '') ?>>Español</option>
           <option value="eu" <?= ($post_lang === 'eu' ? 'selected' : '') ?>>Euskera</option>
@@ -153,7 +159,7 @@ if (!function_exists('lower_ascii')) {
       <!-- Tema (hijos de padre 10) -->
       <label class="field">
         <span>Tema</span>
-        <?php $post_tema = isset($_POST['tema_id']) ? (int)$_POST['tema_id'] : 0; ?>
+        <?php $post_tema = isset($old['tema_id']) ? (int)$old['tema_id'] : 0; ?>
         <select name="tema_id" required>
           <option value="">Selecciona</option>
           <?php foreach (($themes ?? []) as $t): ?>
@@ -167,7 +173,7 @@ if (!function_exists('lower_ascii')) {
       <!-- Soporte (hijos de padre 11) -->
       <label class="field">
         <span>Soporte</span>
-        <?php $post_soporte = isset($_POST['soporte_id']) ? (int)$_POST['soporte_id'] : 0; ?>
+        <?php $post_soporte = isset($old['soporte_id']) ? (int)$old['soporte_id'] : 0; ?>
         <select name="soporte_id" required>
           <option value="">Selecciona</option>
           <?php foreach (($supports ?? []) as $s): ?>
@@ -187,7 +193,7 @@ if (!function_exists('lower_ascii')) {
           placeholder="Título de la obra"
           maxlength="255"
           required
-          value="<?= htmlspecialchars($_POST['title'] ?? '') ?>">
+          value="<?= htmlspecialchars($old['title'] ?? '') ?>">
       </label>
 
       <!-- Autor -->
@@ -199,7 +205,7 @@ if (!function_exists('lower_ascii')) {
           placeholder="Autor / Creador"
           maxlength="255"
           required
-          value="<?= htmlspecialchars($_POST['author'] ?? '') ?>">
+          value="<?= htmlspecialchars($old['author'] ?? '') ?>">
       </label>
 
       <!-- Comentario -->
@@ -210,7 +216,7 @@ if (!function_exists('lower_ascii')) {
           rows="3"
           placeholder="¿Por qué lo recomiendas?"
           maxlength="2000"
-          required><?= htmlspecialchars($_POST['comment'] ?? '') ?></textarea>
+          required><?= htmlspecialchars($old['comment'] ?? '') ?></textarea>
       </label>
     </div>
 
@@ -236,4 +242,3 @@ if (!function_exists('lower_ascii')) {
   .alert.success { background:#e7f7ee; border:1px solid #8ad1a3; color:#216b3a; }
   .alert.error { background:#fdeaea; border:1px solid #f5b5b5; color:#7d1f1f; }
 </style>
-

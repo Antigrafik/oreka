@@ -54,7 +54,6 @@ try {
 
 <div class="menu">
   <nav class="menu-inner">
-
     <a id="menu-learn" class="menu-item" href="/#learn"><?= htmlspecialchars($language['menu']['learn'] ?? 'Aula') ?></a>
     <span class="sep" aria-hidden="true"></span>
 
