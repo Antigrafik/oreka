@@ -1,13 +1,16 @@
+(function () {
+  // trabaja SOLO dentro de #community-recommendations
+  const root = document.getElementById('community-recommendations');
+  if (!root) return;
 
-(function(){
-  const selTema    = document.getElementById('filter-tema');
-  const selSoporte = document.getElementById('filter-soporte');
-  const searchBox  = document.getElementById('search-recs');
-  const orderBy    = document.getElementById('order-by');
+  const selTema    = root.querySelector('#filter-tema');
+  const selSoporte = root.querySelector('#filter-soporte');
+  const searchBox  = root.querySelector('#search-recs');
+  const orderBy    = root.querySelector('#order-by');
 
-  // Siempre obtener los <li> en el momento del filtrado (incluye clones del slider)
-  function getItems(){
-    return Array.from(document.querySelectorAll('.recomendation-slider .track > li'));
+  function getItems() {
+    // sólo slides de recommendations, no meeting
+    return Array.from(root.querySelectorAll('.recomendation-slider .track > li'));
   }
 
   function matchesText(li, q) {
@@ -17,12 +20,12 @@
     return text.indexOf(q) !== -1;
   }
 
-  function applyFilters(){
-    const temaId    = selTema.value;      // string o ""
-    const soporteId = selSoporte.value;   // string o ""
+  function applyFilters() {
+    const temaId    = selTema?.value || '';
+    const soporteId = selSoporte?.value || '';
     const q         = (searchBox?.value || '').trim().toLowerCase();
 
-    const items = getItems(); // ⬅️ AHORA, NO SE QUEDAN FUERA LOS CLONES
+    const items = getItems();
 
     items.forEach(li => {
       const liTema    = li.dataset.temaId || '';
@@ -33,17 +36,13 @@
       li.style.display = (okTema && okSoporte && okText) ? '' : 'none';
     });
 
-    // (Opcional) Si el carrusel recalcula anchuras según elementos visibles,
-    // puedes lanzar un evento personalizado aquí para que lo rehaga.
+    // Si tu slider necesita recalcular anchuras:
     // window.dispatchEvent(new Event('recalc-slider'));
   }
 
-  // Filtrar también cuando el carrusel ya haya creado clones
   window.addEventListener('load', applyFilters);
-
   selTema?.addEventListener('change', applyFilters);
   selSoporte?.addEventListener('change', applyFilters);
   searchBox?.addEventListener('input', applyFilters);
   orderBy?.addEventListener('change', applyFilters);
 })();
-

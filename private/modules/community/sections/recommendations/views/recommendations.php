@@ -1,10 +1,12 @@
 <?php
+
+global $language;
+
 /** @var array $recommendations */
 /** @var array $themes */
 /** @var array $supports */
 /** @var array $language */
 
-// --- Flash / errores / old de ESTA sección (y limpiarlos) ---
 $flash  = $_SESSION['flash_msg_reco'] ?? null;
 $errors = $_SESSION['errors_reco']    ?? [];
 $old    = $_SESSION['old_reco']       ?? [];
@@ -17,18 +19,18 @@ if (!function_exists('lower_ascii')) {
 ?>
 
 <section id="community-recommendations" class="recommendations">
-  <h2><?= htmlspecialchars($language['recommendations']['title'] ?? 'Recommendations') ?></h2>
+  <h2><?= htmlspecialchars($language['recommendations']['title'] ?? '') ?></h2>
   <p class="lead"><?= htmlspecialchars($language['recommendations']['subtitle'] ?? '') ?></p>
 
   <?php if (empty($recommendations)): ?>
-    <div class="empty"><?= htmlspecialchars($language['recommendations']['empty'] ?? 'No hay recomendaciones.') ?></div>
+    <div class="empty"><?= htmlspecialchars($language['recommendations']['empty'] ?? '') ?></div>
   <?php else: ?>
 
     <div class="filters">
       <label class="filter">
-        <span><?= htmlspecialchars($language['recommendations']['theme'] ?? 'Tema') ?></span>
+        <span><?= htmlspecialchars($language['recommendations']['theme'] ?? '') ?></span>
         <select id="filter-tema">
-          <option value=""><?= htmlspecialchars($language['recommendations']['all'] ?? 'Todos') ?></option>
+          <option value=""><?= htmlspecialchars($language['recommendations']['all'] ?? '') ?></option>
           <?php foreach (($themes ?? []) as $t): ?>
             <option value="<?= (int)$t['id'] ?>"><?= htmlspecialchars($t['name']) ?></option>
           <?php endforeach; ?>
@@ -36,9 +38,9 @@ if (!function_exists('lower_ascii')) {
       </label>
 
       <label class="filter">
-        <span><?= htmlspecialchars($language['recommendations']['support'] ?? 'Soporte') ?></span>
+        <span><?= htmlspecialchars($language['recommendations']['support'] ?? '') ?></span>
         <select id="filter-soporte">
-          <option value=""><?= htmlspecialchars($language['recommendations']['all'] ?? 'Todos') ?></option>
+          <option value=""><?= htmlspecialchars($language['recommendations']['all'] ?? '') ?></option>
           <?php foreach (($supports ?? []) as $s): ?>
             <option value="<?= (int)$s['id'] ?>"><?= htmlspecialchars($s['name']) ?></option>
           <?php endforeach; ?>
@@ -46,16 +48,16 @@ if (!function_exists('lower_ascii')) {
       </label>
 
       <label class="filter">
-        <span><?= htmlspecialchars($language['recommendations']['sort_by'] ?? 'Ordenar') ?></span>
+        <span><?= htmlspecialchars($language['recommendations']['sort_by'] ?? '') ?></span>
         <select id="order-by">
-          <option value="likes">Más likes</option>
-          <option value="recent"><?= htmlspecialchars($language['recommendations']['recent'] ?? 'Recientes') ?></option>
+          <option value="likes"><?= htmlspecialchars($language['recommendations']['more_like'] ?? '') ?></option>
+          <option value="recent"><?= htmlspecialchars($language['recommendations']['recent'] ?? '') ?></option>
         </select>
       </label>
 
       <label class="filter search">
         <input id="search-recs" type="search"
-               placeholder="<?= htmlspecialchars($language['recommendations']['search'] ?? 'Buscar...') ?>"
+               placeholder="<?= htmlspecialchars($language['recommendations']['search'] ?? '') ?>"
                autocomplete="off">
       </label>
     </div>
@@ -91,12 +93,12 @@ if (!function_exists('lower_ascii')) {
                   <?php if ($desc): ?><p class="card-text"><?= nl2br(htmlspecialchars($desc)) ?></p><?php endif; ?>
                   <div class="card-footer">
                     <div class="bylines">
-                      <span class="byline"><?= 'Autoría de ' . htmlspecialchars($author ?: '—') ?>.</span>
-                      <span class="byline"><?= 'Recomendado por ' . htmlspecialchars($by_user ?: '—') ?>.</span>
+                      <span class="byline"><?= htmlspecialchars($language['recommendations']['authorship'] ?? '') . htmlspecialchars($author ?: '—') ?>.</span>
+                      <span class="byline"><?= htmlspecialchars($language['recommendations']['recommended_by'] ?? '') . htmlspecialchars($by_user ?: '—') ?>.</span>
                     </div>
                     <span class="likes"
                           role="button"
-                          title="<?= htmlspecialchars($language['recommendations']['like'] ?? 'Me gusta') ?>"
+                          title="<?= htmlspecialchars($language['recommendations']['like'] ?? '') ?>"
                           data-rec-id="<?= (int)($r['recommendation_id'] ?? 0) ?>"
                           data-link-id="<?= (int)($r['link_id'] ?? 0) ?>"
                           aria-pressed="false">
@@ -119,9 +121,12 @@ if (!function_exists('lower_ascii')) {
 </section>
 
 <!-- === Crear nueva recomendación === -->
+<?php global $language; ?>
+
+<!-- === Crear nueva recomendación === -->
 <section class="recommendation-create">
-  <h2>Añade tu recomendación</h2>
-  <p class="lead">Comparte aquello que te inspira y gana puntos.</p>
+  <h2><?= htmlspecialchars($language['recommendations']['create_title'] ?? 'Añade tu recomendación') ?></h2>
+  <p class="lead"><?= htmlspecialchars($language['recommendations']['create_lead'] ?? 'Comparte aquello que te inspira y gana puntos.') ?></p>
 
   <?php if (!empty($flash)): ?>
     <div class="alert success"><?= htmlspecialchars($flash) ?></div>
@@ -129,7 +134,7 @@ if (!function_exists('lower_ascii')) {
 
   <?php if (!empty($errors)): ?>
     <div class="alert error">
-      <ul style="margin:0; padding-left:18px;">
+      <ul>
         <?php foreach ($errors as $e): ?>
           <li><?= htmlspecialchars($e) ?></li>
         <?php endforeach; ?>
@@ -138,9 +143,7 @@ if (!function_exists('lower_ascii')) {
   <?php endif; ?>
 
   <form id="form-recommendation" class="rec-form" method="post" action="">
-    <!-- Identificador para el controller (solo esta sección procesa el POST) -->
     <input type="hidden" name="form" value="new_recommendation">
-    <!-- CSRF si lo usas -->
     <?php if (!empty($_SESSION['csrf'])): ?>
       <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['csrf']) ?>">
     <?php endif; ?>
@@ -148,7 +151,7 @@ if (!function_exists('lower_ascii')) {
     <div class="rec-grid">
       <!-- Idioma -->
       <label class="field">
-        <span>Idioma</span>
+        <span><?= htmlspecialchars($language['recommendations']['lang'] ?? 'Idioma') ?></span>
         <?php $post_lang = $old['lang'] ?? ($lang ?? 'es'); ?>
         <select name="lang" required>
           <option value="es" <?= ($post_lang === 'es' ? 'selected' : '') ?>>Español</option>
@@ -156,12 +159,12 @@ if (!function_exists('lower_ascii')) {
         </select>
       </label>
 
-      <!-- Tema (hijos de padre 10) -->
+      <!-- Tema -->
       <label class="field">
-        <span>Tema</span>
+        <span><?= htmlspecialchars($language['recommendations']['theme'] ?? 'Tema') ?></span>
         <?php $post_tema = isset($old['tema_id']) ? (int)$old['tema_id'] : 0; ?>
         <select name="tema_id" required>
-          <option value="">Selecciona</option>
+          <option value=""><?= htmlspecialchars($language['recommendations']['select'] ?? 'Selecciona') ?></option>
           <?php foreach (($themes ?? []) as $t): ?>
             <option value="<?= (int)$t['id'] ?>" <?= ($post_tema === (int)$t['id'] ? 'selected' : '') ?>>
               <?= htmlspecialchars($t['name']) ?>
@@ -170,12 +173,12 @@ if (!function_exists('lower_ascii')) {
         </select>
       </label>
 
-      <!-- Soporte (hijos de padre 11) -->
+      <!-- Soporte -->
       <label class="field">
-        <span>Soporte</span>
+        <span><?= htmlspecialchars($language['recommendations']['support'] ?? 'Soporte') ?></span>
         <?php $post_soporte = isset($old['soporte_id']) ? (int)$old['soporte_id'] : 0; ?>
         <select name="soporte_id" required>
-          <option value="">Selecciona</option>
+          <option value=""><?= htmlspecialchars($language['recommendations']['select'] ?? 'Selecciona') ?></option>
           <?php foreach (($supports ?? []) as $s): ?>
             <option value="<?= (int)$s['id'] ?>" <?= ($post_soporte === (int)$s['id'] ? 'selected' : '') ?>>
               <?= htmlspecialchars($s['name']) ?>
@@ -186,59 +189,31 @@ if (!function_exists('lower_ascii')) {
 
       <!-- Título -->
       <label class="field">
-        <span>Título</span>
-        <input
-          type="text"
-          name="title"
-          placeholder="Título de la obra"
-          maxlength="255"
-          required
-          value="<?= htmlspecialchars($old['title'] ?? '') ?>">
+        <span><?= htmlspecialchars($language['recommendations']['title_label'] ?? 'Título') ?></span>
+        <input type="text" name="title"
+               placeholder="<?= htmlspecialchars($language['recommendations']['title_ph'] ?? 'Título de la obra') ?>"
+               maxlength="255" required
+               value="<?= htmlspecialchars($old['title'] ?? '') ?>">
       </label>
 
       <!-- Autor -->
       <label class="field">
-        <span>Autor</span>
-        <input
-          type="text"
-          name="author"
-          placeholder="Autor / Creador"
-          maxlength="255"
-          required
-          value="<?= htmlspecialchars($old['author'] ?? '') ?>">
+        <span><?= htmlspecialchars($language['recommendations']['author_label'] ?? 'Autor') ?></span>
+        <input type="text" name="author"
+               placeholder="<?= htmlspecialchars($language['recommendations']['author_ph'] ?? 'Autor / Creador') ?>"
+               maxlength="255" required
+               value="<?= htmlspecialchars($old['author'] ?? '') ?>">
       </label>
 
       <!-- Comentario -->
       <label class="field span-2">
-        <span>Comentario</span>
-        <textarea
-          name="comment"
-          rows="3"
-          placeholder="¿Por qué lo recomiendas?"
-          maxlength="2000"
-          required><?= htmlspecialchars($old['comment'] ?? '') ?></textarea>
+        <span><?= htmlspecialchars($language['recommendations']['comment_label'] ?? 'Comentario') ?></span>
+        <textarea name="comment" rows="3"
+                  placeholder="<?= htmlspecialchars($language['recommendations']['comment_ph'] ?? '¿Por qué lo recomiendas?') ?>"
+                  maxlength="2000" required><?= htmlspecialchars($old['comment'] ?? '') ?></textarea>
       </label>
     </div>
 
-    <button class="btn btn-primary" type="submit">Enviar recomendación</button>
+    <button class="btn" type="submit"><?= htmlspecialchars($language['recommendations']['submit'] ?? 'Enviar recomendación') ?></button>
   </form>
 </section>
-
-<style>
-  .recommendation-create { margin-top: 40px; }
-  .rec-form .rec-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-  }
-  .rec-form .field { display:flex; flex-direction:column; gap:6px; }
-  .rec-form .field.span-2 { grid-column: span 2; }
-  .rec-form input, .rec-form select, .rec-form textarea {
-    padding: 10px 12px; border:1px solid #ddd; border-radius: 8px; outline: none;
-  }
-  .rec-form .btn { margin-top: 12px; padding: 10px 16px; border-radius: 10px; border:0; cursor:pointer; }
-  .btn-primary { background:#d1102d; color:white; }
-  .alert { padding:10px 12px; border-radius:8px; margin:10px 0; }
-  .alert.success { background:#e7f7ee; border:1px solid #8ad1a3; color:#216b3a; }
-  .alert.error { background:#fdeaea; border:1px solid #f5b5b5; color:#7d1f1f; }
-</style>

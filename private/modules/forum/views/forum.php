@@ -26,11 +26,11 @@ if (class_exists('IntlDateFormatter')) {
     <div class="empty"><?= htmlspecialchars($language['forum']['empty'] ?? 'No hay eventos publicados todavía.') ?></div>
   <?php else: ?>
     <?php foreach ($events as $e):
-      // Claves esperadas: category_name, forum_title, description, url, date_start, date_finish
+      // Claves: category_name, forum_title, description, url, date_start, date_finish
       $dtStart = !empty($e['date_start'])  ? new DateTime($e['date_start'])  : null;
       $dtEnd   = !empty($e['date_finish']) ? new DateTime($e['date_finish']) : null;
 
-      // (Por si el filtro de la SQL fallara) excluir eventos terminados
+      // Por si el filtro SQL fallara: excluir eventos terminados
       if ($dtEnd && $dtEnd <= new DateTime()) { continue; }
 
       if ($dtStart) {
@@ -42,6 +42,9 @@ if (class_exists('IntlDateFormatter')) {
 
       $horaIni = $dtStart ? $dtStart->format('H:i') : '';
       $horaFin = $dtEnd   ? $dtEnd->format('H:i')   : '';
+
+      $url     = trim($e['url'] ?? '');
+      $hasUrl  = $url !== '';
     ?>
       <article class="forum-item">
         <div class="forum-date">
@@ -67,12 +70,17 @@ if (class_exists('IntlDateFormatter')) {
         </div>
 
         <div class="forum-cta">
-            <a class="btn forum-join" href="" target="_blank" rel="noopener">
+          <?php if ($hasUrl): ?>
+            <a class="btn forum-join" href="<?= htmlspecialchars($url) ?>" target="_blank" rel="noopener">
               <?= htmlspecialchars($language['forum']['cta'] ?? 'Apuntarme') ?>
             </a>
+          <?php else: ?>
+            <button class="btn forum-join" type="button" disabled>
+              <?= htmlspecialchars($language['forum']['cta'] ?? 'Apuntarme') ?>
+            </button>
+          <?php endif; ?>
         </div>
       </article>
     <?php endforeach; ?>
   <?php endif; ?>
 </section>
-

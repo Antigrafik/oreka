@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Soporta ambos: Aula (.learn-slider) y Comunidad (.recomendation-slider)
   const sliders = document.querySelectorAll('.learn-slider, .recomendation-slider');
   if (!sliders.length) return;
 
@@ -10,29 +9,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextBtn  = slider.querySelector('.next');
     if (!viewport || !track || !prevBtn || !nextBtn) return;
 
-    const state = { index: 0, total: 0, anim: true, step: 0, slideW: 0 };
+    const state = {
+      index: 0,
+      total: 0,
+      anim: true,
+      step: 0,
+      slideW: 0,
+      perView: 1,          // perView efectivo del carrusel
+    };
 
-    let perView = 3;
+    // breakpoints base
+    let basePerView = 3;
     let GUTTER  = 24;
     let SIDE    = 12;
 
-    const setPerView = () => {
+    const setBasePerView = () => {
       const w = window.innerWidth;
-      perView = (w <= 640) ? 1 : (w <= 1024 ? 2 : 3);
-      GUTTER  = (w <= 640) ? 16 : 24;
-      SIDE    = (w <= 640) ? 8  : 12;
+      basePerView = (w <= 640) ? 1 : (w <= 1024 ? 2 : 3);
+      GUTTER      = (w <= 640) ? 16 : 24;
+      SIDE        = (w <= 640) ? 8  : 12;
     };
 
     const computeSizes = () => {
+      // usa el perView EFECTIVO (state.perView)
       track.style.padding = `0 ${SIDE}px`;
-      const inner = viewport.clientWidth - (SIDE * 2) - ((perView - 1) * GUTTER);
-      const slideWidth = Math.floor(inner / perView);
+      const inner = viewport.clientWidth - (SIDE * 2) - ((state.perView - 1) * GUTTER);
+      const slideWidth = Math.max(0, Math.floor(inner / state.perView));
+
       Array.from(track.children).forEach(li => {
         li.style.flex     = `0 0 ${slideWidth}px`;
         li.style.minWidth = `${slideWidth}px`;
         li.style.maxWidth = `${slideWidth}px`;
         li.style.margin   = `0 ${Math.floor(GUTTER/2)}px`;
       });
+
       state.slideW = slideWidth;
       state.step   = slideWidth + GUTTER;
     };
@@ -44,21 +54,27 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const rebuild = () => {
+      // recoge solo originales (sin clones)
       const originals = Array.from(track.querySelectorAll('.slide:not(.clone)'));
       if (!originals.length) return;
 
+      // perView efectivo según nº de originales
+      state.perView = Math.max(1, Math.min(basePerView, originals.length));
+
+      // limpia y reinyecta originales
       track.innerHTML = '';
       originals.forEach(el => track.appendChild(el));
 
+      // clona solo lo que necesitamos (pv efectivos)
       const slides = Array.from(track.children);
-      const headClones = slides.slice(0, perView).map(s => { const c = s.cloneNode(true); c.classList.add('clone'); return c; });
-      const tailClones = slides.slice(-perView).map(s => { const c = s.cloneNode(true); c.classList.add('clone'); return c; });
+      const headClones = slides.slice(0, state.perView).map(s => { const c = s.cloneNode(true); c.classList.add('clone'); return c; });
+      const tailClones = slides.slice(-state.perView).map(s => { const c = s.cloneNode(true); c.classList.add('clone'); return c; });
 
       tailClones.forEach(c => track.insertBefore(c, track.firstChild));
       headClones.forEach(c => track.appendChild(c));
 
-      state.total = slides.length;
-      state.index = perView;
+      state.total = slides.length;   // nº de originales
+      state.index = state.perView;   // arrancamos tras los tail clones
 
       computeSizes();
       jump();
@@ -68,25 +84,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const prev = () => { state.anim = true; state.index--; jump(); };
 
     track.addEventListener('transitionend', () => {
-      const maxIndex = state.total + perView - 1;
+      const maxIndex = state.total + state.perView - 1;
       if (state.index > maxIndex) {
         state.anim = false;
-        state.index = perView;
+        state.index = state.perView;
         jump();
-      } else if (state.index < perView) {
+      } else if (state.index < state.perView) {
         state.anim = false;
-        state.index = state.total + perView - 1;
+        state.index = state.total + state.perView - 1;
         jump();
       }
     });
 
-    const onResize = () => { setPerView(); computeSizes(); jump(); };
+    const onResize = () => {
+      const prevBase = basePerView;
+      setBasePerView();
+      // si cambia el basePerView y afecta al perView efectivo, reconstruimos
+      const willBe = Math.max(1, Math.min(basePerView, state.total || 1));
+      if (basePerView !== prevBase || willBe !== state.perView) {
+        rebuild();
+      } else {
+        computeSizes();
+        jump();
+      }
+    };
 
     nextBtn.addEventListener('click', next);
     prevBtn.addEventListener('click', prev);
     window.addEventListener('resize', onResize);
 
-    setPerView();
+    setBasePerView();
     rebuild();
   });
 });

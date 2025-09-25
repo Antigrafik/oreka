@@ -1,30 +1,32 @@
-<section id="routines" class="max-w-5xl mx-auto my-10 px-4">
-  <h2 class="text-center text-3xl font-semibold mb-2">Tus rutinas</h2>
-  <p class="text-center text-gray-600 mb-6">Calcula tus puntos según tu actividad semanal.</p>
+<?php
+ global $language;
+?>
+
+<section id="routines">
+  <h2><?= htmlspecialchars($language['routines']['title'] ?? '') ?></h2>
+  <p class="lead"><?= htmlspecialchars($language['routines']['subtitle'] ?? '') ?></p>
 
   <?php
-    // Flash SOLO de esta sección
     $success = $_SESSION['flash_success_routines'] ?? null;
     $error   = $_SESSION['flash_error_routines']   ?? null;
     unset($_SESSION['flash_success_routines'], $_SESSION['flash_error_routines']);
   ?>
 
   <?php if ($success): ?>
-    <div class="text-center mb-4 alert success"><?= htmlspecialchars($success) ?></div>
+    <div class="alert success"><?= htmlspecialchars($success) ?></div>
   <?php endif; ?>
   <?php if ($error): ?>
-    <div class="text-center mb-4 alert error"><?= htmlspecialchars($error) ?></div>
+    <div class="alert error"><?= htmlspecialchars($error) ?></div>
   <?php endif; ?>
 
-  <form method="post" id="routine-form" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-    <!-- Identificador del formulario para que SOLO RoutinesController procese este POST -->
+  <form method="post" id="routine-form" class="routine-grid">
     <input type="hidden" name="form" value="routines_submit">
 
     <!-- Tipo -->
-    <div>
-      <label class="block mb-1 font-medium">Tipo:</label>
-      <select id="type_id" name="type_id" class="w-full border rounded p-2">
-        <option value="">Selecciona</option>
+    <div class="field">
+      <label><?= htmlspecialchars($language['routines']['type'] ?? '') ?>:</label>
+      <select id="type_id" name="type_id">
+        <option value=""><?= htmlspecialchars($language['routines']['select'] ?? '') ?></option>
         <?php foreach ($types as $t): ?>
           <option value="<?= (int)$t['id'] ?>" <?= ((int)$selectedType === (int)$t['id']) ? 'selected' : '' ?>>
             <?= htmlspecialchars($t['name'] ?? ('#' . (int)$t['id'])) ?>
@@ -34,13 +36,13 @@
     </div>
 
     <!-- Categoría dependiente -->
-    <div>
-      <label class="block mb-1 font-medium">Categoría:</label>
-      <select id="category_id" name="category_id" class="w-full border rounded p-2" <?= $selectedType ? '' : 'disabled' ?>>
+    <div class="field">
+      <label><?= htmlspecialchars($language['routines']['category'] ?? '') ?>:</label>
+      <select id="category_id" name="category_id" <?= $selectedType ? '' : 'disabled' ?>>
         <?php if (!$selectedType): ?>
-          <option value="">Selecciona tipo primero</option>
+          <option value=""><?= htmlspecialchars($language['routines']['select_type_first'] ?? '') ?></option>
         <?php else: ?>
-          <option value="">Selecciona</option>
+          <option value=""><?= htmlspecialchars($language['routines']['select'] ?? '') ?></option>
           <?php foreach ($cats as $c): ?>
             <option value="<?= (int)$c['id'] ?>">
               <?= htmlspecialchars($c['name'] ?? ('#' . (int)$c['id'])) ?>
@@ -50,26 +52,31 @@
       </select>
     </div>
 
-    <!-- Frecuencia 1..7 -->
-    <div>
-      <label class="block mb-1 font-medium">Frecuencia (días/semana):</label>
-      <select name="frequency" class="w-full border rounded p-2">
-        <option value="">Selecciona</option>
+    <!-- Frecuencia -->
+    <div class="field">
+      <label><?= htmlspecialchars($language['routines']['frequency'] ?? '') ?>:</label>
+      <select name="frequency">
+        <option value=""><?= htmlspecialchars($language['routines']['select'] ?? '') ?></option>
         <?php for ($i = 1; $i <= 7; $i++): ?>
           <option value="<?= $i ?>"><?= $i ?></option>
         <?php endfor; ?>
       </select>
     </div>
 
-    <!-- Duración (min/sesión) -->
-    <div>
-      <label class="block mb-1 font-medium">Duración (min por sesión):</label>
-      <input name="duration" type="number" min="1" step="1" class="w-full border rounded p-2" placeholder="Ej. 30">
+    <!-- Duración -->
+    <div class="field">
+      <label><?= htmlspecialchars($language['routines']['duration'] ?? '') ?>:</label>
+      <input
+        name="duration"
+        type="number"
+        min="1"
+        step="1"
+        placeholder="<?= htmlspecialchars($language['routines']['placeholder_duration'] ?? '') ?>">
     </div>
 
-    <div class="md:col-span-4 flex justify-center mt-2">
-      <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded shadow">
-        Calcular
+    <div class="actions">
+      <button type="submit" class="btn">
+        <?= htmlspecialchars($language['routines']['btn'] ?? '') ?>
       </button>
     </div>
   </form>
@@ -82,16 +89,20 @@
       // Mapa precargado desde PHP: { [idTipo]: [{id, name, slug}, ...] }
       const CATS_BY_TYPE = <?= json_encode($catsByType, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
 
+      // Textos localizados desde PHP
+      const T_SELECT            = <?= json_encode($language['routines']['select'] ?? '') ?>;
+      const T_SELECT_TYPE_FIRST = <?= json_encode($language['routines']['select_type_first'] ?? '') ?>;
+
       function resetCategories(placeholder) {
         catSel.innerHTML = '';
         const opt = document.createElement('option');
         opt.value = '';
-        opt.textContent = placeholder || 'Selecciona';
+        opt.textContent = placeholder || T_SELECT;
         catSel.appendChild(opt);
       }
 
       function fillCategories(list) {
-        resetCategories('Selecciona');
+        resetCategories(T_SELECT);
         list.forEach(c => {
           const opt = document.createElement('option');
           opt.value = c.id;
@@ -106,7 +117,7 @@
           fillCategories(CATS_BY_TYPE[tid]);
           catSel.disabled = false;
         } else {
-          resetCategories('Selecciona tipo primero');
+          resetCategories(T_SELECT_TYPE_FIRST);
           catSel.disabled = true;
         }
       }
@@ -115,7 +126,7 @@
 
       // Estado inicial coherente
       if (!typeSel.value) {
-        resetCategories('Selecciona tipo primero');
+        resetCategories(T_SELECT_TYPE_FIRST);
         catSel.disabled = true;
       } else {
         onTypeChange();
@@ -123,10 +134,3 @@
     })();
   </script>
 </section>
-
-<!-- BONUS: estilos de alertas (si no están ya globales) -->
-<style>
-  .alert { padding:10px 12px; border-radius:8px; margin:10px 0; }
-  .alert.success { background:#e7f7ee; border:1px solid #8ad1a3; color:#216b3a; }
-  .alert.error   { background:#fdeaea; border:1px solid #f5b5b5; color:#7d1f1f; }
-</style>
