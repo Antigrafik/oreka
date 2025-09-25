@@ -9,5 +9,6 @@
     <!-- Estilos -->
     <link rel="stylesheet" href="<?=$baseUrl . $globalConfig['stylesheet'] ?>">
     <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/myspace.css">
 </head>
 <body>
