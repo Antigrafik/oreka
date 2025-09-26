@@ -3,6 +3,7 @@
         'topbar' => [
             'without_permission'  => 'Ezin zara sartu',
             'points'    => 'puntuak',
+            'legal'  => 'Oinarriak / Lege-oharra',
         ],
         'menu' => [
             'learn'     => 'Ikasgela',

@@ -1,0 +1,264 @@
+
+### Consultar contenido
+
+Los sistemas externos pueden consultar información usando estos endpoints.
+
+## Endpoints
+
+**Base URL (REST de Moodle)**
+`POST https://su-moodle.com/webservice/rest/server.php`
+**Content-Type:** `application/x-www-form-urlencoded`
+
+**Parámetros comunes**
+
+* `wstoken`: token del servicio.
+* `wsfunction`: nombre de la función.
+* `moodlewsrestformat`: formato de la respuesta (por ejemplo, `json`).
+
+---
+
+## 1) Obtener datos de contenido
+
+**Función:** `local_wscontent_get_content_data`
+
+### Parámetros
+
+| Parámetro            | Tipo   | Req.  | Descripción                                                                               |
+| -------------------- | ------ | ----- |-------------------------------------------------------------------------------------------|
+| `wstoken`            | string | Sí    | Token válido del servicio.                                                                |
+| `wsfunction`         | string | Sí    | `local_wscontent_get_content_data`.                                                         |
+| `identifier`         | string | No    | Si se omite, devuelve todos los contenidos visibles para el usuario que hace la consulta. |
+| `moodlewsrestformat` | string | No. | `json`.                                                                                   |
+
+### Petición (curl) del ejemplo
+
+```bash
+curl -X POST https://su-moodle.com/webservice/rest/server.php \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  --data "wstoken=SU_TOKEN" \
+  --data "wsfunction=local_wscontent_get_content_data" \
+  --data "identifier=1" \
+  --data "moodlewsrestformat=json"
+```
+
+### Petición (cuerpo x-www-form-urlencoded)
+
+```
+wstoken=SU_TOKEN
+wsfunction=local_wscontent_get_content_data
+identifier=1
+moodlewsrestformat=json
+```
+
+### Respuesta
+
+```json
+{
+  "contents": [
+    {
+      "id": 4,
+      "cmid": 1,
+      "name_eu": "Edukia 1",
+      "name_es": "Contenido 1",
+      "language": "bilingual",
+      "identifier": "1",
+      "duration": 56,
+      "status": "active",
+      "timecreated": 1757592587,
+      "timemodified": 1757593674,
+      "visible": true,
+      "module_name": "{mlang es}Contenido 1{mlang}{mlang eu}Edukia 1{mlang}",
+      "module_url": "https://su-moodle.com/mod/scorm/view.php?id=1",
+      "course_name": "Curso 1",
+      "course_shortname": "Curso 1",
+      "course_url": "https://su-moodle.com/course/view.php?id=1",
+      "image_url": "https://su-moodle.com/pluginfile.php/1/local_wscontent/content_image/4/contenido1.jpg"
+    }
+  ],
+  "total_count": 1
+}
+```
+
+### Esquema de campos de la respuesta
+
+| Campo              | Tipo    | Descripción                         |
+| ------------------ | ------- | ----------------------------------- |
+| `id`               | number  | Id interno del registro del plugin. |
+| `cmid`             | number  | Course Module ID en Moodle.         |
+| `name_eu`          | string  | Nombre en euskera.                  |
+| `name_es`          | string  | Nombre en castellano.               |
+| `language`         | string  | `eu`, `es` o `bilingual`.           |
+| `identifier`       | string  | Identificador único de integración. |
+| `duration`         | number  | Minutos estimados.                  |
+| `status`           | string  | `active` / `deleted`.               |
+| `timecreated`      | number  | UNIX epoch (segundos).              |
+| `timemodified`     | number  | UNIX epoch (segundos).              |
+| `visible`          | boolean | Visibilidad del módulo.             |
+| `module_name`      | string  | Título, admite `{mlang}`.           |
+| `module_url`       | string  | URL del módulo.                     |
+| `course_name`      | string  | Nombre del curso.                   |
+| `course_shortname` | string  | Nombre corto del curso.             |
+| `course_url`       | string  | URL del curso.                      |
+| `image_url`        | string  | URL de la imagen.                   |
+| `total_count`      | number  | Total de elementos devueltos.       |
+
+---
+
+## 2) Obtener calificaciones
+
+**Función:** `local_wscontent_get_grade_data`
+
+### Parámetros
+
+| Parámetro            | Tipo           | Req. | Descripción                                                                                                                           |
+| -------------------- | -------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `wstoken`            | string         | Sí   | Token del servicio.                                                                                                                   |
+| `wsfunction`         | string         | Sí   | `local_wscontent_get_grade_data`.                                                                                                       |
+| `identifier`         | string         | Sí   | Identificador del contenido.                                                                                                          |
+| `user_emails[]`      | array\<string> | No   | Filtro por correos: `user_emails[0]=u@e.com`. Si se omite, devuelve las calificaciones de todos los usuarios con acceso al contenido. |
+| `moodlewsrestformat` | string         | No.  | `json`.                                                                                                                               |
+
+### Esquema de campos de la respuesta
+
+| Campo                | Tipo            | Descripción                             |
+| -------------------- | --------------- | --------------------------------------- |
+| `user_email`         | string          | Correo del usuario.                     |
+| `content_identifier` | string          | Identificador del contenido consultado. |
+| `grade`              | number \| null  | Nota; `null` si no hay calificación.    |
+| `grade_max`          | number          | Nota máxima posible.                    |
+| `grade_min`          | number          | Nota mínima posible.                    |
+| `grade_date`         | integer \| null | UNIX epoch (segundos).                  |
+| `grade_formatted`    | string          | Representación formateada.              |
+| `has_grade`          | boolean         | `true` si existe calificación.          |
+
+### Petición (curl) — todas las calificaciones del contenido
+
+```bash
+curl -X POST https://su-moodle.com/webservice/rest/server.php \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  --data "wstoken=SU_TOKEN" \
+  --data "wsfunction=local_wscontent_get_grade_data" \
+  --data "identifier=1" \
+  --data "moodlewsrestformat=json"
+```
+
+### Petición (cuerpo x-www-form-urlencoded)
+
+```
+wstoken=SU_TOKEN
+wsfunction=local_wscontent_get_grade_data
+identifier=1
+moodlewsrestformat=json
+```
+
+### Respuesta (sin `user_emails`)
+
+```json
+{
+  "grades": [
+    {
+      "user_email": "usuario1@example.com",
+      "content_identifier": "1",
+      "grade": 1,
+      "grade_max": 1,
+      "grade_min": 0,
+      "grade_date": 1757070502,
+      "grade_formatted": "1.00 / 1.00",
+      "has_grade": true
+    },
+    {
+      "user_email": "usuario2@example.com",
+      "content_identifier": "1",
+      "grade": 1,
+      "grade_max": 1,
+      "grade_min": 0,
+      "grade_date": 1757070601,
+      "grade_formatted": "1.00 / 1.00",
+      "has_grade": true
+    },
+    {
+      "user_email": "usuario3@example.com",
+      "content_identifier": "1",
+      "grade": 1,
+      "grade_max": 1,
+      "grade_min": 0,
+      "grade_date": 1757070601,
+      "grade_formatted": "1.00 / 1.00",
+      "has_grade": true
+    },
+    {
+      "user_email": "usuario4@example.com",
+      "content_identifier": "1",
+      "grade": null,
+      "grade_max": 1,
+      "grade_min": 0,
+      "grade_date": 1757070684,
+      "grade_formatted": "",
+      "has_grade": false
+    },
+    {
+      "user_email": "usuario5@example.com",
+      "content_identifier": "1",
+      "grade": null,
+      "grade_max": 1,
+      "grade_min": 0,
+      "grade_date": null,
+      "grade_formatted": "",
+      "has_grade": false
+    }
+  ],
+  "total_count": 95
+}
+```
+
+### Petición (curl) — filtrado por usuarios
+
+```bash
+curl -X POST https://su-moodle.com/webservice/rest/server.php \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  --data "wstoken=SU_TOKEN" \
+  --data "wsfunction=local_wscontent_get_grade_data" \
+  --data "identifier=1" \
+  --data "user_emails[0]=usuario1@example.com" \
+  --data "moodlewsrestformat=json"
+```
+
+### Petición (cuerpo x-www-form-urlencoded)
+
+```
+wstoken=SU_TOKEN
+wsfunction=local_wscontent_get_grade_data
+identifier=1
+user_emails[0]=usuario1@example.com
+moodlewsrestformat=json
+```
+
+### Respuesta (con filtrado por usuarios)
+
+```json
+{
+  "grades": [
+    {
+      "user_email": "usuario1@example.com",
+      "content_identifier": "1",
+      "grade": 1,
+      "grade_max": 1,
+      "grade_min": 0,
+      "grade_date": 1757070502,
+      "grade_formatted": "1.00 / 1.00",
+      "has_grade": true
+    }
+  ],
+  "total_count": 1
+}
+```
+
+## Errores comunes y solución
+
+| Respuesta                                         | Causa probable                                                    |
+| ------------------------------------------------- | ----------------------------------------------------------------- |
+| `invalid_parameter_exception`                     | Parámetro faltante o mal formado.                                 |
+| `invalidtoken`                                    | Token incorrecto/caducado/restringido.                            |
+| `webservice_access_exception` / `accessexception` | Falta de permisos o servicio incorrecto.                          |
+| `require_login_exception`                         | Recurso no accesible con el contexto.                             |
+| `error_content_not_found`                         | Contenido no existe o el usuario que lo solicita no tiene acceso. |

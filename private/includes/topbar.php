@@ -1,18 +1,16 @@
 <?php
-// Asegura excepciones en PDO
+global $language;
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $user = $_SERVER['REMOTE_USER'] ?? null;
 $totalPuntos = null;
 
-// Si REMOTE_USER viene como DOMINIO\usuario, quédate con la parte del usuario
 if ($user && strpos($user, '\\') !== false) {
     $user = explode('\\', $user, 2)[1];
 }
 
 if ($user) {
     try {
-        // Comprobar si el usuario existe
         $checkUser = $pdo->prepare("SELECT id FROM [user] WHERE name = :name");
         $checkUser->execute([':name' => $user]);
         $userData = $checkUser->fetch(PDO::FETCH_ASSOC);
@@ -23,7 +21,6 @@ if ($user) {
             exit;
         }*/
 
-        // Total de puntos del usuario (todas sus actividades)
         $sql = "
             SELECT COALESCE(SUM(p.points), 0) AS total_puntos
             FROM [user] u
@@ -42,23 +39,39 @@ if ($user) {
         exit;
     }
 } else {
-    // No hay usuario autenticado
     echo "<h1 style='color:red; text-align:center;'>" . $language['topbar']['without_permission'] . "</h1>";
     exit;
 }
+
+$showLegalButton = true;
+try {
+  // SQL Server: toma el último status
+  $st = $pdo->query("SELECT TOP (1) ISNULL(status, 0) AS s FROM [admin_legal] ORDER BY id DESC");
+  $val = $st ? $st->fetchColumn() : null;
+  if ($val !== null) {
+    $showLegalButton = ((int)$val === 1);
+  }
+} catch (Throwable $e) {
+  // si falla la consulta, lo dejamos visible
+}
 ?>
 
-<!-- Encabezado -->
 <header class="main-header">
-    <div class="logo-left">
-        <img src="/assets/images/logo_oreka.png" alt="Oreka Logo">
-    </div>
+  <div class="logo-left">
+    <img src="/assets/images/logo_oreka.png" alt="Oreka Logo">
+  </div>
 
-    <div class="user-center">
-        <span><?= htmlspecialchars($user) ?> | <?= htmlspecialchars($totalPuntos) ?> <?php echo $language['topbar']['points']; ?></span>
-    </div>
+  <div class="user-center">
+    <span><?= htmlspecialchars($user) ?> | <?= htmlspecialchars($totalPuntos) ?> <?= htmlspecialchars($language['topbar']['points'] ?? 'puntos') ?></span>
+  </div>
 
-    <div class="logo-right-container">
-        <img src="/assets/images/logo_kutxa.jpg" alt="Kutxa Logo" class="logo-right">
-    </div>
+  <div class="logo-right-container">
+    <a href="#legal"
+       class="legal-link"
+       title="<?= htmlspecialchars($language['topbar']['legal'] ?? 'Bases / Legal') ?>">
+      <?= htmlspecialchars($language['topbar']['legal'] ?? 'Bases / Legal') ?>
+    </a>
+    <img src="/assets/images/logo_kutxa.jpg" alt="Kutxa Logo" class="logo-right">
+  </div>
 </header>
+

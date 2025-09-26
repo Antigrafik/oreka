@@ -3,6 +3,7 @@
         'topbar' => [
             'without_permission'  => 'No tienes permitido entrar',
             'points'    => 'puntos',
+            'legal'  => 'Bases / Legal',
         ],
         'menu' => [
             'learn'     => 'Aula',

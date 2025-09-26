@@ -12,6 +12,9 @@ class HomeController {
         require_once PRIVATE_PATH . '/modules/community/controllers/CommunityController.php';
         $communitySection = (new CommunityController())->render();
 
+        require_once PRIVATE_PATH . '/modules/legal/controllers/LegalController.php';
+        $legalSection = (new LegalController())->render();
+
         require_once PRIVATE_PATH . '/modules/intra/myspace/controllers/MySpaceController.php';
         $mySpaceSection = (new MySpaceController())->render();
 

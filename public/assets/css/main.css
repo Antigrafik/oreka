@@ -52,6 +52,18 @@ body {
     height: 30px;
 }
 
+  /* --- Topbar LEGAL --- */
+  .logo-right-container{ display:flex; align-items:center; gap:12px; }
+  .legal-link{
+    display:inline-block; text-decoration:none; font-weight:600;
+    padding:6px 12px; border-radius:999px; border:2px solid var(--red);
+    color:var(--text); line-height:1; transition:background .15s ease, transform .1s ease;
+  }
+  .legal-link:hover{ background: rgba(196,0,0,.08); }  /* <-- sin caracteres extra */
+  .legal-link:active{ transform: scale(0.98); }
+
+
+
 /* Fin Estilos de Topbar */
 
 
