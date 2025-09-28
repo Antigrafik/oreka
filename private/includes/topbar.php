@@ -66,9 +66,7 @@ try {
   </div>
 
   <div class="logo-right-container">
-    <a href="#legal"
-       class="legal-link"
-       title="<?= htmlspecialchars($language['topbar']['legal'] ?? 'Bases / Legal') ?>">
+    <a href="#legal" class="legal-link" title="<?= htmlspecialchars($language['topbar']['legal'] ?? 'Bases / Legal') ?>">
       <?= htmlspecialchars($language['topbar']['legal'] ?? 'Bases / Legal') ?>
     </a>
     <img src="/assets/images/logo_kutxa.jpg" alt="Kutxa Logo" class="logo-right">

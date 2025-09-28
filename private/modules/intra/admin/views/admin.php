@@ -10,6 +10,7 @@
         <a href="#admin/learn" data-tab="learn" class="admin-link"><?php echo $language['menu_admin']['learn']; ?></a>
         <a href="#admin/forum" data-tab="forum" class="admin-link"><?php echo $language['menu_admin']['forum']; ?></a>
         <a href="#admin/community" data-tab="community" class="admin-link"><?php echo $language['menu_admin']['community']; ?></a>
+        <a href="#admin/legal" data-tab="legal" class="admin-link"><?php echo $language['menu_admin']['legal']; ?></a>
       </nav>
     </aside>
 
@@ -71,6 +72,14 @@
         else { echo '<h2>Comunidad</h2><p>(Vista community.php no encontrada)</p>'; }
         ?>
       </section>
+
+      <!-- Legal -->
+      <section id="tab-legal" class="admin-tab" hidden>
+        <?php
+        $legalView = PRIVATE_PATH . '/modules/intra/admin/views/legal.php';
+        if (is_file($legalView)) { include $legalView; }
+        else { echo '<h2>Legal</h2><p>(Vista legal.php no encontrada)</p>'; }
+        ?>
     </main>
   </div>
 </section>
@@ -184,6 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'learn':     document.getElementById('tab-learn'),
     'forum':     document.getElementById('tab-forum'),
     'community': document.getElementById('tab-community'),
+    'legal':     document.getElementById('tab-legal'),
   };
 
   function pickTabFromHash() {
