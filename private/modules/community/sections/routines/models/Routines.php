@@ -92,7 +92,7 @@ class Routines
     }
 
     // En tu tabla user, asumo columna "name" guarda ese identificador
-    $st = $pdo->prepare("SELECT id FROM [user] WHERE name = ?");
+    $st = $pdo->prepare("SELECT id FROM [user] WHERE usuario = ?");
     $st->execute([$username]);
     $row = $st->fetch(PDO::FETCH_ASSOC);
     return $row ? (int)$row['id'] : null;

@@ -17,7 +17,7 @@ class Trial
       $parts = explode('\\', $username);
       $username = end($parts);
     }
-    $st = $pdo->prepare("SELECT id FROM [user] WHERE name = ?");
+    $st = $pdo->prepare("SELECT id FROM [user] WHERE usuario = ?");
     $st->execute([$username]);
     $row = $st->fetch(PDO::FETCH_ASSOC);
     return $row ? (int)$row['id'] : null;

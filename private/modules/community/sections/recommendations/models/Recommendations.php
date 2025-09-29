@@ -34,7 +34,7 @@ class Recommendations
       LEFT JOIN dbo.translation AS t   ON t.id_link = l.id AND t.[lang] = ?
       LEFT JOIN dbo.translation AS tf  ON tf.id_link = l.id AND tf.[lang] = ?
       OUTER APPLY (
-        SELECT TOP (1) u.[name] AS recommended_by
+        SELECT TOP (1) u.[usuario] AS recommended_by
         FROM dbo.point p
         JOIN dbo.user_activity ua ON ua.id_point = p.id
         JOIN dbo.[user] u         ON u.id = ua.id_user

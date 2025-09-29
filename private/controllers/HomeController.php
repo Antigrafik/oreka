@@ -32,7 +32,7 @@ class HomeController {
 
         $userId   = $_SESSION['user_id'] ?? null;
         $userName = $GLOBALS['user']
-                 ?? ($_SESSION['email'] ?? $_SESSION['user'] ?? $_SERVER['AUTH_USER'] ?? $_SERVER['REMOTE_USER'] ?? null);
+                ?? ($_SESSION['email'] ?? $_SESSION['user'] ?? $_SERVER['AUTH_USER'] ?? $_SERVER['REMOTE_USER'] ?? null);
 
         if ($userName && strpos($userName, '\\') !== false) {
             $userName = substr($userName, strrpos($userName, '\\') + 1);
@@ -43,8 +43,8 @@ class HomeController {
                 $stmt = $pdo->prepare("SELECT roles FROM [user] WHERE id = :id");
                 $stmt->execute([':id' => $userId]);
             } elseif (!empty($userName)) {
-                $stmt = $pdo->prepare("SELECT roles FROM [user] WHERE name = :name");
-                $stmt->execute([':name' => $userName]);
+                $stmt = $pdo->prepare("SELECT roles FROM [user] WHERE usuario = :usuario");
+                $stmt->execute([':usuario' => $userName]);
             }
             if (isset($stmt)) {
                 $role = $stmt->fetchColumn();

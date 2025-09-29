@@ -11,8 +11,8 @@ if ($user && strpos($user, '\\') !== false) {
 
 if ($user) {
     try {
-        $checkUser = $pdo->prepare("SELECT id FROM [user] WHERE name = :name");
-        $checkUser->execute([':name' => $user]);
+        $checkUser = $pdo->prepare("SELECT id FROM [user] WHERE usuario = :usuario");
+        $checkUser->execute([':usuario' => $user]);
         $userData = $checkUser->fetch(PDO::FETCH_ASSOC);
 
        /*if (!$userData) {
@@ -26,10 +26,10 @@ if ($user) {
             FROM [user] u
             JOIN user_activity ua ON ua.id_user = u.id
             JOIN point p        ON p.id = ua.id_point
-            WHERE u.name = :name
+            WHERE u.usuario = :usuario
         ";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([':name' => $user]);
+        $stmt->execute([':usuario' => $user]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         $totalPuntos = (string)$row['total_puntos'];
@@ -45,7 +45,7 @@ if ($user) {
 
 $showLegalButton = true;
 try {
-  $st = $pdo->prepare("SELECT CONVERT(INT, show_menu) FROM [module_toggle] WHERE module_key = 'legal'");
+  $st = $pdo->prepare("SELECT CONVERT(INT, show_module) FROM [module_toggle] WHERE module_key = 'legal'");
   $st->execute();
   $val = $st->fetchColumn();
   if ($val !== false) $showLegalButton = ((int)$val === 1);

@@ -46,8 +46,8 @@ class MeetingController
         $remote = $_SERVER['REMOTE_USER'] ?? null;
         if ($remote) {
           if (strpos($remote, '\\') !== false) $remote = substr($remote, strrpos($remote, '\\') + 1);
-          $st = $pdo->prepare("SELECT id FROM dbo.[user] WHERE [name] = :name");
-          $st->execute([':name' => $remote]);
+          $st = $pdo->prepare("SELECT id FROM dbo.[user] WHERE [usuario] = :usuario");
+          $st->execute([':usuario' => $remote]);
           if ($row = $st->fetch(PDO::FETCH_ASSOC)) $currentUserId = (int)$row['id'];
         }
       }

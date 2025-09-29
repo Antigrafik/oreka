@@ -26,8 +26,8 @@ try {
         $stmt = $pdo->prepare("SELECT roles FROM [user] WHERE id = :id");
         $stmt->execute([':id' => $userId]);
     } elseif (!empty($userName)) {
-        $stmt = $pdo->prepare("SELECT roles FROM [user] WHERE name = :name");
-        $stmt->execute([':name' => $userName]);
+        $stmt = $pdo->prepare("SELECT roles FROM [user] WHERE usuario = :usuario");
+        $stmt->execute([':usuario' => $userName]);
     }
     if (isset($stmt)) {
         $role = $stmt->fetchColumn();

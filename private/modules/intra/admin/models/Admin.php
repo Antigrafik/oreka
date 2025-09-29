@@ -132,7 +132,6 @@ class Admin {
         $place = implode(',', array_fill(0, count($keys), '?'));
         $sql = "SELECT module_key,
                CONVERT(INT, show_module) AS show_module,
-               CONVERT(INT, show_menu)   AS show_menu
         FROM [module_toggle]
         WHERE module_key IN ($place)";
         $st  = $pdo->prepare($sql);
@@ -140,7 +139,7 @@ class Admin {
         $rows = $st->fetchAll(PDO::FETCH_ASSOC);
         $map  = [];
         foreach ($rows as $r) {
-            $map[$r['module_key']] = ((int)$r['show_module'] === 1 && (int)$r['show_menu'] === 1);
+            $map[$r['module_key']] = ((int)$r['show_module'] === 1);
         }
         // Por defecto, visible
         foreach ($keys as $k) {
