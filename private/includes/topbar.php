@@ -45,15 +45,12 @@ if ($user) {
 
 $showLegalButton = true;
 try {
-  // SQL Server: toma el último status
-  $st = $pdo->query("SELECT TOP (1) ISNULL(status, 0) AS s FROM [admin_legal] ORDER BY id DESC");
-  $val = $st ? $st->fetchColumn() : null;
-  if ($val !== null) {
-    $showLegalButton = ((int)$val === 1);
-  }
-} catch (Throwable $e) {
-  // si falla la consulta, lo dejamos visible
-}
+  $st = $pdo->prepare("SELECT CONVERT(INT, show_menu) FROM [module_toggle] WHERE module_key = 'legal'");
+  $st->execute();
+  $val = $st->fetchColumn();
+  if ($val !== false) $showLegalButton = ((int)$val === 1);
+} catch (Throwable $e) { /* deja visible si hay error */ }
+
 ?>
 
 <header class="main-header">
@@ -66,9 +63,11 @@ try {
   </div>
 
   <div class="logo-right-container">
-    <a href="#legal" class="legal-link" title="<?= htmlspecialchars($language['topbar']['legal'] ?? 'Bases / Legal') ?>">
-      <?= htmlspecialchars($language['topbar']['legal'] ?? 'Bases / Legal') ?>
-    </a>
+    <?php if ($showLegalButton): ?>
+      <a href="#legal" class="legal-link" title="<?= htmlspecialchars($language['topbar']['legal'] ?? 'Bases / Legal') ?>">
+        <?= htmlspecialchars($language['topbar']['legal'] ?? 'Bases / Legal') ?>
+      </a>
+    <?php endif; ?>
     <img src="/assets/images/logo_kutxa.jpg" alt="Kutxa Logo" class="logo-right">
   </div>
 </header>

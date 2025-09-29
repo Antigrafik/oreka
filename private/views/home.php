@@ -1,8 +1,36 @@
-<div id="module-learn"><?= $learnSection ?></div>
-<div id="module-forum"><?= $forumSection ?></div>
-<div id="module-community"><?= $communitySection ?></div>
+<?php
+// Lee flags de visibilidad para los módulos que se renderizan en home
+global $pdo;
 
-<div id="module-legal" class="hidden"><?= $legalSection ?></div>
+$flags = [];
+try {
+  $st = $pdo->query("SELECT module_key, CONVERT(INT, show_module) AS show_module FROM [module_toggle]");
+  foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $r) {
+    $flags[$r['module_key']] = ((int)$r['show_module'] === 1);
+  }
+} catch (Throwable $e) {}
+
+$showLearn = array_key_exists('learn', $flags) ? $flags['learn'] : true;
+$showForum = array_key_exists('forum', $flags) ? $flags['forum'] : true;
+$showComm  = array_key_exists('community', $flags) ? $flags['community'] : true;
+$showLegal = array_key_exists('legal', $flags) ? $flags['legal'] : true;
+?>
+
+<?php if ($showLearn): ?>
+  <div id="module-learn"><?= $learnSection ?></div>
+<?php endif; ?>
+
+<?php if ($showForum): ?>
+  <div id="module-forum"><?= $forumSection ?></div>
+<?php endif; ?>
+
+<?php if ($showComm): ?>
+  <div id="module-community"><?= $communitySection ?></div>
+<?php endif; ?>
+
+<?php if ($showLegal): ?>
+  <div id="module-legal" class="hidden"><?= $legalSection ?></div>
+<?php endif; ?>
 
 <div id="module-myspace" class="hidden"><?= $mySpaceSection ?></div>
 
@@ -27,13 +55,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const hideAll = () => ALL.forEach(el => el.classList.add('hidden'));
   const show    = el => { if (el) el.classList.remove('hidden'); };
 
+  function showDefault() {
+    [M.learn, M.forum, M.community].forEach(el => { if (el) show(el); });
+  }
+
   function route(hash) {
     const h = (hash || '').toLowerCase();
-
-    // Oculta SIEMPRE todo antes de mostrar
     hideAll();
 
-    if (h === '#legal' || h.startsWith('#legal/')) {
+    if ((h === '#legal' || h.startsWith('#legal/')) && M.legal) {
       show(M.legal); return;
     }
     if (h === '#my-space' || h.startsWith('#my-space/')) {
@@ -43,8 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
       show(M.admin); return;
     }
 
-    // Vista por defecto (home): Aula + Foro + Comunidad
-    show(M.learn); show(M.forum); show(M.community);
+    // Vista por defecto (home): muestra sólo los que existan
+    showDefault();
   }
 
   // Carga inicial
@@ -53,14 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Cambios de hash
   window.addEventListener('hashchange', () => route(location.hash));
 
-  // “Red de seguridad”: si el menú no cambia bien el hash, forzamos el route después del click
+  // Red de seguridad: si el menú cambia el hash, reevalúa la vista
   document.querySelectorAll('.menu a[href^="#"]').forEach(a => {
     a.addEventListener('click', () => setTimeout(() => route(location.hash), 0));
   });
 
-  // Botón del topbar "Bases / Legal" (por si algún día cambia su href)
+  // Botón del topbar "Bases / Legal"
   const legalBtn = document.querySelector('.legal-link');
   if (legalBtn) legalBtn.addEventListener('click', () => setTimeout(() => route('#legal'), 0));
 });
 </script>
-

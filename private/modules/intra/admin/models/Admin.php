@@ -35,16 +35,12 @@ class Admin {
             ORDER BY l.id DESC";
 
         $st = $pdo->prepare($sql);
-        $st->execute([$lang, $fallback, $lang]); // ODBC usa ? posicionales
+        $st->execute([$lang, $fallback, $lang]);
         return $st->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /* ==== LEGAL ==== */
+    /* ==== LEGAL (editor) ==== */
 
-    /**
-     * Devuelve la última fila (por id DESC) de admin_legal + link.
-     * Si no existe, crea un registro base publicado y su link.
-     */
     public function getLatestLegalIds(): array {
         global $pdo;
 
@@ -57,7 +53,6 @@ class Admin {
 
         if ($row) return $row;
 
-        // No hay aún: creamos base mínima
         $pdo->beginTransaction();
         try {
             $pdo->prepare("INSERT INTO [admin_legal] ([status], [created_at], [updated_at]) VALUES (1, SYSDATETIME(), SYSDATETIME())")->execute();
@@ -75,13 +70,8 @@ class Admin {
         }
     }
 
-    /**
-     * Carga la última legal con traducciones ES/EU para precargar el editor.
-     * Estructura: ['status'=>int, 'es'=>['title','content'], 'eu'=>['title','content'], 'admin_legal_id'=>int, 'link_id'=>int]
-     */
     public function getLatestLegal(): array {
         global $pdo;
-
         $ids = $this->getLatestLegalIds();
 
         $res = [
@@ -101,23 +91,17 @@ class Admin {
         return $res;
     }
 
-    /**
-     * Guarda "in-place": actualiza status y hace UPSERT de traducciones ES/EU.
-     */
     public function saveLegalUpdate(int $status, string $titleEs, string $contentEs, string $titleEu, string $contentEu): void {
         global $pdo;
-
         $ids    = $this->getLatestLegalIds();
         $adminId = (int)$ids['admin_legal_id'];
         $linkId  = (int)$ids['link_id'];
 
         $pdo->beginTransaction();
         try {
-            // Actualiza estado
             $up = $pdo->prepare("UPDATE [admin_legal] SET [status] = ?, [updated_at] = SYSDATETIME() WHERE id = ?");
             $up->execute([$status, $adminId]);
 
-            // UPSERT de ES y EU (SQL Server MERGE)
             $mergeSql = "
                 MERGE [translation] AS t
                 USING (VALUES
@@ -140,7 +124,64 @@ class Admin {
         }
     }
 
-    /* (Opcional) Mantén tu método de versionado si lo quieres usar en el futuro */
+    /* ==== TOGGLES DE MÓDULO ==== */
+
+    public function getModuleVisibility(array $keys): array {
+        global $pdo;
+        if (empty($keys)) return [];
+        $place = implode(',', array_fill(0, count($keys), '?'));
+        $sql = "SELECT module_key,
+               CONVERT(INT, show_module) AS show_module,
+               CONVERT(INT, show_menu)   AS show_menu
+        FROM [module_toggle]
+        WHERE module_key IN ($place)";
+        $st  = $pdo->prepare($sql);
+        $st->execute($keys);
+        $rows = $st->fetchAll(PDO::FETCH_ASSOC);
+        $map  = [];
+        foreach ($rows as $r) {
+            $map[$r['module_key']] = ((int)$r['show_module'] === 1 && (int)$r['show_menu'] === 1);
+        }
+        // Por defecto, visible
+        foreach ($keys as $k) {
+            if (!array_key_exists($k, $map)) $map[$k] = true;
+        }
+        return $map;
+    }
+
+    public function setModuleVisible(string $key, bool $visible): void {
+        global $pdo;
+        $key = strtolower(preg_replace('/[^a-z0-9_-]/i', '', $key)); // saneo
+        $val = $visible ? 1 : 0;
+        $sql = "
+            MERGE [module_toggle] AS t
+            USING (SELECT ? AS module_key, ? AS show_module) AS s
+            ON (t.module_key = s.module_key)
+            WHEN MATCHED THEN UPDATE
+                SET t.show_module = s.show_module,
+                    t.updated_at  = SYSDATETIME()
+            WHEN NOT MATCHED THEN
+                INSERT (module_key, show_module, created_at, updated_at)
+                VALUES (s.module_key, s.show_module, SYSDATETIME(), SYSDATETIME());
+        ";
+        $st = $pdo->prepare($sql);
+        $st->execute([$key, $val]);
+    }
+
+    public function setModuleVisibleBatch(array $keyToVisible): void {
+        global $pdo;
+        $pdo->beginTransaction();
+        try {
+            foreach ($keyToVisible as $k => $v) {
+                $this->setModuleVisible((string)$k, (bool)$v);
+            }
+            $pdo->commit();
+        } catch (Throwable $e) {
+            $pdo->rollBack();
+            throw $e;
+        }
+    }
+
     public function saveLegal(int $status, string $titleEs, string $contentEs, string $titleEu, string $contentEu): int {
         global $pdo;
 
@@ -169,4 +210,23 @@ class Admin {
             throw $e;
         }
     }
+
+    public function getModuleFlags(array $keys): array {
+        global $pdo;
+        if (empty($keys)) return [];
+        $place = implode(',', array_fill(0, count($keys), '?'));
+        $sql = "SELECT module_key, CONVERT(INT, show_module) AS show_module
+                FROM [module_toggle]
+                WHERE module_key IN ($place)";
+        $st  = $pdo->prepare($sql);
+        $st->execute($keys);
+        $rows = $st->fetchAll(PDO::FETCH_ASSOC);
+
+        // por defecto: true
+        $out = [];
+        foreach ($keys as $k) $out[$k] = true;
+        foreach ($rows as $r) $out[(string)$r['module_key']] = ((int)$r['show_module'] === 1);
+        return $out;
+    }
+
 }

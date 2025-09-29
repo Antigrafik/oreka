@@ -1,5 +1,15 @@
 <?php
  global $language;
+
+ global $pdo;
+$show = true;
+try {
+  $st = $pdo->prepare("SELECT show_module FROM [module_toggle] WHERE module_key = 'routines'");
+  $st->execute();
+  $v = $st->fetchColumn();
+  if ($v !== false) $show = ((int)$v === 1);
+} catch (Throwable $e) {}
+if (!$show) return;
 ?>
 
 <section id="routines">

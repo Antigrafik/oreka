@@ -1,16 +1,36 @@
+<?php
+$GLOBALS['moduleFlags'] = $moduleFlags;
+?>
+
 <section id="admin" class="admin-root">
   <div class="admin-layout">
     <!-- Sidebar vertical -->
     <aside class="admin-sidebar">
       <h2 class="admin-title">Admin</h2>
       <nav class="admin-nav">
-        <a href="#admin" data-tab="dashboard" class="admin-link"><?php echo $language['menu_admin']['dashboard']; ?></a>
-        <a href="#admin/users" data-tab="users" class="admin-link"><?php echo $language['menu_admin']['users']; ?></a>
-        <a href="#admin/store" data-tab="store" class="admin-link"><?php echo $language['menu_admin']['store']; ?></a>
-        <a href="#admin/learn" data-tab="learn" class="admin-link"><?php echo $language['menu_admin']['learn']; ?></a>
-        <a href="#admin/forum" data-tab="forum" class="admin-link"><?php echo $language['menu_admin']['forum']; ?></a>
-        <a href="#admin/community" data-tab="community" class="admin-link"><?php echo $language['menu_admin']['community']; ?></a>
-        <a href="#admin/legal" data-tab="legal" class="admin-link"><?php echo $language['menu_admin']['legal']; ?></a>
+        <a href="#admin" data-tab="dashboard" class="admin-link"><?= htmlspecialchars($language['menu_admin']['dashboard'] ?? 'Dashboard') ?></a>
+        <a href="#admin/users" data-tab="users" class="admin-link"><?= htmlspecialchars($language['menu_admin']['users'] ?? 'Usuarios') ?></a>
+        <a href="#admin/learn" data-tab="learn" class="admin-link"><?= htmlspecialchars($language['menu_admin']['learn'] ?? 'Aula') ?></a>
+        <a href="#admin/forum" data-tab="forum" class="admin-link"><?= htmlspecialchars($language['menu_admin']['forum'] ?? 'Foro') ?></a>
+
+        <!-- Comunidad + subitems -->
+        <a href="#admin/community" data-tab="community" class="admin-link"><?= htmlspecialchars($language['menu_admin']['community'] ?? 'Comunidad') ?></a>
+        <div class="admin-subnav">
+          <a href="#admin/community/recommendations" data-tab="community-recommendations" class="admin-sublink">
+            <?= htmlspecialchars($language['modules']['recommendations'] ?? 'Recomendaciones') ?>
+          </a>
+          <a href="#admin/community/routines" data-tab="community-routines" class="admin-sublink">
+            <?= htmlspecialchars($language['modules']['routines'] ?? 'Rutinas') ?>
+          </a>
+          <a href="#admin/community/trial" data-tab="community-trial" class="admin-sublink">
+            <?= htmlspecialchars($language['modules']['trial'] ?? 'Pruebas') ?>
+          </a>
+          <a href="#admin/community/meeting" data-tab="community-meeting" class="admin-sublink">
+            <?= htmlspecialchars($language['modules']['meeting'] ?? 'Quedadas') ?>
+          </a>
+        </div>
+        <a href="#admin/store" data-tab="store" class="admin-link"><?= htmlspecialchars($language['menu_admin']['store'] ?? 'Tienda') ?></a>
+        <a href="#admin/legal" data-tab="legal" class="admin-link"><?= htmlspecialchars($language['menu_admin']['legal'] ?? 'Legal') ?></a>
       </nav>
     </aside>
 
@@ -22,205 +42,165 @@
         <p>Bienvenido al panel de administración.</p>
         <p>Desde aquí puedes gestionar los usuarios, roles, permisos y otras configuraciones del sistema.</p>
         <p>Utiliza el menú de navegación para acceder a las diferentes secciones.</p>
-        <p>Si necesitas ayuda, consulta la documentación o contacta con el soporte técnico.</p>
         <p>Recuerda que los cambios realizados aquí pueden afectar a todo el sistema, así que procede con precaución.</p>
-        <p>Para más información, visita la sección de <a href="https://www.example.com/documentacion" target="_blank" rel="noopener">documentación</a>.</p>
       </section>
 
       <!-- Usuarios -->
       <section id="tab-users" class="admin-tab" hidden>
         <?php
-        // Incluye la vista si la tienes
-        $usersView = PRIVATE_PATH . '/modules/intra/views/admin/users.php';
-        if (is_file($usersView)) { include $usersView; }
-        else { echo '<h2>Usuarios</h2><p>(Vista users.php no encontrada)</p>'; }
+          $usersView = PRIVATE_PATH . '/modules/intra/admin/views/users.php';
+          if (is_file($usersView)) { include $usersView; }
+          else { echo '<h2>Usuarios</h2><p>(Vista users.php no encontrada)</p>'; }
         ?>
       </section>
 
       <!-- Tienda -->
       <section id="tab-store" class="admin-tab" hidden>
         <?php
-        $storeView = PRIVATE_PATH . '/modules/intra/views/admin/store.php';
-        if (is_file($storeView)) { include $storeView; }
-        else { echo '<h2>Tienda</h2><p>(Vista store.php no encontrada)</p>'; }
+          $storeView = PRIVATE_PATH . '/modules/intra/admin/views/store.php';
+          if (is_file($storeView)) { include $storeView; }
+          else { echo '<h2>Tienda</h2><p>(Vista store.php no encontrada)</p>'; }
         ?>
       </section>
 
       <!-- Aula -->
       <section id="tab-learn" class="admin-tab" hidden>
         <?php
-        $learnView = PRIVATE_PATH . '/modules/intra/views/admin/learn.php';
-        if (is_file($learnView)) { include $learnView; }
-        else { echo '<h2>Aula</h2><p>(Vista learn.php no encontrada)</p>'; }
+          $learnView = PRIVATE_PATH . '/modules/intra/admin/views/learn.php';
+          if (is_file($learnView)) { include $learnView; }
+          else { echo '<h2>Aula</h2><p>(Vista learn.php no encontrada)</p>'; }
         ?>
       </section>
 
       <!-- Foro -->
       <section id="tab-forum" class="admin-tab" hidden>
         <?php
-        $forumView = PRIVATE_PATH . '/modules/intra/views/admin/forum.php';
-        if (is_file($forumView)) { include $forumView; }
-        else { echo '<h2>Foro</h2><p>(Vista forum.php no encontrada)</p>'; }
+          $forumView = PRIVATE_PATH . '/modules/intra/admin/views/forum.php';
+          if (is_file($forumView)) { include $forumView; }
+          else { echo '<h2>Foro</h2><p>(Vista forum.php no encontrada)</p>'; }
         ?>
       </section>
 
-      <!-- Comunidad -->
+      <!-- Comunidad (portada de comunidad) -->
       <section id="tab-community" class="admin-tab" hidden>
         <?php
-        $communityView = PRIVATE_PATH . '/modules/intra/views/admin/community.php';
-        if (is_file($communityView)) { include $communityView; }
-        else { echo '<h2>Comunidad</h2><p>(Vista community.php no encontrada)</p>'; }
+          $communityView = PRIVATE_PATH . '/modules/intra/admin/views/community.php';
+          if (is_file($communityView)) { include $communityView; }
+          else { echo '<h2>Comunidad</h2><p>(Vista community.php no encontrada)</p>'; }
+        ?>
+      </section>
+
+      <!-- Comunidad → Recomendaciones -->
+      <section id="tab-community-recommendations" class="admin-tab" hidden>
+        <?php
+          $view = PRIVATE_PATH . '/modules/intra/admin/views/community_recommendations.php';
+          if (is_file($view)) { include $view; }
+          else { echo '<h2>Recomendaciones</h2><p>(Vista community_recommendations.php no encontrada)</p>'; }
+        ?>
+      </section>
+
+      <!-- Comunidad → Rutinas -->
+      <section id="tab-community-routines" class="admin-tab" hidden>
+        <?php
+          $view = PRIVATE_PATH . '/modules/intra/admin/views/community_routines.php';
+          if (is_file($view)) { include $view; }
+          else { echo '<h2>Rutinas</h2><p>(Vista community_routines.php no encontrada)</p>'; }
+        ?>
+      </section>
+
+      <!-- Comunidad → Pruebas -->
+      <section id="tab-community-trial" class="admin-tab" hidden>
+        <?php
+          $view = PRIVATE_PATH . '/modules/intra/admin/views/community_trial.php';
+          if (is_file($view)) { include $view; }
+          else { echo '<h2>Pruebas</h2><p>(Vista community_trial.php no encontrada)</p>'; }
+        ?>
+      </section>
+
+      <!-- Comunidad → Quedadas -->
+      <section id="tab-community-meeting" class="admin-tab" hidden>
+        <?php
+          $view = PRIVATE_PATH . '/modules/intra/admin/views/community_meeting.php';
+          if (is_file($view)) { include $view; }
+          else { echo '<h2>Quedadas</h2><p>(Vista community_meeting.php no encontrada)</p>'; }
         ?>
       </section>
 
       <!-- Legal -->
       <section id="tab-legal" class="admin-tab" hidden>
         <?php
-        $legalView = PRIVATE_PATH . '/modules/intra/admin/views/legal.php';
-        if (is_file($legalView)) { include $legalView; }
-        else { echo '<h2>Legal</h2><p>(Vista legal.php no encontrada)</p>'; }
+          $legalView = PRIVATE_PATH . '/modules/intra/admin/views/legal.php';
+          if (is_file($legalView)) { include $legalView; }
+          else { echo '<h2>Legal</h2><p>(Vista legal.php no encontrada)</p>'; }
         ?>
+      </section>
     </main>
   </div>
 </section>
 
-<style>
-  .admin-root { padding: 1rem; }
-
-  /* Grid: sidebar izquierda + contenido derecha */
-.admin-layout{
-  display: grid;
-  grid-template-columns: var(--adminWidth, 240px) 1fr; /* <- clave */
-  gap: 1.25rem;
-  align-items: start;
-}
-
-  /* Sidebar pegajoso (no se mueve al hacer scroll) */
-.admin-sidebar{
-  grid-column: 1 / 2; /* reserva la primera pista del grid */
-  position: fixed;
-  top: calc(var(--menuH, 0px) + 74px);
-  left: var(--adminLeft, 0px);
-  width: var(--adminWidth, 240px);
-  z-index: 10;
-  border: 1px solid #c00;
-  border-radius: 16px;
-  padding: 1rem;
-  background: #fff;
-}
-
-  /* Contenido a la derecha */
-.admin-content{
-  grid-column: 2 / 3;        /* <- clave */
-  border: 1px solid #c00;
-  border-radius: 16px;
-  padding: 1.25rem;
-  min-height: 60vh;
-  overflow: visible;
-}
-
-@supports not (grid-template-columns: subgrid) {
-  .admin-content{ margin-left: 0; } /* por defecto 0 */
-}
-
-  .admin-tab[hidden] { display: none !important; }
-
-  .admin-title { margin: 0 0 .75rem; font-size: 1.25rem; }
-  .admin-nav { display: grid; gap: .5rem; }
-  .admin-link { display: block; padding: .5rem .75rem; border-radius: 10px; text-decoration: none; color: #111; border: 1px solid transparent; }
-  .admin-link.active { background: #f8d7da; border-color: #c00; font-weight: 600; }
-
-  @media (max-width: 980px){
-    .admin-sidebar{ position: static; left:auto; width:auto; top:auto; }
-    .admin-layout{ grid-template-columns: 1fr; }
-  }
-
-</style>
-
 <script>
+/* Sidebar fijo */
 (function(){
   function setMenuHeightVar(){
     const mh = (document.querySelector('.menu')?.offsetHeight || 0);
     document.documentElement.style.setProperty('--menuH', mh + 'px');
   }
-
-function placeAdminSidebar(){
-  const layout  = document.querySelector('.admin-layout');
-  const sidebar = document.querySelector('.admin-sidebar');
-  if (!layout || !sidebar) return;
-
-  // Left absoluto del layout (no del sidebar)
-  const layoutRect = layout.getBoundingClientRect();
-  const left = layoutRect.left + window.pageXOffset;
-
-  // Ancho REAL de la 1ª columna del grid (`grid-template-columns`)
-  const cs = getComputedStyle(layout);
-  // ejemplo: "240px 1fr"  -> tomamos el primer valor
-  const firstCol = (cs.gridTemplateColumns || '').split(' ')[0] || '240px';
-
-  // Parseamos px (si es fr o %, caemos al ancho actual del aside)
-  let sidebarW = parseFloat(firstCol);
-  if (!Number.isFinite(sidebarW)) sidebarW = sidebar.offsetWidth || 240;
-
-  // Aplicamos a las variables CSS que usa el sidebar fixed
-  document.documentElement.style.setProperty('--adminLeft',  left + 'px');
-  document.documentElement.style.setProperty('--adminWidth', sidebarW + 'px');
-}
-
-  function updateAll(){
-    setMenuHeightVar();
-    placeAdminSidebar();
+  function placeAdminSidebar(){
+    const layout  = document.querySelector('.admin-layout');
+    const sidebar = document.querySelector('.admin-sidebar');
+    if (!layout || !sidebar) return;
+    const rect = layout.getBoundingClientRect();
+    const left = rect.left + window.pageXOffset;
+    const cs = getComputedStyle(layout);
+    const firstCol = (cs.gridTemplateColumns || '').split(' ')[0] || '240px';
+    let w = parseFloat(firstCol);
+    if (!Number.isFinite(w)) w = sidebar.offsetWidth || 240;
+    document.documentElement.style.setProperty('--adminLeft',  left + 'px');
+    document.documentElement.style.setProperty('--adminWidth', w + 'px');
   }
-
-  // Inicial y eventos
+  function updateAll(){ setMenuHeightVar(); placeAdminSidebar(); }
   updateAll();
   window.addEventListener('resize', updateAll);
-  window.addEventListener('scroll', placeAdminSidebar, { passive: true });
-
-  // Por si cambias de tab y varía la altura/layout
+  window.addEventListener('scroll', placeAdminSidebar, { passive:true });
   window.addEventListener('hashchange', () => setTimeout(updateAll, 0));
 })();
 </script>
 
+<!-- Router de tabs: soporta hashes con slashes (#admin/community/recommendations) -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+  // Mapea automáticamente: id="tab-XYZ" -> key "XYZ"
+  const tabs = {};
+  document.querySelectorAll('.admin-tab').forEach(el => {
+    const m = el.id.match(/^tab-(.+)$/);
+    if (m) tabs[m[1]] = el;
+  });
 
-  const links = Array.from(document.querySelectorAll('.admin-link'));
-  const tabs  = {
-    'dashboard': document.getElementById('tab-dashboard'),
-    'users':     document.getElementById('tab-users'),
-    'store':     document.getElementById('tab-store'),
-    'learn':     document.getElementById('tab-learn'),
-    'forum':     document.getElementById('tab-forum'),
-    'community': document.getElementById('tab-community'),
-    'legal':     document.getElementById('tab-legal'),
-  };
+  // enlaces (principal + sublinks)
+  const links = Array.from(document.querySelectorAll('.admin-link[data-tab], .admin-sublink[data-tab]'));
+
+  const normalize = (s) => (s || '').replace(/\//g, '-'); // "community/recommendations" -> "community-recommendations"
 
   function pickTabFromHash() {
-    // Hash esperado: #admin, #admin/users, #admin/store, ...
     const h = (location.hash || '#admin').toLowerCase();
-    const m = h.match(/^#admin(?:\/([-\w]+))?$/);
-    const tab = m && m[1] ? m[1] : 'dashboard';
-    return tabs[tab] ? tab : 'dashboard';
+    const m = h.match(/^#admin(?:\/([-\w\/]+))?$/);   // permite slashes
+    const name = m && m[1] ? normalize(m[1]) : 'dashboard';
+    return tabs[name] ? name : 'dashboard';
   }
 
-  function activate(tabName) {
-    // tabs
-    Object.entries(tabs).forEach(([name, el]) => {
+  function activate(name) {
+    Object.entries(tabs).forEach(([n, el]) => {
       if (!el) return;
-      if (name === tabName) el.removeAttribute('hidden'); else el.setAttribute('hidden', '');
+      if (n === name) el.removeAttribute('hidden'); else el.setAttribute('hidden', '');
     });
-    // links activos
     links.forEach(a => {
       const t = a.getAttribute('data-tab');
-      a.classList.toggle('active', t === tabName);
+      a.classList.toggle('active', t === name);
     });
   }
 
-  // Inicial
+  // Inicial + cambios
   activate(pickTabFromHash());
-
-  // Cambios de hash
   window.addEventListener('hashchange', () => activate(pickTabFromHash()));
 });
 </script>

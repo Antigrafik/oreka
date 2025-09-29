@@ -1,6 +1,21 @@
 <?php
+/* ===========================
+   RECOMENDACIONES (PÚBLICO)
+   Se oculta si module_toggle.show_module = 0
+   =========================== */
 
-global $language;
+global $language, $pdo;
+
+
+global $pdo;
+$show = true;
+try {
+  $st = $pdo->prepare("SELECT show_module FROM [module_toggle] WHERE module_key = 'recommendations'");
+  $st->execute();
+  $v = $st->fetchColumn();
+  if ($v !== false) $show = ((int)$v === 1);
+} catch (Throwable $e) {}
+if (!$show) return;
 
 /** @var array $recommendations */
 /** @var array $themes */
@@ -119,9 +134,6 @@ if (!function_exists('lower_ascii')) {
     </section>
   <?php endif; ?>
 </section>
-
-<!-- === Crear nueva recomendación === -->
-<?php global $language; ?>
 
 <!-- === Crear nueva recomendación === -->
 <section class="recommendation-create">

@@ -1,10 +1,18 @@
-<h1>STORE</h1>
-<p>Bienvenido a la sección de gestión de tiendas.</p>
-<p>Aquí puedes administrar los productos, categorías y pedidos de tu tienda.</p>
-<p>Utiliza el menú de navegación para acceder a las diferentes secciones.</p>
-<p>Si necesitas ayuda, consulta la documentación o contacta con el soporte técnico.</p>
-<p>Recuerda que los cambios realizados aquí pueden afectar a la disponibilidad y precios de los productos, así que procede con precaución.</p>
-<p>Para más información, visita la sección de <a href="https://www.example.com/documentacion">documentación</a>.</p>
-<p>Gracias por utilizar nuestro sistema de gestión de tiendas. Esperamos que tengas una excelente experiencia.</p>  
-<p>Si tienes alguna sugerencia o comentario, no dudes en hacérnoslo saber.</p>
-<p>¡Disfruta de tu día!</p>
+<?php
+global $language;
+$checked = !empty($moduleFlags['store']);
+?>
+<h2><?= htmlspecialchars($language['menu_admin']['store'] ?? 'Tienda') ?></h2>
+
+<form method="post" action="" class="mod-toggle">
+  <input type="hidden" name="__action__" value="toggle_module">
+  <input type="hidden" name="module_key" value="store">
+  <input type="hidden" name="redirect"   value="store">
+
+  <label class="toggle">
+    <input type="checkbox" name="visible" value="1" <?= $checked ? 'checked' : '' ?>>
+    <span></span>
+    <?= htmlspecialchars($language['admin_toggle']['label'] ?? 'Mostrar este módulo (y su menú)') ?>
+  </label>
+  <button class="btn btn-red" type="submit"><?= htmlspecialchars($language['admin_toggle']['save'] ?? 'Guardar') ?></button>
+</form>

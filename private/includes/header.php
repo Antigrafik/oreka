@@ -10,5 +10,7 @@
     <link rel="stylesheet" href="<?=$baseUrl . $globalConfig['stylesheet'] ?>">
     <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="stylesheet" href="/assets/css/myspace.css">
+    <link rel="stylesheet" href="/assets/css/admin.css">
+    <link rel="stylesheet" href="/assets/css/legal.css">
 </head>
 <body>

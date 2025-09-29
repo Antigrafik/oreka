@@ -6,8 +6,10 @@ if (!isset($pdo)) {
     @require_once __DIR__ . '/../config/db_connect.php';
 }
 
-$isAdmin = false;
+global $language;
 
+/* ---- ¿Es admin? ---- */
+$isAdmin = false;
 $userId   = $_SESSION['user_id'] ?? null;
 $userName = $GLOBALS['user']
          ?? ($_SESSION['email'] ?? $_SESSION['user'] ?? $_SERVER['AUTH_USER'] ?? $_SERVER['REMOTE_USER'] ?? null);
@@ -35,47 +37,80 @@ try {
         }
     }
 } catch (Throwable $e) {}
-?>
 
+/* ---- Flags de visibilidad para el MENÚ (usar solo show_module) ----
+   Controlamos sólo los que tienen entrada en el menú: learn, forum, community, store.
+   (El botón "Bases / Legal" se controla en topbar.php)
+*/
+$menuFlags = ['learn'=>true,'forum'=>true,'community'=>true,'store'=>true];
+try {
+    $st = $pdo->query("
+        SELECT module_key, CONVERT(INT, show_module) AS show_module
+        FROM [module_toggle]
+        WHERE module_key IN ('learn','forum','community','store')
+    ");
+    foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $r) {
+        $menuFlags[$r['module_key']] = ((int)$r['show_module'] === 1);
+    }
+} catch (Throwable $e) {}
+
+$pieces = [];
+
+// Aula
+if (!empty($menuFlags['learn'])) {
+    $pieces[] = '<a id="menu-learn" class="menu-item" href="/#learn">' .
+                htmlspecialchars($language['menu']['learn'] ?? 'Aula') . '</a>';
+}
+// Foro
+if (!empty($menuFlags['forum'])) {
+    $pieces[] = '<a id="menu-forum" class="menu-item" href="/#forum">' .
+                htmlspecialchars($language['menu']['forum'] ?? 'Foro') . '</a>';
+}
+// Comunidad
+if (!empty($menuFlags['community'])) {
+    $pieces[] = '<a id="menu-community" class="menu-item" href="/#community">' .
+                htmlspecialchars($language['menu']['community'] ?? 'Comunidad') . '</a>';
+}
+// Tienda (ruta propia)
+if (!empty($menuFlags['store'])) {
+    $pieces[] = '<a id="menu-store" class="menu-item" href="/store">' .
+                htmlspecialchars($language['menu']['shop'] ?? 'Tienda') . '</a>';
+}
+
+// Mi espacio (siempre visible)
+$pieces[] = '<a id="menu-myspace" class="menu-item" href="/#my-space">' .
+            htmlspecialchars($language['menu']['my_space'] ?? 'Mi espacio') . '</a>';
+
+// Admin (sólo si es admin)
+if ($isAdmin) {
+    $pieces[] = '<a id="menu-admin" class="menu-item" href="/#admin">' .
+                htmlspecialchars($language['menu']['admin'] ?? 'Admin') . '</a>';
+}
+?>
 <div class="menu">
   <nav class="menu-inner">
-    <a id="menu-learn" class="menu-item" href="/#learn"><?= htmlspecialchars($language['menu']['learn'] ?? 'Aula') ?></a>
-    <span class="sep" aria-hidden="true"></span>
-
-    <a id="menu-forum" class="menu-item" href="/#forum"><?= htmlspecialchars($language['menu']['forum'] ?? 'Foro') ?></a>
-    <span class="sep" aria-hidden="true"></span>
-
-    <a id="menu-community" class="menu-item" href="/#community"><?= htmlspecialchars($language['menu']['community'] ?? 'Comunidad') ?></a>
-    <span class="sep" aria-hidden="true"></span>
-
-    <a class="menu-item" href="/store"><?= htmlspecialchars($language['menu']['shop'] ?? 'Tienda') ?></a>
-    <span class="sep" aria-hidden="true"></span>
-
-    <!-- CAMBIO: Mi espacio usa hash en la home -->
-    <a id="menu-myspace" class="menu-item" href="/#my-space"><?= htmlspecialchars($language['menu']['my_space'] ?? 'Mi espacio') ?></a>
-
-    <?php if ($isAdmin): ?>
-      <span class="sep" aria-hidden="true"></span>
-      <a id="menu-admin" class="menu-item" href="/#admin"><?= htmlspecialchars($language['menu']['admin'] ?? 'Admin') ?></a>
-    <?php endif; ?>
+    <?php
+      // coloca separadores sólo entre elementos visibles
+      echo implode('<span class="sep" aria-hidden="true"></span>', $pieces);
+    ?>
   </nav>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // ids de los anchors y sus enlaces en el menú
-  const map = {
-    '#learn'     : 'menu-learn',
-    '#forum'     : 'menu-forum',
-    '#community' : 'menu-community',
-    '#my-space'  : 'menu-myspace',   // ← añadido
-    '#admin'     : 'menu-admin'
-  };
+  // Mapa hash -> id del enlace, pero sólo si el elemento existe
+  const map = {};
+  const add = (hash, id) => { const el = document.getElementById(id); if (el) map[hash] = id; };
+  add('#learn', 'menu-learn');
+  add('#forum', 'menu-forum');
+  add('#community', 'menu-community');
+  add('#my-space', 'menu-myspace');
+  add('#admin', 'menu-admin');
 
   function markActive(hash) {
     document.querySelectorAll('.menu-item').forEach(a => a.classList.remove('active'));
     const id = map[hash];
-    if (id) document.getElementById(id)?.classList.add('active');
+    if (id) { const el = document.getElementById(id); if (el) el.classList.add('active'); }
   }
 
   function scrollToHash(hash) {
@@ -86,9 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.scrollTo({ top: y, behavior: 'smooth' });
   }
 
-  // Interceptar clicks solo si ya estás en Home
-  document.querySelectorAll('#menu-learn, #menu-forum, #menu-community, #menu-myspace, #menu-admin')
-    .forEach(a => {
+  // Interceptar clicks sólo si ya estás en Home
+  const selector = Object.values(map).map(id => '#' + id).join(', ');
+  if (selector) {
+    document.querySelectorAll(selector).forEach(a => {
       a.addEventListener('click', (ev) => {
         const href = a.getAttribute('href') || '';
         const m = href.match(/#[-\w/]+/);
@@ -108,6 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     });
+  }
 
   if (location.hash && document.querySelector(location.hash)) {
     setTimeout(() => { markActive(location.hash); scrollToHash(location.hash); }, 0);
