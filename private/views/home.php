@@ -14,7 +14,15 @@ $showLearn = array_key_exists('learn', $flags) ? $flags['learn'] : true;
 $showForum = array_key_exists('forum', $flags) ? $flags['forum'] : true;
 $showComm  = array_key_exists('community', $flags) ? $flags['community'] : true;
 $showLegal = array_key_exists('legal', $flags) ? $flags['legal'] : true;
+$showBanner = array_key_exists('banner', $flags) ? $flags['banner'] : true;
+
+require_once PRIVATE_PATH . '/modules/banner/controllers/BannerController.php';
+$bannerSection = (new BannerController())->renderForHome();
 ?>
+
+<?php if ($showBanner && !empty($bannerSection)): ?>
+  <div id="module-banner"><?= $bannerSection ?></div>
+<?php endif; ?>
 
 <?php if ($showLearn): ?>
   <div id="module-learn"><?= $learnSection ?></div>
@@ -43,6 +51,7 @@ $showLegal = array_key_exists('legal', $flags) ? $flags['legal'] : true;
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const M = {
+    banner:    document.getElementById('module-banner'),
     learn:     document.getElementById('module-learn'),
     forum:     document.getElementById('module-forum'),
     community: document.getElementById('module-community'),
@@ -56,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const show    = el => { if (el) el.classList.remove('hidden'); };
 
   function showDefault() {
-    [M.learn, M.forum, M.community].forEach(el => { if (el) show(el); });
+    [M.banner, M.learn, M.forum, M.community].forEach(el => { if (el) show(el); });
   }
 
   function route(hash) {

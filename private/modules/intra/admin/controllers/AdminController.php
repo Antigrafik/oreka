@@ -98,8 +98,13 @@ class AdminController {
                     $titleEu    = $_POST['title_eu']   ?? '';
                     $contentEu  = $_POST['content_eu'] ?? '';
 
+                    // NUEVO: modo → estado persistido
+                    // 'draft' => BORRADOR ; 'schedule' => PROGRAMADO
+                    $mode   = $_POST['mode'] ?? 'draft'; // 'draft' | 'schedule'
+                    $status = ($mode === 'schedule') ? 'scheduled' : 'draft';
+
                     try {
-                        // 1) Normalización fechas (tu código)
+                        // 1) Normalización fechas (como ya hacías)
                         if ($dateStart === '' || $dateFinish === '') {
                             throw new RuntimeException('Faltan fechas de inicio y/o fin.');
                         }
@@ -120,45 +125,46 @@ class AdminController {
                             throw new RuntimeException('La fecha/hora de inicio debe ser anterior a la de fin.');
                         }
 
-                        // 2) Validación de campos de texto (títulos y contenidos ES/EU)
+                        // 2) Validación de textos (como ya hacías)
                         $clean = function($html){
-                            // elimina tags + espacios (incluye NBSP)
                             $txt = strip_tags((string)$html);
-                            $txt = preg_replace('/\x{00A0}/u', ' ', $txt); // NBSP
+                            $txt = preg_replace('/\x{00A0}/u', ' ', $txt);
                             $txt = trim(preg_replace('/\s+/u', ' ', $txt));
                             return $txt;
                         };
-
                         $tEs = $clean($titleEs);
                         $cEs = $clean($contentEs);
                         $tEu = $clean($titleEu);
                         $cEu = $clean($contentEu);
-
                         if ($tEs === '' || $cEs === '' || $tEu === '' || $cEu === '') {
                             throw new RuntimeException('Rellena título y contenido en Español y Euskera.');
                         }
 
-                        // 3) Validación premio si es sorteo
+                        // 3) Premio si es sorteo
                         if ($isRaffle) {
                             if ($clean($prize) === '') {
                                 throw new RuntimeException('El premio es obligatorio para Sorteo.');
                             }
                         }
 
-                        // 4) Guardado
+                        // 4) Guardado con estado NUEVO
                         $adm->saveBanner(
                             $id, $isRaffle, $prize,
                             $dateStartSql, $dateFinishSql,
-                            $titleEs, $contentEs, $titleEu, $contentEu
+                            $titleEs, $contentEs, $titleEu, $contentEu,
+                            $status // ← IMPORTANTE: nuevo parámetro
                         );
 
-                        $_SESSION['flash_success_admin'] = $id
-                            ? 'Banner actualizado correctamente.'
-                            : 'Banner creado correctamente.';
+                        $_SESSION['flash_success_admin'] =
+                            $status === 'scheduled'
+                                ? ($id ? 'Banner programado correctamente.' : 'Banner creado y programado.')
+                                : ($id ? 'Banner guardado como borrador.'  : 'Banner creado como borrador.');
 
                     } catch (Throwable $e) {
                         $_SESSION['flash_error_admin'] = 'Error al guardar: ' . $e->getMessage();
                     }
+
+                    // Redirección limpia (sin ?edit=)
                     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
                     $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
                     $path   = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';

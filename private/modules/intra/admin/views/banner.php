@@ -133,43 +133,134 @@ $bn = $editing ? array_merge($def, $editing, [
 
   <div id="banner-errors" class="flash err" style="display:none"></div>
   <div style="display:flex;gap:8px;margin-top:12px">
-    <button type="submit" class="btn btn-red">Guardar</button>
+    <!-- NUEVOS: Programar y Borrador -->
+    <button type="submit" class="btn btn-red"   name="mode" value="schedule">Programar</button>
+    <button type="submit" class="btn"           name="mode" value="draft">Borrador</button>
+
     <a href="#admin/banner" class="btn" id="btn-cancel">Cancelar</a>
     <span style="margin-left:auto;opacity:.7"><?= $editing ? 'Editando #'.$editing['id'] : 'Nuevo' ?></span>
   </div>
 </form>
+
+<?php
+$now = new DateTime('now'); // hora actual para comparar en histórico
+
+// Parse seguro: devuelve DateTime|null
+function dt_or_null($s): ?DateTime {
+    if ($s === null) return null;
+    $s = trim((string)$s);
+    if ($s === '') return null;
+    try {
+        return new DateTime($s);
+    } catch (Throwable $e) {
+        return null;
+    }
+}
+
+function banner_status_label(array $r, DateTime $now): string {
+    $status = strtolower(trim((string)($r['status'] ?? 'draft')));
+    $start  = dt_or_null($r['date_start']  ?? null);
+    $finish = dt_or_null($r['date_finish'] ?? null);
+
+    switch ($status) {
+        case 'draft':
+            return 'Borrador';
+
+        case 'scheduled':
+            if ($start && $now < $start) return 'Programado';
+            if ($start && $finish && $now >= $start && $now <= $finish) return 'Ejecutándose';
+            if ($finish && $now > $finish) return 'Finalizado';
+            // si faltan fechas o no encaja ninguna, tratamos como Programado
+            return 'Programado';
+
+        case 'running':
+            return 'Ejecutándose';
+
+        case 'finished':
+            return 'Finalizado';
+    }
+    return 'Borrador';
+}
+
+function banner_is_finished(array $r, DateTime $now): bool {
+    $status = strtolower(trim((string)($r['status'] ?? 'draft')));
+    if ($status === 'finished') return true;
+
+    if ($status === 'scheduled') {
+        $finish = dt_or_null($r['date_finish'] ?? null);
+        if ($finish && $now > $finish) return true;
+    }
+    return false;
+}
+?>
+
+
 
 <!-- Histórico -->
 <h3 style="margin:.5rem 0">Histórico</h3>
 <div class="list" style="display:grid;gap:10px">
   <?php if (empty($history)): ?>
     <div class="card"><div class="card-body">Sin registros.</div></div>
-  <?php else: foreach ($history as $h): ?>
-    <div class="card">
-      <div class="card-body" style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center">
-        <div>
+  <?php else: ?>
+    <?php foreach ($history as $h): ?>
+      <?php
+        $label      = banner_status_label($h, $now);
+        $isFinished = banner_is_finished($h, $now);
+        // MSSQL suele devolver "True"/"False" (string); esto lo convierte correctamente a boolean
+        $isRaffle   = filter_var(($h['is_raffle'] ?? false), FILTER_VALIDATE_BOOLEAN);
+
+        $ds = dt_or_null($h['date_start']  ?? null);
+        $df = dt_or_null($h['date_finish'] ?? null);
+        $dsTxt = $ds ? $ds->format('d/m/Y H:i') : '—';
+        $dfTxt = $df ? $df->format('d/m/Y H:i') : '—';
+
+        $titleEs = $h['title_es'] ?? '(sin título ES)';
+        $titleEu = $h['title_eu'] ?? '(sin título EU)';
+        $prize   = trim((string)($h['prize'] ?? ''));
+      ?>
+      <div class="card">
+        <div class="card-body" style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center">
           <div>
-            <strong>#<?= (int)$h['id'] ?></strong> · <?= $h['is_raffle'] ? 'SORTEO' : 'ANUNCIO' ?>
-            <?php if ($h['is_raffle'] && !empty($h['prize'])): ?>
-              — Premio: <?= htmlspecialchars($h['prize']) ?>
-            <?php endif; ?>
+            <div>
+              <strong>#<?= (int)$h['id'] ?></strong> · <?= $isRaffle ? 'SORTEO' : 'ANUNCIO' ?>
+              <?php if ($isRaffle && $prize !== ''): ?>
+                — Premio: <?= htmlspecialchars($prize) ?>
+              <?php endif; ?>
+            </div>
+
+            <div>Estado: <strong><?= htmlspecialchars($label) ?></strong></div>
+
+            <div><?= htmlspecialchars($titleEs) ?> / <?= htmlspecialchars($titleEu) ?></div>
+            <div>Del <?= $dsTxt ?> al <?= $dfTxt ?></div>
           </div>
-          <div>Estado: <strong><?= htmlspecialchars($h['status'] ?? 'draft') ?></strong></div>
-          <div><?= htmlspecialchars($h['title_es'] ?? '(sin título ES)') ?> / <?= htmlspecialchars($h['title_eu'] ?? '(sin título EU)') ?></div>
-          <div>Del <?= date('d/m/Y H:i', strtotime($h['date_start'])) ?> al <?= date('d/m/Y H:i', strtotime($h['date_finish'])) ?></div>
-        </div>
-        <div style="display:flex;gap:6px">
-          <a class="btn" href="?edit=<?= (int)$h['id'] ?>#admin/banner">Editar</a>
-          <form method="post" action="" onsubmit="return confirm('¿Eliminar este registro?');">
-            <input type="hidden" name="__action__" value="banner_delete">
-            <input type="hidden" name="id" value="<?= (int)$h['id'] ?>">
-            <button class="btn" type="submit">Borrar</button>
-          </form>
+
+          <div style="display:flex;gap:6px">
+            <?php if (!$isFinished): ?>
+              <a class="btn" href="?edit=<?= (int)$h['id'] ?>#admin/banner">Editar</a>
+            <?php endif; ?>
+            <form method="post" action="" onsubmit="return confirm('¿Eliminar este registro?');">
+              <input type="hidden" name="__action__" value="banner_delete">
+              <input type="hidden" name="id" value="<?= (int)$h['id'] ?>">
+              <button class="btn" type="submit">Borrar</button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  <?php endforeach; endif; ?>
+    <?php endforeach; ?>
+  <?php endif; ?>
 </div>
+
+<script>
+  // Índice para validar solapes en cliente (se excluye el propio id al editar)
+  const BANNERS_INDEX = <?= json_encode(array_map(function($h){
+    return [
+      'id'         => (int)$h['id'],
+      'date_start' => $h['date_start'],
+      'date_finish'=> $h['date_finish'],
+    ];
+  }, $history ?? [])); ?>;
+</script>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -199,7 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const form      = document.getElementById('banner-form');
   const errorBox  = document.getElementById('banner-errors');
 
-  // utilidades que ya tienes:
   function reallyShow(el){
     if (!el) return;
     el.removeAttribute('hidden');
@@ -215,10 +305,20 @@ document.addEventListener('DOMContentLoaded', () => {
       : (document.querySelector('#ed-eu') || document.querySelector('#title-eu'));
     el?.focus();
   }
+  function toDate(v){ return v ? new Date(v) : null; }
+  function overlaps(aStart, aEnd, bStart, bEnd){
+    // Solapa si: startA < endB  y  endA > startB
+    return (aStart < bEnd) && (aEnd > bStart);
+  }
 
   if (form) {
     form.addEventListener('submit', function (e) {
       let errors = [];
+
+      const currentId = (() => {
+        const v = (form.querySelector('input[name="id"]')?.value || '').trim();
+        return v === '' ? null : parseInt(v, 10);
+      })();
 
       const titleEs   = document.querySelector('#title-es')?.innerText.trim();
       const contentEs = document.querySelector('#ed-es')?.innerText.trim();
@@ -235,48 +335,51 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!dateStart) errors.push("Falta la fecha de inicio");
       if (!dateFinish)errors.push("Falta la fecha de fin");
 
-      // 2) Fechas (si están)
+      // 2) Fechas
+      let dStart = null, dFinish = null, now = null;
       if (dateStart && dateFinish) {
-        const now    = new Date();
-        now.setSeconds(0,0);
-        const start  = new Date(dateStart);
-        const finish = new Date(dateFinish);
+        dStart  = toDate(dateStart);
+        dFinish = toDate(dateFinish);
+        now     = new Date(); now.setSeconds(0,0);
 
-        if (start < now) {
-          errors.push("La fecha de inicio no puede ser anterior a la fecha actual");
-        }
-        if (finish < now) {
-          errors.push("La fecha de fin no puede ser anterior a la fecha actual");
-        }
-        if (start >= finish) {
-          errors.push("La fecha de inicio debe ser anterior a la fecha de fin");
+        if (dStart < now)       errors.push("La fecha de inicio no puede ser anterior a la fecha actual");
+        if (dFinish < now)      errors.push("La fecha de fin no puede ser anterior a la fecha actual");
+        if (dStart >= dFinish)  errors.push("La fecha de inicio debe ser anterior a la fecha de fin");
+      }
+
+      // 3) Solape (solo si no hay errores previos de fechas)
+      if (errors.length === 0 && dStart && dFinish && Array.isArray(BANNERS_INDEX)) {
+        for (const it of BANNERS_INDEX) {
+          if (currentId !== null && it.id === currentId) continue; // no compararse con sí mismo
+          const bs = toDate(it.date_start);
+          const bf = toDate(it.date_finish);
+          if (!bs || !bf) continue;
+          if (overlaps(dStart, dFinish, bs, bf)) {
+            errors.push(`Ya hay un banner programado en esas fechas (#${it.id}: ${it.date_start} → ${it.date_finish}).`);
+            break;
+          }
         }
       }
 
       if (errors.length > 0) {
-        // BLOQUEA TOTALMENTE el submit y cualquier otro handler
+        // BLOQUEA el envío
         e.preventDefault();
         e.stopPropagation();
         if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
 
-        // Mantén el editor visible y muestra errores
+        // Muestra errores y mantén el editor
         reallyShow(form);
         if (errorBox) {
           errorBox.style.display = "block";
           errorBox.innerHTML = errors.map(err => `<div>${err}</div>`).join("");
         }
-        // Lleva el foco de nuevo al editor
         focusCurrentLang();
-
-        return false; // corta aquí
+        return false;
       } else {
-        // sin errores: oculta el box y deja que el submit siga su curso
-        if (errorBox) {
-          errorBox.style.display = "none";
-          errorBox.innerHTML = "";
-        }
+        // limpio y dejo seguir al servidor (que revalida)
+        if (errorBox) { errorBox.style.display = "none"; errorBox.innerHTML = ""; }
       }
-    }, true); // <- captura: nos aseguramos de interceptar antes que otros listeners
+    }, true); // captura (nos aseguramos de ir primero)
   }
 });
 </script>

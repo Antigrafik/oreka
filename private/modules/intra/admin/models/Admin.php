@@ -307,20 +307,43 @@ class Admin {
         return $out;
     }
 
-    public function saveBanner(?int $id, bool $isRaffle, ?string $prize, string $dateStart, string $dateFinish,
-                            string $titleEs, string $contentEs, string $titleEu, string $contentEu): int {
+    public function findOverlappingBanner(string $startSql, string $finishSql, ?int $excludeId = null): ?array {
+        global $pdo;
+        // Overlap si: startA < endB  Y  endA > startB
+        $sql = "
+            SELECT TOP (1) id, date_start, date_finish
+            FROM dbo.banner
+            WHERE date_start < ? AND date_finish > ?
+            " . ($excludeId ? "AND id <> ?" : "") . "
+            ORDER BY id DESC
+        ";
+        $st = $pdo->prepare($sql);
+        $params = [$finishSql, $startSql];
+        if ($excludeId) $params[] = $excludeId;
+        $st->execute($params);
+        $row = $st->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    public function saveBanner(
+        ?int $id, bool $isRaffle, ?string $prize,
+        string $dateStart, string $dateFinish,
+        string $titleEs, string $contentEs, string $titleEu, string $contentEu,
+        string $status // ← NUEVO
+    ): int {
         global $pdo;
 
         $pdo->beginTransaction();
         try {
             if ($id) {
-                /* ---- UPDATE de banner existente ---- */
+                // UPDATE banner + estado
                 $up = $pdo->prepare("
-                    UPDATE banner
-                    SET is_raffle = ?, prize = ?, date_start = ?, date_finish = ?, updated_at = SYSDATETIME()
+                    UPDATE dbo.banner
+                    SET is_raffle = ?, prize = ?, date_start = ?, date_finish = ?,
+                        [status] = ?, updated_at = SYSDATETIME()
                     WHERE id = ?
                 ");
-                $up->execute([$isRaffle ? 1 : 0, $isRaffle ? $prize : null, $dateStart, $dateFinish, $id]);
+                $up->execute([$isRaffle ? 1 : 0, $isRaffle ? $prize : null, $dateStart, $dateFinish, $status, $id]);
 
                 // asegurar que existe su link
                 $q = $pdo->prepare("SELECT id FROM dbo.[link] WHERE id_banner = ?");
@@ -332,30 +355,32 @@ class Admin {
                     $linkId = (int)$insL->fetchColumn();
                 }
             } else {
-                /* ---- INSERT de banner nuevo + recuperar id con OUTPUT ---- */
+                // INSERT banner con estado recibido
                 $insB = $pdo->prepare("
                     INSERT INTO dbo.banner (is_raffle, prize, date_start, date_finish, [status], created_at, updated_at)
                     OUTPUT INSERTED.id
-                    VALUES (?, ?, ?, ?, 'draft', SYSDATETIME(), SYSDATETIME())");
-                $insB->execute([$isRaffle ? 1 : 0, $isRaffle ? $prize : null, $dateStart, $dateFinish]);
+                    VALUES (?, ?, ?, ?, ?, SYSDATETIME(), SYSDATETIME())
+                ");
+                $insB->execute([$isRaffle ? 1 : 0, $isRaffle ? $prize : null, $dateStart, $dateFinish, $status]);
                 $id = (int)$insB->fetchColumn();
 
-                // crear link para este banner y recuperar id_link de la misma forma
+                // crear link
                 $insL = $pdo->prepare("INSERT INTO dbo.[link] (id_banner) OUTPUT INSERTED.id VALUES (?)");
                 $insL->execute([$id]);
                 $linkId = (int)$insL->fetchColumn();
             }
 
-            // MERGE de traducciones ES/EU sobre ese link
+            // MERGE traducciones
             $merge = $pdo->prepare("
-            MERGE dbo.translation AS t
-            USING (VALUES
-                (?, 'es', ?, ?),
-                (?, 'eu', ?, ?)
-            ) AS s (id_link, lang, title, content)
-            ON (t.id_link = s.id_link AND t.lang = s.lang)
-            WHEN MATCHED THEN UPDATE SET title = s.title, content = s.content
-            WHEN NOT MATCHED THEN INSERT (id_link, lang, title, content) VALUES (s.id_link, s.lang, s.title, s.content);");
+                MERGE dbo.translation AS t
+                USING (VALUES
+                    (?, 'es', ?, ?),
+                    (?, 'eu', ?, ?)
+                ) AS s (id_link, lang, title, content)
+                ON (t.id_link = s.id_link AND t.lang = s.lang)
+                WHEN MATCHED THEN UPDATE SET title = s.title, content = s.content
+                WHEN NOT MATCHED THEN INSERT (id_link, lang, title, content) VALUES (s.id_link, s.lang, s.title, s.content);
+            ");
             $merge->execute([$linkId, $titleEs, $contentEs, $linkId, $titleEu, $contentEu]);
 
             $pdo->commit();
@@ -365,6 +390,7 @@ class Admin {
             throw $e;
         }
     }
+
 
     public function deleteBanner(int $id): void {
         global $pdo;
