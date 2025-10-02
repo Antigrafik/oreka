@@ -16,28 +16,39 @@ class MySpaceController
 
         $uid = $this->currentUserId();
 
-        //$kpis = (new MySpace())->getKpis($uid); // ['total'=>..., 'month'=>...]
-        $activity = [];        // (new Activity())->list($uid, 10, 0);
-        $learn    = [];        // (new LearnHistory())->list($uid);
-        $forum    = [];        // (new ForumHistory())->list($uid);
-        $recs     = [];        // (new RecommendationsHistory())->list($uid);
-        $routines = [];        // (new RoutinesHistory())->list($uid);
-        $trials   = [];        // (new TrialsHistory())->list($uid);
-        $meetings = [];        // (new MeetingHistory())->list($uid);
+        // === FLAGS de visibilidad para historiales (por defecto: true) ===
+        global $pdo;
+        $msFlags = [
+            'learn'            => true,
+            'forum'            => true,
+            'recommendations'  => true,
+            'routines'         => true,
+            'trial'            => true,
+            'meeting'          => true,
+        ];
+        try {
+            $st = $pdo->query("
+                SELECT module_key, CONVERT(INT, show_module) AS show_module
+                FROM [module_toggle]
+                WHERE module_key IN ('learn','forum','recommendations','routines','trial','meeting')
+            ");
+            foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $r) {
+                $msFlags[$r['module_key']] = ((int)$r['show_module'] === 1);
+            }
+        } catch (\Throwable $e) {
+            // si falla, se quedan en true
+        }
 
-        // variables disponibles en la vista principal
+        // Datos (a futuro)
+        $activity = $learn = $forum = $recs = $routines = $trials = $meetings = [];
+
         ob_start();
         include PRIVATE_PATH . '/modules/intra/myspace/views/myspace.php';
         return ob_get_clean();
     }
 
-    /** Obtiene el id del usuario autenticado, o null si no hay. */
     private function currentUserId(): ?int
     {
-        // Adapta a tu sistema de login
-        if (!empty($_SESSION['user_id'])) {
-            return (int) $_SESSION['user_id'];
-        }
-        return null;
+        return !empty($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
     }
 }

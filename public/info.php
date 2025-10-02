@@ -58,10 +58,10 @@ echo "Proceso Windows: " . (getenv('USERNAME') ?: getenv('USER')) . PHP_EOL;
 echo "App Pool user  : " . (php_uname('n')) . "\\" . (getenv('USERNAME') ?: '') . PHP_EOL;
 echo "SSO navegador  : " . ($_SERVER['REMOTE_USER'] ?? $_SERVER['AUTH_USER'] ?? '(no SSO)') . PHP_EOL;
 
-echo PHP_EOL . "---- Lista de [name] en dbo.[user] ----" . PHP_EOL;
+echo PHP_EOL . "---- Lista de [usuario] en dbo.[user] ----" . PHP_EOL;
 
 try {
-    $stmt  = $pdo->query("SELECT [name] FROM dbo.[user] ORDER BY [name];");
+    $stmt  = $pdo->query("SELECT [usuario] FROM dbo.[user] ORDER BY [usuario];");
     $names = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
     if (empty($names)) {
         echo "(sin filas)\n";
@@ -69,7 +69,7 @@ try {
         foreach ($names as $n) echo $n . PHP_EOL;
     }
 } catch (PDOException $e) {
-    echo "Error listando dbo.[user].[name]: " . $e->getMessage() . PHP_EOL;
+    echo "Error listando dbo.[user].[usuario]: " . $e->getMessage() . PHP_EOL;
 }
 
 exit; // asegura que no se mezcle con más HTML

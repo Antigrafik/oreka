@@ -17,26 +17,26 @@
     </div>
   </div>
 
-    <!-- Historiales -->
-    <div class="myspace-grid-hist gap-20">
-        <section id="my-space-root">
-            <?php include __DIR__ . '/activity.php'; ?>
-            <?php include __DIR__ . '/learn_history.php'; ?>
-            <?php include __DIR__ . '/forum_history.php'; ?>
-            <?php include __DIR__ . '/recommendations_history.php'; ?>
-            <?php include __DIR__ . '/routines_history.php'; ?>
-            <?php include __DIR__ . '/trials_history.php'; ?>
-            <?php include __DIR__ . '/meeting_history.php'; ?>
-        </section>
-    </div>
+  <!-- Historiales -->
+  <div class="myspace-grid-hist gap-20">
+    <section id="my-space-histories">
+      <?php include __DIR__ . '/activity.php'; ?>
+
+      <?php if (!empty($msFlags['learn']))           include __DIR__ . '/learn_history.php'; ?>
+      <?php if (!empty($msFlags['forum']))           include __DIR__ . '/forum_history.php'; ?>
+      <?php if (!empty($msFlags['recommendations'])) include __DIR__ . '/recommendations_history.php'; ?>
+      <?php if (!empty($msFlags['routines']))        include __DIR__ . '/routines_history.php'; ?>
+      <?php if (!empty($msFlags['trial']))           include __DIR__ . '/trials_history.php'; ?>
+      <?php if (!empty($msFlags['meeting']))         include __DIR__ . '/meeting_history.php'; ?>
+    </section>
+  </div>
 </section>
 
 <script>
-  // Placeholders hasta conectar con la BD
-  document.addEventListener('DOMContentLoaded', () => {
-    const $total = document.getElementById('kpi-total-points');
-    const $month = document.getElementById('kpi-month-points');
-    if ($total && !$total.dataset.init) { $total.textContent = '—'; $total.dataset.init = '1'; }
-    if ($month && !$month.dataset.init) { $month.textContent = '—'; $month.dataset.init = '1'; }
-  });
+document.addEventListener('DOMContentLoaded', () => {
+  const $total = document.getElementById('kpi-total-points');
+  const $month = document.getElementById('kpi-month-points');
+  if ($total && !$total.dataset.init) { $total.textContent = '—'; $total.dataset.init = '1'; }
+  if ($month && !$month.dataset.init) { $month.textContent = '—'; $month.dataset.init = '1'; }
+});
 </script>

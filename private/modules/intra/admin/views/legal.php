@@ -13,16 +13,19 @@ $euTitle   = $legal['eu']['title']   ?? 'Oinarriak / Lege-oharra';
 $euContent = $legal['eu']['content'] ?? '<h1>Oinarri legalak eta pribatutasun-oharra</h1>';
 $currStat  = isset($legal['status']) ? (int)$legal['status'] : 1;
 
-// Mensajes flash (usamos su presencia para mostrar textos localizados)
 $flashOk  = $_SESSION['flash_success_admin'] ?? null;
 $flashErr = $_SESSION['flash_error_admin']   ?? null;
 unset($_SESSION['flash_success_admin'], $_SESSION['flash_error_admin']);
+
+// === Toggle de visibilidad del módulo LEGAL ===
+$checked = !empty($moduleFlags['legal']);
 ?>
 
 <h1 style="margin-top:0">
   <?= htmlspecialchars($language['legal_editor']['title'] ?? 'LEGAL') ?>
 </h1>
 
+<!-- Flash -->
 <?php if ($flashOk): ?>
   <div class="flash ok">
     <?= htmlspecialchars($language['legal_editor']['flash_ok'] ?? 'Guardado correctamente.') ?>
@@ -34,18 +37,26 @@ unset($_SESSION['flash_success_admin'], $_SESSION['flash_error_admin']);
   </div>
 <?php endif; ?>
 
+<!-- Toggle módulo Legal (igual que otros módulos) -->
+<form method="post" action="" class="mod-toggle" style="margin-bottom:14px">
+  <input type="hidden" name="__action__"  value="toggle_module">
+  <input type="hidden" name="module_key"  value="legal">
+  <input type="hidden" name="redirect"    value="legal">
+  <label class="toggle">
+    <input type="checkbox" name="visible" value="1" <?= $checked ? 'checked' : '' ?>>
+    <?= htmlspecialchars($language['admin_toggle']['label'] ?? 'Mostrar este módulo (y su menú)') ?>
+  </label>
+  <button class="btn btn-red" type="submit">
+    <?= htmlspecialchars($language['admin_toggle']['save'] ?? 'Guardar') ?>
+  </button>
+</form>
+
+<!-- ===== Editor de contenidos Legal ===== -->
 <form method="post" action="" id="legal-form">
   <input type="hidden" name="__action__" value="save_legal">
+  <input type="hidden" name="admin_legal_id" value="<?= (int)($legal['admin_legal_id'] ?? 0) ?>">
+  <input type="hidden" name="link_id"        value="<?= (int)($legal['link_id'] ?? 0) ?>">
 
-  <div style="display:flex;gap:10px;align-items:center;margin:.5rem 0 1rem">
-    <label style="display:flex;align-items:center;gap:.5rem;border:1px solid #c00;padding:.35rem .6rem;border-radius:10px">
-      <input type="checkbox" name="status" value="1" <?= $currStat ? 'checked' : '' ?>>
-      <strong><?= htmlspecialchars($language['legal_editor']['publish_label'] ?? 'Publicar (mostrar botón y contenido)') ?></strong>
-    </label>
-    <span style="opacity:.7">
-      <?= htmlspecialchars($language['legal_editor']['publish_hint'] ?? 'Si desmarcas, se guarda como borrador y el botón del topbar puede ocultarse.') ?>
-    </span>
-  </div>
 
   <!-- Tabs -->
   <nav style="display:flex;gap:6px;margin-bottom:10px">
@@ -55,6 +66,10 @@ unset($_SESSION['flash_success_admin'], $_SESSION['flash_error_admin']);
     <button type="button" class="tab-btn" data-tab="eu">
       <?= htmlspecialchars($language['legal_editor']['tab_eu'] ?? 'Euskera') ?>
     </button>
+    <span style="margin-left:auto;opacity:.7">
+      <?= $currStat ? htmlspecialchars($language['legal_editor']['published_badge'] ?? 'Publicado')
+                    : htmlspecialchars($language['legal_editor']['draft_badge'] ?? 'Borrador') ?>
+    </span>
   </nav>
 
   <!-- Toolbar -->
@@ -69,9 +84,6 @@ unset($_SESSION['flash_success_admin'], $_SESSION['flash_error_admin']);
     <button type="button" data-cmd="insertOrderedList"><?= htmlspecialchars($language['legal_editor']['toolbar_ol'] ?? '1. Lista') ?></button>
     <button type="button" id="btn-link"><?= htmlspecialchars($language['legal_editor']['toolbar_link'] ?? 'Enlace') ?></button>
     <button type="button" id="btn-clear"><?= htmlspecialchars($language['legal_editor']['toolbar_clear'] ?? 'Quitar formato') ?></button>
-    <span style="margin-left:auto;opacity:.7">
-      <?= htmlspecialchars($language['legal_editor']['toolbar_tip'] ?? 'Consejo: pega texto desde Word y ajusta con la barra.') ?>
-    </span>
   </div>
 
   <!-- ES -->
@@ -97,10 +109,10 @@ unset($_SESSION['flash_success_admin'], $_SESSION['flash_error_admin']);
   </section>
 
   <div style="display:flex;gap:8px;margin-top:12px">
-    <button type="submit" name="mode" value="draft" class="btn btn-outline">
-      <?= htmlspecialchars($language['legal_editor']['save_draft'] ?? 'Guardar borrador') ?>
+    <button type="submit" class="btn btn-outline" name="mode" value="save" id="btn-save">
+      <?= htmlspecialchars($language['legal_editor']['save'] ?? 'Guardar') ?>
     </button>
-    <button type="submit" name="mode" value="publish" class="btn btn-red">
+    <button type="submit" class="btn btn-red" name="mode" value="publish" id="btn-publish">
       <?= htmlspecialchars($language['legal_editor']['publish'] ?? 'Publicar') ?>
     </button>
     <span id="save-msg" style="margin-left:auto;color:#0a0"></span>
@@ -108,46 +120,22 @@ unset($_SESSION['flash_success_admin'], $_SESSION['flash_error_admin']);
 </form>
 
 <script>
-(function(){
-  const tabs = { es: document.querySelector('.tab-es'), eu: document.querySelector('.tab-eu') };
-  const btns = document.querySelectorAll('.tab-btn');
-  const editors = { es: document.getElementById('ed-es'), eu: document.getElementById('ed-eu') };
-  const fields  = { es: document.getElementById('tx-es'), eu: document.getElementById('tx-eu') };
-  let current = 'es';
-
-  btns.forEach(b => b.addEventListener('click', () => {
-    current = b.dataset.tab;
-    Object.entries(tabs).forEach(([k,sec]) => sec.hidden = (k!==current));
-    btns.forEach(x => x.classList.toggle('active', x===b));
-    editors[current].focus();
-  }));
-  btns[0].click();
-
-  const toolbar = document.querySelector('.toolbar');
-  toolbar.addEventListener('click', (e) => {
-    const el = e.target.closest('button'); if(!el) return;
-    const cmd = el.dataset.cmd; const block = el.dataset.block;
-    const ed = editors[current];
-    if (cmd) { document.execCommand(cmd, false, null); ed.focus(); return; }
-    if (block) { document.execCommand('formatBlock', false, block); ed.focus(); return; }
+document.addEventListener('DOMContentLoaded', () => {
+  initRichEditor({
+    root: document.getElementById('legal-form'),
+    langs: ['es','eu'],
+    toolbarSelector: '.toolbar',
+    tabBtnSelector: '.tab-btn',
+    tabs: { es: '.tab-es', eu: '.tab-eu' },
+    title: {
+      esInput: 'input[name="title_es"]',
+      euInput: 'input[name="title_eu"]'
+    },
+    content: {
+      esCtt: '#ed-es',  esField: '#tx-es',
+      euCtt: '#ed-eu',  euField: '#tx-eu'
+    }
   });
-
-  document.getElementById('btn-link').addEventListener('click', () => {
-    const url = prompt(<?= json_encode($language['legal_editor']['link_prompt'] ?? 'URL del enlace (https://...)') ?>);
-    if (url) document.execCommand('createLink', false, url);
-    editors[current].focus();
-  });
-  document.getElementById('btn-clear').addEventListener('click', () => {
-    document.execCommand('removeFormat', false, null);
-    editors[current].focus();
-  });
-
-  document.getElementById('legal-form').addEventListener('submit', () => {
-    fields.es.value = editors.es.innerHTML.trim();
-    fields.eu.value = editors.eu.innerHTML.trim();
-    const mode = (document.activeElement && document.activeElement.name === 'mode')
-                   ? document.activeElement.value : 'draft';
-    if (mode === 'publish') document.querySelector('input[name="status"]').checked = true;
-  });
-})();
+});
 </script>
+

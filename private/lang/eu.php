@@ -112,7 +112,7 @@ return [
         'forum'     => 'Foroa',
         'community' => 'Komunitatea',
         'legal'     => 'Legea',
-        // 'modules'   => 'Moduluak', // ← kenduta, ez da gehiago erabiltzen
+        'banner'    => 'Banner',
     ],
 
     /* BERRIA: admin atal bakoitzean agertzen den toggle-aren testuak */

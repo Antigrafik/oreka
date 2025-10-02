@@ -12,5 +12,6 @@
     <link rel="stylesheet" href="/assets/css/myspace.css">
     <link rel="stylesheet" href="/assets/css/admin.css">
     <link rel="stylesheet" href="/assets/css/legal.css">
+    <link rel="stylesheet" href="/assets/css/banner.css">
 </head>
 <body>

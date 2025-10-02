@@ -112,7 +112,7 @@ return [
         'forum'     => 'Foro',
         'community' => 'Comunidad',
         'legal'     => 'Legal',
-        // 'modules' => 'Módulos', // ← ya no se usa
+        'banner'    => 'Banner',
     ],
 
     /* NUEVO: usados por los checks de visibilidad en cada sección del Admin */

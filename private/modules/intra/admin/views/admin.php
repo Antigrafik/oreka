@@ -29,6 +29,7 @@ $GLOBALS['moduleFlags'] = $moduleFlags;
             <?= htmlspecialchars($language['modules']['meeting'] ?? 'Quedadas') ?>
           </a>
         </div>
+        <a href="#admin/banner" data-tab="banner" class="admin-link"><?= htmlspecialchars($language['menu_admin']['banner'] ?? 'Banner') ?></a>
         <a href="#admin/store" data-tab="store" class="admin-link"><?= htmlspecialchars($language['menu_admin']['store'] ?? 'Tienda') ?></a>
         <a href="#admin/legal" data-tab="legal" class="admin-link"><?= htmlspecialchars($language['menu_admin']['legal'] ?? 'Legal') ?></a>
       </nav>
@@ -51,6 +52,15 @@ $GLOBALS['moduleFlags'] = $moduleFlags;
           $usersView = PRIVATE_PATH . '/modules/intra/admin/views/users.php';
           if (is_file($usersView)) { include $usersView; }
           else { echo '<h2>Usuarios</h2><p>(Vista users.php no encontrada)</p>'; }
+        ?>
+      </section>
+
+      <!-- Contenido → Banner -->
+      <section id="tab-banner" class="admin-tab" hidden>
+        <?php
+          $bannerView = PRIVATE_PATH . '/modules/intra/admin/views/banner.php';
+          if (is_file($bannerView)) { include $bannerView; }
+          else { echo '<h2>Banner</h2><p>(Vista banner.php no encontrada)</p>'; }
         ?>
       </section>
 
