@@ -1,0 +1,283 @@
+@use '../abstracts' as *;
+
+.recommendation-create {
+  margin: 40px auto 0;
+  max-width: 1200px;
+  padding: 0 16px;
+}
+
+.recommendation-create .lead {
+  margin: 0 0 1rem;
+  color: #666;
+}
+
+.rec-form .rec-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.rec-form .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rec-form .field.span-2 {
+  grid-column: span 2;
+}
+
+.rec-form input,
+.rec-form select,
+.rec-form textarea {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  font: inherit;
+  color: var(--text);
+  background: #fff;
+}
+
+.rec-form button.btn {
+  margin-top: 12px;
+}
+
+/* Alertas (usar globalmente) */
+.alert {
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.alert.success {
+  background: #e7f7ee;
+  border: 1px solid #8ad1a3;
+  color: #216b3a;
+}
+
+.alert.error {
+  background: #fdeaea;
+  border: 1px solid #f5b5b5;
+  color: #7d1f1f;
+}
+
+/* (Opcional) variante si mantienes btn-primary */
+.btn-primary {
+  background: var(--red);
+  color: #fff;
+}
+
+#community-recommendations {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+#community-recommendations > h2 {
+  text-align: center;
+  font-size: 40px;
+  letter-spacing: 1px;
+  margin: 20px 0 6px;
+}
+
+#community-recommendations > .lead {
+  text-align: center;
+  margin: 0 auto 24px;
+  max-width: 680px;
+  color: #666;
+}
+
+/* === Filtros: mismo look & feel y tipografía global === */
+#community-recommendations .filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 12px 0 16px;
+}
+
+#community-recommendations .filters .filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#community-recommendations .filters .filter span {
+  font-weight: 600;
+}
+
+/* Tipografía y estilo de inputs/selects como en el resto */
+#community-recommendations .filters select,
+#community-recommendations .filters input[type=search] {
+  font: inherit; /* <- asegura misma fuente */
+  color: var(--text);
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  outline: none;
+}
+
+/* El buscador que crece al final, como ya tenías */
+#community-recommendations .filters .search {
+  margin-left: auto;
+  flex: 1 1 260px;
+}
+
+#community-recommendations .filters .search input {
+  width: 100%;
+}
+
+.recommendations .lead {
+  margin: 0 0 1rem;
+  color: #666;
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 12px 0 16px;
+}
+
+.filters .filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filters .filter span {
+  font-weight: 600;
+}
+
+.filters .search {
+  margin-left: auto;
+  flex: 1 1 260px;
+}
+
+.filters input[type=search] {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.card-subtitle {
+  margin: 0.25rem 0 0.5rem;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.card-footer .bylines {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.card-footer .byline + .byline {
+  margin-top: 2px;
+}
+
+.card-footer .likes {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-footer .likes svg {
+  vertical-align: middle;
+}
+
+.card-footer .likes .heart {
+  color: var(--red);
+}
+
+/* Fin Estilos Community-Recomendation*/
+/* ===== Routines (misma estética que Learn) ===== */
+#routines {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+#routines > h2 {
+  text-align: center;
+  font-size: 40px;
+  letter-spacing: 1px;
+  margin: 20px 0 6px;
+}
+
+#routines > .lead {
+  text-align: center;
+  margin: 0 auto 24px;
+  max-width: 680px;
+  color: #666;
+}
+
+/* Grid del formulario (4 columnas en desktop, 1 en móvil) */
+#routines .routine-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  align-items: end;
+}
+
+@media (max-width: 900px) {
+  #routines .routine-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* Campos */
+#routines .field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+#routines .field select,
+#routines .field input {
+  font: inherit;
+  color: var(--text);
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  width: 100%;
+  background: #fff;
+}
+
+/* Botón */
+#routines .actions {
+  grid-column: 1/-1; /* botón centrado en toda la fila */
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+/* Alertas (globales, si aún no están) */
+.alert {
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.alert.success {
+  background: #e7f7ee;
+  border: 1px solid #8ad1a3;
+  color: #216b3a;
+}
+
+.alert.error {
+  background: #fdeaea;
+  border: 1px solid #f5b5b5;
+  color: #7d1f1f;
+}

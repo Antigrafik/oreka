@@ -87,13 +87,21 @@ if ($isAdmin) {
                 htmlspecialchars($language['menu']['admin'] ?? 'Admin') . '</a>';
 }
 ?>
+
 <div class="menu">
-  <nav class="menu-inner">
-    <?php
-      // coloca separadores sólo entre elementos visibles
-      echo implode('<span class="sep" aria-hidden="true"></span>', $pieces);
-    ?>
-  </nav>
+    <nav class="menu-inner">
+        <?php
+        // coloca separadores sólo entre elementos visibles
+        echo implode('<span class="sep" aria-hidden="true"></span>', $pieces);
+        ?>
+    </nav>
+    <?php if ($showLegalButton): ?>
+        <div class="menu-legal">
+            <a href="#legal" class="legal-link" title="<?= htmlspecialchars($language['topbar']['legal'] ?? 'Bases / Legal') ?>">
+            <?= htmlspecialchars($language['topbar']['legal'] ?? 'Bases / Legal') ?>
+            </a>
+        </div>
+    <?php endif; ?>
 </div>
 
 <script>

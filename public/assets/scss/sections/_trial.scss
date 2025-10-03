@@ -1,0 +1,75 @@
+#trial {
+  max-width: 720px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+
+#trial h2 {
+  font-size: 40px;
+  letter-spacing: 1px;
+  text-align: center;
+  margin: 0 0 6px;
+}
+
+#trial .lead {
+  text-align: center;
+  color: #666;
+  margin: 0 0 24px;
+}
+
+.trial-form .form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.trial-form .field textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 160px;
+  font: inherit;
+  color: var(--text);
+  background: #fff;
+}
+
+.trial-form input[type=file] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+}
+
+.trial-form .hint {
+  font-size: 14px;
+  color: #444;
+}
+
+.trial-form .actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-label {
+  background: var(--red, #d1102d);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.file-chosen {
+  margin-left: 10px;
+  font-style: italic;
+  color: var(--text, #333);
+}

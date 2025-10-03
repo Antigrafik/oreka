@@ -1,0 +1,223 @@
+@use '../abstracts' as *;
+.section-title {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.text-muted {
+  color: #666;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.cta-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.table-wrap {
+  overflow: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.table thead th {
+  border-bottom: 2px solid $primary;
+  font-weight: 700;
+}
+
+.table .text-muted {
+  color: #888;
+}
+
+.hist-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.btn.btn-sm {
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+#learn, #forum, #community, #admin {
+  scroll-margin-top: calc(75px + 64px + 8px);
+}
+
+.learn-slider,
+.recomendation-slider,
+.meeting-slider {
+  max-width: 1200px;
+  margin: 0 auto 40px;
+  display: grid;
+  grid-template-columns: 48px 1fr 48px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px;
+}
+
+.learn-slider .viewport,
+.recomendation-slider .viewport,
+.meeting-slider .viewport {
+  overflow: hidden;
+  width: 100%;
+  background: #fff;
+  border-radius: 18px;
+  padding: 0;
+}
+
+/* reset UL y layout horizontal */
+.learn-slider .track,
+.recomendation-slider .track,
+.meeting-slider .track {
+  display: flex;
+  align-items: stretch;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.learn-slider .slide,
+.recomendation-slider .slide,
+.meeting-slider .slide {
+  list-style: none;
+  margin: 0 12px;
+  padding: 0;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+
+  height: 100%;
+  display: flex; /* la card puede ocupar toda la altura */
+}
+
+.learn-slider .slide .card,
+.recomendation-slider .slide .card,
+.meeting-slider .slide .card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* el body crece y el footer queda abajo */
+.learn-slider .card-body,
+.recomendation-slider .card-body,
+.meeting-slider .card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1 1 auto;
+}
+
+.learn-slider .card-footer,
+.recomendation-slider .card-footer,
+.meeting-slider .card-footer {
+  margin-top: auto;
+}
+
+/* bloque de media (meeting no lo usa, no pasa nada si queda aquí) */
+.learn-slider .card-media,
+.recomendation-slider .card-media,
+.meeting-slider .card-media {
+  width: 100% !important;
+  aspect-ratio: 16/9 !important;
+  background: #fff !important;
+  overflow: hidden !important;
+  display: block !important;
+  border-bottom: 2px solid $primary;
+}
+
+.learn-slider .card-media-img,
+.recomendation-slider .card-media-img,
+.meeting-slider .card-media-img {
+  width: 100% !important;
+  height: 100% !important;
+  -o-object-fit: contain !important;
+     object-fit: contain !important;
+  -o-object-position: center !important;
+     object-position: center !important;
+  display: block !important;
+}
+
+.learn-slider .card,
+.recomendation-slider .card,
+.meeting-slider .card {
+  width: 100%;
+  height: 100%;
+}
+
+/* botones */
+.learn-slider .nav,
+.recomendation-slider .nav,
+.meeting-slider .nav {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: $primary;
+  color: #fff;
+  border: none;
+  font-size: 28px;
+  line-height: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.2s;
+}
+
+.learn-slider .nav:hover,
+.recomendation-slider .nav:hover,
+.meeting-slider .nav:hover {
+  background: $primary-dark;
+}
+
+.learn-slider .nav:active,
+.recomendation-slider .nav:active,
+.meeting-slider .nav:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 1024px) {
+  .learn-slider,
+  .recomendation-slider,
+  .meeting-slider {
+    grid-template-columns: 40px 1fr 40px;
+  }
+  .learn-slider .nav,
+  .recomendation-slider .nav,
+  .meeting-slider .nav {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 24px;
+  }
+}
+@media (max-width: 640px) {
+  .learn-slider,
+  .recomendation-slider,
+  .meeting-slider {
+    grid-template-columns: 36px 1fr 36px;
+  }
+  .learn-slider .nav,
+  .recomendation-slider .nav,
+  .meeting-slider .nav {
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    font-size: 22px;
+  }
+  .learn-slider .slide,
+  .recomendation-slider .slide,
+  .meeting-slider .slide {
+    margin: 0 8px;
+  }
+}

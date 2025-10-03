@@ -1,0 +1,72 @@
+@use '../abstracts' as *;
+.main-header {
+  position: sticky;
+  top: 0;
+  height: $topbarH;
+  background: $primary;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  color: #fff;
+  font: 600 13px/1 "Segoe UI", Roboto, Arial, sans-serif;
+  z-index: 1000;
+}
+
+/* Izquierda: saludo + puntos */
+.logo-left {
+  display: flex;
+  align-items: center;
+
+  span {
+    color: #fff;
+    font-size: 13px;
+    opacity: .95;
+  }
+}
+
+/* Centro: logo Oreka */
+.user-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+
+  img {
+    height: 34px;
+    width: auto;
+    display: block;
+  }
+}
+
+/* Derecha: botón legal + logo Kutxabank */
+.logo-right-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .legal-link {
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.4);
+    transition: background .15s ease, border-color .15s ease;
+
+    &:hover {
+      background: rgba(255,255,255,.25);
+      border-color: #fff;
+    }
+  }
+
+  .logo-right {
+    height: 28px;
+    width: auto;
+    display: block;
+  }
+}

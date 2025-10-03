@@ -1,0 +1,26 @@
+@use "sass:color";
+
+$primary: #5dbfc2;
+$primary-light: #afc6c6;
+$primary-dark: #326b6b;
+$secondary: #e58f5e;
+$secondary-light: #f7cfb7; 
+$menu-bg-color: #f8f8f8;
+$menu-item-hover-color: #007bff;
+$menu-item-color: #333;
+$menu-item-margin: 10px;
+$menu-item-padding: 10px 20px;
+$bg-color: rgba($primary, 0.5);
+$web-font: "Segoe UI", Roboto, Arial, sans-serif;
+$topbarH: 56px;
+$menuH: 48px;
+
+/* ⚙️ Derivadas / nuevas */
+$accent:        $primary;             // color de resalte principal
+$accent-hover: color.scale($primary, $lightness: -8%); // ✅ recomendado
+
+$bg-nav:        #ffffff;              // fondo del menú
+$fg-nav:        #222222;              // texto normal
+$fg-muted:      #666666;              // texto secundario
+$border-nav:    rgba(0,0,0,0.1);      // separadores y bordes sutiles
+$shadow-nav:    0 4px 16px rgba(0,0,0,.08); // sombra ligera

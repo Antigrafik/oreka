@@ -1,0 +1,35 @@
+#community-meeting {
+  max-width: 1200px;
+  margin: 0 auto 12px;
+  padding: 0 16px;
+}
+
+#community-meeting h2 {
+  font-size: 32px;
+  margin: 0 0 6px;
+  text-align: center;
+}
+
+#community-meeting .lead {
+  text-align: center;
+  color: #666;
+  margin: 0 0 16px;
+}
+
+/* Formulario de creación (reutiliza .rec-form global) */
+.meeting-create {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  padding: 0 16px;
+}
+
+.meeting-create h2 {
+  font-size: 28px;
+  margin: 0 0 6px;
+  text-align: left; /* pon center si lo prefieres */
+}
+
+.meeting-create .lead {
+  color: #666;
+  margin: 0 0 12px;
+}

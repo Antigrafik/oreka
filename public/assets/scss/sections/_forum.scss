@@ -1,0 +1,126 @@
+@use '../abstracts' as *;
+
+/* ===== Foro Oreka ===== */
+.forum-hero {
+  text-align: center;
+  margin: 24px 0 12px;
+}
+
+.forum-hero h1 {
+  font-size: 40px;
+  margin: 0 0 6px;
+}
+
+.forum-hero p {
+  margin: 0 auto 20px;
+  max-width: 720px;
+}
+
+.forum-list {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px 32px;
+  display: grid;
+  gap: 16px;
+}
+
+.forum-item {
+  display: grid;
+  grid-template-columns: 120px 1fr 200px;
+  align-items: center;
+  background: #fff;
+  border: 2px solid var(--red);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.forum-date {
+  background: var(--red);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 0;
+}
+
+.forum-date .day {
+  font-size: 42px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.forum-date .mon {
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.forum-body {
+  padding: 18px 20px;
+}
+
+.forum-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 2px solid var(--red);
+  color: var(--text);
+}
+
+.meta {
+  font-size: 13px;
+  color: #555;
+}
+
+.forum-title {
+  margin: 6px 0 6px;
+}
+
+.forum-desc {
+  margin: 0;
+  color: #333;
+}
+
+.forum-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border-left: 2px solid var(--red);
+}
+
+.forum-join.btn {
+  background: var(--red);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.forum-join.btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .forum-item {
+    grid-template-columns: 100px 1fr;
+    grid-template-rows: auto auto;
+  }
+  .forum-cta {
+    grid-column: 1/-1;
+    border-left: none;
+    border-top: 2px solid var(--red);
+    padding: 12px;
+  }
+}

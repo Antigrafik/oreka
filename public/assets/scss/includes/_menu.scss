@@ -1,0 +1,85 @@
+@use '../abstracts' as *;
+
+.menu {
+  position: sticky;
+  top: $topbarH;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  background-color: $bg-nav;
+  border-bottom: 1px solid $border-nav;
+  box-shadow: $shadow-nav;
+  display: flex;               /* menú y botón legal en la misma franja */
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 28px;
+  font: 500 15px/1.2 "Segoe UI", Roboto, Arial, sans-serif;
+  color: $fg-nav;
+  white-space: nowrap;
+
+  a {
+    color: $fg-nav;
+    text-decoration: none;
+    position: relative;
+    padding: 6px 2px;
+    transition: color .2s ease;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; bottom: -6px;
+      height: 2px;
+      transform: scaleX(0);
+      transform-origin: left;
+      background: linear-gradient(90deg, $primary, $primary-dark);
+      transition: transform .22s ease;
+      border-radius: 2px;
+    }
+
+    &:hover {
+      color: $accent;
+      &::after { transform: scaleX(1); }
+    }
+
+    &.is-active {
+      color: $accent;
+      &::after { transform: scaleX(1); }
+    }
+  }
+}
+
+.sep {
+  width: 1px;
+  height: 18px;
+  background: $border-nav;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 6px;
+}
+
+/* Botón Bases/Legal alineado a la derecha */
+.menu-legal {
+  margin-right: 28px;
+
+  .legal-link {
+    color: $primary;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 5px 12px;
+
+    &:hover {
+      background: rgba($primary, .2);
+      border-color: $primary;
+      color: $primary;
+    }
+  }
+}

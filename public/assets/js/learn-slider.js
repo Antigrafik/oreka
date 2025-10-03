@@ -1,8 +1,13 @@
+// learn-slider.js (fix ancho=0 al regresar y doble init)
 document.addEventListener('DOMContentLoaded', () => {
   const sliders = document.querySelectorAll('.learn-slider, .recomendation-slider');
   if (!sliders.length) return;
 
   sliders.forEach((slider) => {
+    // evita doble inicialización si el script se carga más de una vez
+    if (slider.dataset.initialized === 'true') return;
+    slider.dataset.initialized = 'true';
+
     const viewport = slider.querySelector('.viewport');
     const track    = slider.querySelector('.track');
     const prevBtn  = slider.querySelector('.prev');
@@ -15,7 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
       anim: true,
       step: 0,
       slideW: 0,
-      perView: 1,          // perView efectivo del carrusel
+      perView: 1,
+      ro: null,  // ResizeObserver
     };
 
     // breakpoints base
@@ -31,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const computeSizes = () => {
-      // usa el perView EFECTIVO (state.perView)
       track.style.padding = `0 ${SIDE}px`;
       const inner = viewport.clientWidth - (SIDE * 2) - ((state.perView - 1) * GUTTER);
       const slideWidth = Math.max(0, Math.floor(inner / state.perView));
@@ -53,19 +58,42 @@ document.addEventListener('DOMContentLoaded', () => {
       track.style.transform = `translate3d(${x}px,0,0)`;
     };
 
+    // Espera a que el viewport tenga ancho (>0) antes de medir
+    const ensureSized = () => {
+      if (viewport.clientWidth > 0) {
+        computeSizes();
+        jump();
+        if (state.ro) { state.ro.disconnect(); state.ro = null; }
+        return true;
+      }
+      if (!state.ro && 'ResizeObserver' in window) {
+        state.ro = new ResizeObserver(() => {
+          if (viewport.clientWidth > 0) {
+            computeSizes();
+            jump();
+            state.ro.disconnect();
+            state.ro = null;
+          }
+        });
+        state.ro.observe(viewport);
+      }
+      // fallback: reintento en el siguiente frame
+      requestAnimationFrame(() => {
+        if (viewport.clientWidth === 0) ensureSized();
+      });
+      return false;
+    };
+
     const rebuild = () => {
-      // recoge solo originales (sin clones)
       const originals = Array.from(track.querySelectorAll('.slide:not(.clone)'));
       if (!originals.length) return;
 
-      // perView efectivo según nº de originales
       state.perView = Math.max(1, Math.min(basePerView, originals.length));
 
-      // limpia y reinyecta originales
+      // limpia track y reinyecta originales
       track.innerHTML = '';
       originals.forEach(el => track.appendChild(el));
 
-      // clona solo lo que necesitamos (pv efectivos)
       const slides = Array.from(track.children);
       const headClones = slides.slice(0, state.perView).map(s => { const c = s.cloneNode(true); c.classList.add('clone'); return c; });
       const tailClones = slides.slice(-state.perView).map(s => { const c = s.cloneNode(true); c.classList.add('clone'); return c; });
@@ -73,11 +101,11 @@ document.addEventListener('DOMContentLoaded', () => {
       tailClones.forEach(c => track.insertBefore(c, track.firstChild));
       headClones.forEach(c => track.appendChild(c));
 
-      state.total = slides.length;   // nº de originales
-      state.index = state.perView;   // arrancamos tras los tail clones
+      state.total = slides.length;
+      state.index = state.perView;
 
-      computeSizes();
-      jump();
+      // ¡importante!: medir solo cuando haya ancho
+      ensureSized();
     };
 
     const next = () => { state.anim = true; state.index++; jump(); };
@@ -99,19 +127,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const onResize = () => {
       const prevBase = basePerView;
       setBasePerView();
-      // si cambia el basePerView y afecta al perView efectivo, reconstruimos
       const willBe = Math.max(1, Math.min(basePerView, state.total || 1));
       if (basePerView !== prevBase || willBe !== state.perView) {
         rebuild();
       } else {
-        computeSizes();
-        jump();
+        ensureSized(); // recalcula solo si ya hay ancho
       }
     };
 
     nextBtn.addEventListener('click', next);
     prevBtn.addEventListener('click', prev);
     window.addEventListener('resize', onResize);
+    window.addEventListener('pageshow', onResize); // volver desde historial/bfcache
 
     setBasePerView();
     rebuild();

@@ -1,0 +1,73 @@
+@use '../abstracts' as *;
+
+  /* --- Topbar LEGAL --- */
+  .logo-right-container{ display:flex; align-items:center; gap:12px; }
+
+
+  #tab-legal .tab-btn {
+  border: 1px solid #c00;
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+}
+
+#tab-legal .tab-btn.active {
+  background: #f8d7da;
+}
+
+#tab-legal .editor {
+  min-height: 280px;
+  border: 1px solid #c00;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+  overflow: auto;
+}
+
+#tab-legal .toolbar button {
+  border: 1px solid #c00;
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+}
+
+#tab-legal .btn-outline {
+  background: #fff !important;
+  color: #000 !important;
+  border: 1px solid #c00 !important;
+}
+
+#tab-legal .btn-red {
+  background: #c00 !important;
+  color: #fff !important;
+  border: 1px solid #c00 !important;
+}
+
+#tab-legal .btn:hover {
+  filter: brightness(0.98);
+}
+
+#tab-legal .editor:focus {
+  outline: 3px solid rgba(196, 0, 0, 0.12);
+}
+
+#tab-legal .flash {
+  border-radius: 10px;
+  padding: 0.5rem 0.75rem;
+  margin: 0.5rem 0;
+  border: 1px solid;
+}
+
+#tab-legal .flash.ok {
+  border-color: #0a0;
+  background: #e7f7e7;
+  color: #074f07;
+}
+
+#tab-legal .flash.err {
+  border-color: #c00;
+  background: #fdeaea;
+  color: #7a0000;
+}
