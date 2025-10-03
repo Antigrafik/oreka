@@ -1,5 +1,4 @@
 <?php
-// Lee flags de visibilidad para los módulos que se renderizan en home
 global $pdo;
 
 $flags = [];
@@ -82,22 +81,16 @@ document.addEventListener('DOMContentLoaded', () => {
       show(M.admin); return;
     }
 
-    // Vista por defecto (home): muestra sólo los que existan
     showDefault();
   }
 
-  // Carga inicial
   route(location.hash || '#learn');
-
-  // Cambios de hash
   window.addEventListener('hashchange', () => route(location.hash));
 
-  // Red de seguridad: si el menú cambia el hash, reevalúa la vista
   document.querySelectorAll('.menu a[href^="#"]').forEach(a => {
     a.addEventListener('click', () => setTimeout(() => route(location.hash), 0));
   });
 
-  // Botón del topbar "Bases / Legal"
   const legalBtn = document.querySelector('.legal-link');
   if (legalBtn) legalBtn.addEventListener('click', () => setTimeout(() => route('#legal'), 0));
 });

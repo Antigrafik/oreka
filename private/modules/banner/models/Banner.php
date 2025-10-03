@@ -1,13 +1,8 @@
 <?php
-// modules/banner/models/Banner.php
 require_once __DIR__ . '/../../../config/db_connect.php';
 
 class BannerModel {
-    /**
-     * Devuelve el banner activo ahora mismo (status=running) o
-     * status=scheduled pero con la hora actual entre start y finish.
-     * Coge traducción en $lang y, si falta, en $fallback.
-     */
+
     public function getActive(string $lang = 'es', string $fallback = 'es'): ?array {
         global $pdo;
 
@@ -40,7 +35,6 @@ class BannerModel {
         $row = $st->fetch(PDO::FETCH_ASSOC);
         if (!$row) return null;
 
-        // saneo por si viniera algo nulo
         $row['title']   = (string)($row['title'] ?? '');
         $row['content'] = (string)($row['content'] ?? '');
         $row['is_raffle'] = filter_var(($row['is_raffle'] ?? false), FILTER_VALIDATE_BOOLEAN);

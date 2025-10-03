@@ -19,7 +19,7 @@ $prize = trim((string)($b['prize'] ?? ''));
     <?php endif; ?>
 
     <div class="content">
-      <?= $b['content'] /* HTML del editor */ ?>
+      <?= $b['content']?>
     </div>
   </div>
 </div>

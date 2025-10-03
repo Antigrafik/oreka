@@ -31,26 +31,21 @@
 
   .toolbar button * { pointer-events: none; }
 
-  /* Botones: evita que el clic sobre <b>/<i>/<u> dentro robe los eventos */
 .toolbar button * { pointer-events: none; }
 
-/* Marcado de pestaña activa (puedes ajustarlo a tu estilo) */
 .tab-btn { border:1px solid #c00; background:#fff; border-radius:10px; padding:.4rem .7rem; cursor:pointer; }
 .tab-btn.active { background:#f8d7da; }
 
-/* Apariencia del editor */
 .editor{
   min-height:280px; border:1px solid #c00; border-radius:12px; padding:12px; background:#fff; overflow:auto;
 }
 .editor:focus{ outline:3px solid rgba(196,0,0,.12); }
 .editor-title{ min-height:auto; white-space:nowrap; overflow:hidden; }
 
-/* Toolbar */
 .toolbar button{
   border:1px solid #c00; background:#fff; border-radius:999px; padding:.35rem .7rem; cursor:pointer;
 }
 
-/* Ocultar el formulario de Banner cuando no corresponde */
 #banner-form.is-hidden {
   display: none !important;
 }
@@ -60,7 +55,3 @@
   color: #800000;
   font-weight: 600;
 }
-
-
-
-
