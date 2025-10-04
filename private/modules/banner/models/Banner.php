@@ -1,11 +1,39 @@
 <?php
 require_once __DIR__ . '/../../../config/db_connect.php';
-
+ 
 class BannerModel {
 
-    public function getActive(string $lang = 'es', string $fallback = 'es'): ?array {
+    public function syncStatuses(): void {
         global $pdo;
 
+        $sql = "
+        DECLARE @now datetime2 = CAST(SYSDATETIMEOFFSET() AT TIME ZONE 'Central European Standard Time' AS datetime2);
+ 
+        ;WITH Calc AS (
+            SELECT
+                b.id,
+                CASE
+                    WHEN b.status = 'draft' THEN 'draft'
+                    WHEN b.date_start IS NULL OR b.date_finish IS NULL THEN 'scheduled'
+                    WHEN @now <  b.date_start  THEN 'scheduled'
+                    WHEN @now <= b.date_finish THEN 'running'
+                    ELSE 'finished'
+                END AS new_status
+            FROM banner b
+        )
+        UPDATE b
+            SET b.status = c.new_status
+        FROM banner b
+        JOIN Calc c ON c.id = b.id
+        WHERE b.status <> 'draft'
+          AND b.status <> c.new_status;";
+ 
+        $pdo->exec($sql);
+    }
+ 
+    public function getActive(string $lang = 'es', string $fallback = 'es'): ?array {
+        global $pdo;
+ 
         $sql = "
         SELECT TOP (1)
             b.id,
@@ -34,11 +62,11 @@ class BannerModel {
         $st->execute([$lang, $fallback]);
         $row = $st->fetch(PDO::FETCH_ASSOC);
         if (!$row) return null;
-
+ 
         $row['title']   = (string)($row['title'] ?? '');
         $row['content'] = (string)($row['content'] ?? '');
         $row['is_raffle'] = filter_var(($row['is_raffle'] ?? false), FILTER_VALIDATE_BOOLEAN);
-
+ 
         return $row;
     }
 }

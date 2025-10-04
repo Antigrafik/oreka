@@ -17,7 +17,6 @@ $flashOk  = $_SESSION['flash_success_admin'] ?? null;
 $flashErr = $_SESSION['flash_error_admin']   ?? null;
 unset($_SESSION['flash_success_admin'], $_SESSION['flash_error_admin']);
 
-// === Toggle de visibilidad del módulo LEGAL ===
 $checked = !empty($moduleFlags['legal']);
 ?>
 
@@ -25,7 +24,6 @@ $checked = !empty($moduleFlags['legal']);
   <?= htmlspecialchars($language['legal_editor']['title'] ?? 'LEGAL') ?>
 </h1>
 
-<!-- Flash -->
 <?php if ($flashOk): ?>
   <div class="flash ok">
     <?= htmlspecialchars($language['legal_editor']['flash_ok'] ?? 'Guardado correctamente.') ?>
@@ -37,7 +35,6 @@ $checked = !empty($moduleFlags['legal']);
   </div>
 <?php endif; ?>
 
-<!-- Toggle módulo Legal (igual que otros módulos) -->
 <form method="post" action="" class="mod-toggle" style="margin-bottom:14px">
   <input type="hidden" name="__action__"  value="toggle_module">
   <input type="hidden" name="module_key"  value="legal">
@@ -51,14 +48,11 @@ $checked = !empty($moduleFlags['legal']);
   </button>
 </form>
 
-<!-- ===== Editor de contenidos Legal ===== -->
 <form method="post" action="" id="legal-form">
   <input type="hidden" name="__action__" value="save_legal">
   <input type="hidden" name="admin_legal_id" value="<?= (int)($legal['admin_legal_id'] ?? 0) ?>">
   <input type="hidden" name="link_id"        value="<?= (int)($legal['link_id'] ?? 0) ?>">
 
-
-  <!-- Tabs -->
   <nav style="display:flex;gap:6px;margin-bottom:10px">
     <button type="button" class="tab-btn" data-tab="es">
       <?= htmlspecialchars($language['legal_editor']['tab_es'] ?? 'Español') ?>
@@ -72,7 +66,6 @@ $checked = !empty($moduleFlags['legal']);
     </span>
   </nav>
 
-  <!-- Toolbar -->
   <div class="toolbar" aria-label="Editor toolbar" style="display:flex;gap:6px;margin:.25rem 0 8px">
     <button type="button" data-cmd="bold"><b><?= htmlspecialchars($language['legal_editor']['toolbar_bold'] ?? 'B') ?></b></button>
     <button type="button" data-cmd="italic"><i><?= htmlspecialchars($language['legal_editor']['toolbar_italic'] ?? 'I') ?></i></button>
@@ -86,7 +79,6 @@ $checked = !empty($moduleFlags['legal']);
     <button type="button" id="btn-clear"><?= htmlspecialchars($language['legal_editor']['toolbar_clear'] ?? 'Quitar formato') ?></button>
   </div>
 
-  <!-- ES -->
   <section class="tab tab-es">
     <label><?= htmlspecialchars($language['legal_editor']['title_es_label'] ?? 'Título (ES)') ?></label>
     <input name="title_es" type="text" value="<?= htmlspecialchars($esTitle) ?>"
@@ -97,7 +89,6 @@ $checked = !empty($moduleFlags['legal']);
     <textarea name="content_es" id="tx-es" hidden></textarea>
   </section>
 
-  <!-- EU -->
   <section class="tab tab-eu" hidden>
     <label><?= htmlspecialchars($language['legal_editor']['title_eu_label'] ?? 'Izenburua (EU)') ?></label>
     <input name="title_eu" type="text" value="<?= htmlspecialchars($euTitle) ?>"
@@ -139,3 +130,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<script src="/assets/js/admin/admin-editor.js" defer></script>
