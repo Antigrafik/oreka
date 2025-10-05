@@ -29,7 +29,7 @@ $bn = $editing ? array_merge($def, $editing, [
       ]) : $def;
 ?>
 
-<h2>Banner</h2>
+<h2><?= htmlspecialchars($language['admin_banner']['banner'] ?? 'Banner') ?></h2>
 
 <form method="post" action="" class="mod-toggle" style="margin-bottom:14px">
   <input type="hidden" name="__action__"  value="toggle_module">
@@ -37,7 +37,7 @@ $bn = $editing ? array_merge($def, $editing, [
   <input type="hidden" name="redirect"    value="banner">
   <label class="toggle">
     <input type="checkbox" name="visible" value="1" <?= $checked ? 'checked' : '' ?>>
-    <?= htmlspecialchars($language['admin_toggle']['label'] ?? 'Mostrar este módulo (y su menú)') ?>
+    <?= htmlspecialchars($language['admin_toggle']['label'] ?? 'Mostrar este módulo') ?>
   </label>
   <button class="btn btn-red" type="submit">
     <?= htmlspecialchars($language['admin_toggle']['save'] ?? 'Guardar') ?>
@@ -48,8 +48,8 @@ $bn = $editing ? array_merge($def, $editing, [
 <?php if ($err): ?><div class="flash err"><?= htmlspecialchars($err) ?></div><?php endif; ?>
 
 <div style="display:flex;gap:8px;margin:12px 0">
-  <button type="button" class="btn" id="btn-new-raffle">Añadir Sorteo</button>
-  <button type="button" class="btn" id="btn-new-ad">Añadir Anuncio</button>
+  <button type="button" class="btn" id="btn-new-raffle"><?= htmlspecialchars($language['admin_banner']['add_draw'] ?? 'Añadir Sorteo') ?></button>
+  <button type="button" class="btn" id="btn-new-ad"><?= htmlspecialchars($language['admin_banner']['add_ad'] ?? 'Añadir Anuncio') ?></button>
 </div>
 
 <form method="post" action="" id="banner-form"
@@ -60,12 +60,12 @@ $bn = $editing ? array_merge($def, $editing, [
   <input type="hidden" name="type" id="banner-type" value="<?= htmlspecialchars($bn['type']) ?>">
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-    <label>Inicio (fecha y hora)
+    <label><?= htmlspecialchars($language['admin_banner']['start_date'] ?? 'Inicio (fecha y hora)') ?>
       <input type="datetime-local" name="date_start"
              value="<?= $bn['date_start'] ? date('Y-m-d\TH:i', strtotime($bn['date_start'])) : '' ?>"
              style="width:100%;padding:.45rem;border:1px solid #c00;border-radius:10px" required>
     </label>
-    <label>Fin (fecha y hora)
+    <label><?= htmlspecialchars($language['admin_banner']['end_date'] ?? 'Fin (fecha y hora)') ?>
       <input type="datetime-local" name="date_finish"
              value="<?= $bn['date_finish'] ? date('Y-m-d\TH:i', strtotime($bn['date_finish'])) : '' ?>"
              style="width:100%;padding:.45rem;border:1px solid #c00;border-radius:10px" required>
@@ -73,7 +73,7 @@ $bn = $editing ? array_merge($def, $editing, [
   </div>
 
   <div id="prize-wrap" style="margin-bottom:10px; <?= ($bn['type']==='raffle' ? '' : 'display:none') ?>">
-    <label>Premio (solo Sorteo)
+    <label><?= htmlspecialchars($language['admin_banner']['prize'] ?? 'Premio') ?>
       <input type="text" name="prize" value="<?= htmlspecialchars($bn['prize'] ?? '') ?>"
              placeholder="Ej.: Tablet 10''"
              style="width:100%;padding:.45rem;border:1px solid #c00;border-radius:10px">
@@ -81,8 +81,8 @@ $bn = $editing ? array_merge($def, $editing, [
   </div>
 
   <nav style="display:flex;gap:6px;margin-bottom:10px">
-    <button type="button" class="tab-btn" data-tab="es">Español</button>
-    <button type="button" class="tab-btn" data-tab="eu">Euskera</button>
+    <button type="button" class="tab-btn" data-tab="es"><?= htmlspecialchars($language['admin_banner']['es'] ?? 'Español') ?></button>
+    <button type="button" class="tab-btn" data-tab="eu"><?= htmlspecialchars($language['admin_banner']['eu'] ?? 'Euskera') ?></button>
   </nav>
 
   <div class="toolbar" style="display:flex;gap:6px;margin:.25rem 0 8px">
@@ -92,38 +92,38 @@ $bn = $editing ? array_merge($def, $editing, [
     <span style="width:1px;background:#c00;opacity:.5"></span>
     <button type="button" data-block="h2">H2</button>
     <button type="button" data-block="h3">H3</button>
-    <button type="button" data-cmd="insertUnorderedList">• Lista</button>
-    <button type="button" data-cmd="insertOrderedList">1. Lista</button>
-    <button type="button" id="btn-link">Enlace</button>
-    <button type="button" id="btn-clear">Quitar formato</button>
+    <button type="button" data-cmd="insertUnorderedList">• <?= htmlspecialchars($language['admin_banner']['list'] ?? 'Lista') ?></button>
+    <button type="button" data-cmd="insertOrderedList">1. <?= htmlspecialchars($language['admin_banner']['list'] ?? 'Lista') ?></button>
+    <button type="button" id="btn-link"><?= htmlspecialchars($language['admin_banner']['link'] ?? 'Enlace') ?></button>
+    <button type="button" id="btn-clear"><?= htmlspecialchars($language['admin_banner']['clear_format'] ?? 'Quitar formato') ?></button>
   </div>
 
   <section class="tab tab-es">
-    <label>Título (ES)</label>
+    <label><?= htmlspecialchars($language['admin_banner']['title'] ?? 'Título (ES)') ?></label>
     <div id="title-es" class="editor editor-title" contenteditable="true" style="border:1px solid #c00;border-radius:10px;padding:.6rem;min-height:40px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><?= $bn['es']['title'] ?></div>
     <input type="hidden" name="title_es" id="tx-title-es">
 
-    <label>Contenido (ES)</label>
+    <label><?= htmlspecialchars($language['admin_banner']['content'] ?? 'Contenido (ES)') ?></label>
     <div id="ed-es" class="editor" contenteditable="true" style="border:1px solid #c00;border-radius:10px;padding:.6rem;min-height:180px;"><?= $bn['es']['content'] ?></div>
     <textarea name="content_es" id="tx-es" hidden></textarea>
   </section>
 
   <section class="tab tab-eu" hidden>
-    <label>Izenburua (EU)</label>
+    <label><?= htmlspecialchars($language['admin_banner']['title'] ?? 'Izenburua (EU)') ?></label>
     <div id="title-eu" class="editor editor-title" contenteditable="true" style="border:1px solid #c00;border-radius:10px;padding:.6rem;min-height:40px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><?= $bn['eu']['title'] ?></div>
     <input type="hidden" name="title_eu" id="tx-title-eu">
 
-    <label>Edukia (EU)</label>
+    <label><?= htmlspecialchars($language['admin_banner']['content'] ?? 'Edukia (EU)') ?></label>
     <div id="ed-eu" class="editor" contenteditable="true" style="border:1px solid #c00;border-radius:10px;padding:.6rem;min-height:180px;"><?= $bn['eu']['content'] ?></div>
     <textarea name="content_eu" id="tx-eu" hidden></textarea>
   </section>
 
   <div id="banner-errors" class="flash err" style="display:none"></div>
   <div style="display:flex;gap:8px;margin-top:12px">
-    <button type="submit" class="btn btn-red"   name="mode" value="schedule">Programar</button>
-    <button type="submit" class="btn"           name="mode" value="draft">Borrador</button>
+    <button type="submit" class="btn btn-red"   name="mode" value="schedule"><?= htmlspecialchars($language['admin_banner']['program'] ?? 'Programar') ?></button>
+    <button type="submit" class="btn"           name="mode" value="draft"><?= htmlspecialchars($language['admin_banner']['draft'] ?? 'Borrador') ?></button>
 
-    <a href="#admin/banner" class="btn" id="btn-cancel">Cancelar</a>
+    <a href="#admin/banner" class="btn" id="btn-cancel"><?= htmlspecialchars($language['admin_banner']['cancel'] ?? 'Cancelar') ?></a>
     <span style="margin-left:auto;opacity:.7"><?= $editing ? 'Editando #'.$editing['id'] : 'Nuevo' ?></span>
   </div>
 </form>
@@ -143,28 +143,38 @@ function dt_or_null($s): ?DateTime {
 }
 
 function banner_status_label(array $r, DateTime $now): string {
+    global $language, $language_es;
+
+    $L   = $language['admin_banner']    ?? [];
+    $Les = isset($language_es) ? ($language_es['admin_banner'] ?? []) : [];
+
+    $t = function(string $key, string $fallback) use ($L, $Les): string {
+        return htmlspecialchars($L[$key] ?? $Les[$key] ?? $fallback);
+    };
+
     $status = strtolower(trim((string)($r['status'] ?? 'draft')));
     $start  = dt_or_null($r['date_start']  ?? null);
     $finish = dt_or_null($r['date_finish'] ?? null);
 
     switch ($status) {
         case 'draft':
-            return 'Borrador';
+            return $t('draft_status', 'Borrador');
 
         case 'scheduled':
-            if ($start && $now < $start) return 'Programado';
-            if ($start && $finish && $now >= $start && $now <= $finish) return 'Ejecutándose';
-            if ($finish && $now > $finish) return 'Finalizado';
-            return 'Programado';
+            if ($start && $now < $start)                             return $t('scheduled_status', 'Programado');
+            if ($start && $finish && $now >= $start && $now <= $finish) return $t('running_status',   'Ejecutándose');
+            if ($finish && $now > $finish)                           return $t('finished_status',  'Finalizado');
+            return $t('scheduled_status', 'Programado');
 
         case 'running':
-            return 'Ejecutándose';
+            return $t('running_status', 'Ejecutándose');
 
         case 'finished':
-            return 'Finalizado';
+            return $t('finished_status', 'Finalizado');
     }
-    return 'Borrador';
+    return $t('draft_status', 'Borrador');
 }
+
 
 function banner_is_finished(array $r, DateTime $now): bool {
     $status = strtolower(trim((string)($r['status'] ?? 'draft')));
@@ -179,10 +189,10 @@ function banner_is_finished(array $r, DateTime $now): bool {
 ?>
 
 
-<h3 style="margin:.5rem 0">Histórico</h3>
+<h3 style="margin:.5rem 0"><?= htmlspecialchars($language['admin_banner']['historical'] ?? 'Histórico') ?></h3>
 <div class="list" style="display:grid;gap:10px">
   <?php if (empty($history)): ?>
-    <div class="card"><div class="card-body">Sin registros.</div></div>
+    <div class="card"><div class="card-body"><?= htmlspecialchars($language['admin_banner']['no_records'] ?? 'Sin registros.') ?></div></div>
   <?php else: ?>
     <?php foreach ($history as $h): ?>
       <?php
@@ -195,34 +205,35 @@ function banner_is_finished(array $r, DateTime $now): bool {
         $dsTxt = $ds ? $ds->format('d/m/Y H:i') : '—';
         $dfTxt = $df ? $df->format('d/m/Y H:i') : '—';
 
-        $titleEs = $h['title_es'] ?? '(sin título ES)';
-        $titleEu = $h['title_eu'] ?? '(sin título EU)';
+        $titleEs = $h['title_es'] ?? ($language['admin_banner']['untitled_ES'] ?? 'Sin título (ES)');
+        $titleEu = $h['title_eu'] ?? ($language['admin_banner']['untitled_EU'] ?? 'Sin título (EU)');
+
         $prize   = trim((string)($h['prize'] ?? ''));
       ?>
       <div class="card">
         <div class="card-body" style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center">
           <div>
             <div>
-              <strong>#<?= (int)$h['id'] ?></strong> · <?= $isRaffle ? 'SORTEO' : 'ANUNCIO' ?>
+              <strong>#<?= (int)$h['id'] ?></strong> · <?= $isRaffle ? htmlspecialchars($language['admin_banner']['raffle'] ?? 'SORTEO') : htmlspecialchars($language['admin_banner']['ad'] ?? 'ANUNCIO') ?>
               <?php if ($isRaffle && $prize !== ''): ?>
-                — Premio: <?= htmlspecialchars($prize) ?>
+                — <?= htmlspecialchars($language['admin_banner']['prize:'] ?? 'Premio: ') ?><?= htmlspecialchars($prize) ?>
               <?php endif; ?>
             </div>
 
-            <div>Estado: <strong><?= htmlspecialchars($label) ?></strong></div>
+            <div><?= htmlspecialchars($language['admin_banner']['status:'] ?? 'Estado: ') ?><strong><?= htmlspecialchars($label) ?></strong></div>
 
             <div><?= htmlspecialchars($titleEs) ?> / <?= htmlspecialchars($titleEu) ?></div>
-            <div>Del <?= $dsTxt ?> al <?= $dfTxt ?></div>
+            <div><?= htmlspecialchars($language['admin_banner']['period:'] ?? 'Periodo: ') ?><?= $dsTxt ?> - <?= $dfTxt ?></div>
           </div>
 
           <div style="display:flex;gap:6px">
             <?php if (!$isFinished): ?>
-              <a class="btn" href="?edit=<?= (int)$h['id'] ?>#admin/banner">Editar</a>
+              <a class="btn" href="?edit=<?= (int)$h['id'] ?>#admin/banner"><?= htmlspecialchars($language['admin_banner']['edit'] ?? 'Editar') ?></a>
             <?php endif; ?>
-            <form method="post" action="" onsubmit="return confirm('¿Eliminar este registro?');">
+            <form method="post" action="" onsubmit="return confirm('<?= htmlspecialchars($language['admin_banner']['confirm_delete'] ?? '¿Seguro que quieres eliminar este banner?') ?>');">
               <input type="hidden" name="__action__" value="banner_delete">
               <input type="hidden" name="id" value="<?= (int)$h['id'] ?>">
-              <button class="btn" type="submit">Borrar</button>
+              <button class="btn" type="submit"><?= htmlspecialchars($language['admin_banner']['delete'] ?? 'Borrar') ?></button>
             </form>
           </div>
         </div>

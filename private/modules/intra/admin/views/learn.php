@@ -11,7 +11,7 @@ $checked = !empty($moduleFlags['learn']);
 
   <label class="toggle">
     <input type="checkbox" name="visible" value="1" <?= $checked ? 'checked' : '' ?>>
-    <?= htmlspecialchars($language['admin_toggle']['label'] ?? 'Mostrar este módulo (y su menú)') ?>
+    <?= htmlspecialchars($language['admin_toggle']['label'] ?? 'Mostrar este módulo') ?>
   </label>
   <button class="btn btn-red" type="submit">
     <?= htmlspecialchars($language['admin_toggle']['save'] ?? 'Guardar') ?>
