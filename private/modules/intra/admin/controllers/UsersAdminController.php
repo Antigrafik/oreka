@@ -2,6 +2,7 @@
 require_once PRIVATE_PATH . '/modules/intra/admin/models/UserAdmin.php';
 
 class UsersAdminController {
+    /** @var PDO */
     private $pdo;
 
     public function __construct() {
@@ -38,6 +39,7 @@ class UsersAdminController {
                 'msg' => 'Error en servidor: ' . $e->getMessage()
             ], JSON_UNESCAPED_UNICODE);
         }
+
         exit;
     }
 
@@ -45,18 +47,30 @@ class UsersAdminController {
         while (ob_get_level()) { ob_end_clean(); }
         header('Content-Type: application/json; charset=utf-8');
 
-        $id   = (int)($_POST['id']   ?? 0);
-        $role = (string)($_POST['role'] ?? '');
+        try {
+            $id   = (int)($_POST['id']   ?? 0);
+            $role = (string)($_POST['role'] ?? '');
 
-        if ($id <= 0) {
-            echo json_encode(['ok'=>false,'msg'=>'ID inválido']);
-            exit;
+            if ($id <= 0) {
+                echo json_encode(['ok' => false, 'msg' => 'ID inválido']);
+                exit;
+            }
+
+            $model = new UserAdmin($this->pdo);
+            $ok = $model->updateRole($id, $role);
+
+            echo json_encode([
+                'ok'  => $ok,
+                'msg' => $ok ? 'Actualizado' : 'No se pudo actualizar'
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (Throwable $e) {
+            http_response_code(500);
+            echo json_encode([
+                'ok'  => false,
+                'msg' => 'Error en servidor: ' . $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
         }
 
-        $model = new UserAdmin($this->pdo);
-        $ok = $model->updateRole($id, $role);
-
-        echo json_encode(['ok'=>$ok, 'msg'=>$ok?'Actualizado':'No se pudo actualizar'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 }
