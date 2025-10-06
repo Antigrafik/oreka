@@ -1,8 +1,7 @@
 <?php
 global $language;
-require_once PRIVATE_PATH . '/modules/intra/admin/models/Admin.php';
-if (session_status() === PHP_SESSION_NONE) { session_start(); }
-$adm = new Admin();
+require_once PRIVATE_PATH . '/modules/intra/admin/models/BannerAdmin.php';
+$adm = new BannerAdmin();
 
 $checked = !empty($moduleFlags['banner']);
 

@@ -1,10 +1,10 @@
 <?php
 global $language;
 
-require_once PRIVATE_PATH . '/modules/intra/admin/models/Admin.php';
+require_once PRIVATE_PATH . '/modules/intra/admin/models/LegalAdmin.php';
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
-$adm   = new Admin();
+$adm   = new LegalAdmin();
 $legal = $adm->getLatestLegal();
 
 $esTitle   = $legal['es']['title']   ?? 'Bases / Legal';

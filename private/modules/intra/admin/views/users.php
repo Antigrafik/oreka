@@ -9,8 +9,8 @@ global $language, $baseUrl;
     <input id="f-q" type="search" placeholder="Buscar: usuario, nombre, apellidos, NIF, email…" />
     <select id="f-role">
       <option value="">Todos los roles</option>
-      <option value="user">usuario</option>
-      <option value="admin">admin</option>
+      <option value="user"  ${u.roles==='user' || u.roles==='usuario' ? 'selected' : ''}>usuario</option>
+      <option value="admin" ${u.roles==='admin' ? 'selected' : ''}>admin</option>
     </select>
     <select id="f-sort">
       <option value="usuario|ASC">Orden: Usuario ↑</option>
@@ -50,9 +50,9 @@ global $language, $baseUrl;
 
 <script>
 (function(){
-  const API_BASE = '/intra/admin/index.php';
-  const API_LIST = API_BASE + '?ajax=users_data';
-  const API_UPD  = API_BASE;
+  const API_BASE = window.location.pathname + '?url=admin';
+  const API_LIST = API_BASE + '&ajax=users_data';
+  const API_UPD  = window.location.pathname + '?url=admin';
 
   let state = { page: 1, per: 20, sort: 'usuario', dir: 'ASC', role: '', q: '' };
   const $q = document.getElementById('f-q');
@@ -83,13 +83,35 @@ global $language, $baseUrl;
       page: state.page, per: state.per, sort: state.sort, dir: state.dir, role: state.role, q: state.q
     }).forEach(([k,v])=> url.searchParams.set(k, v));
 
+    console.log('Llamando a:', url.href);  // <-- DEBUG
+
     const res = await fetch(url, { credentials: 'same-origin' });
+    const ctype = (res.headers.get('content-type') || '').toLowerCase();
+    const body  = await res.text();  // <-- leemos como texto SIEMPRE
+
     if (!res.ok) {
-      console.error('Error HTTP', res.status, await res.text());
+      console.error('HTTP', res.status, body.slice(0,500));
       $tbody.innerHTML = '<tr><td colspan="7">Error cargando usuarios.</td></tr>';
       return;
     }
-    const data = await res.json();
+
+    // Si no es JSON, lo mostramos para ver qué devolvió el servidor
+    if (!ctype.includes('application/json')) {
+      console.error('Respuesta NO JSON. content-type:', ctype, 'body:', body.slice(0,500));
+      $tbody.innerHTML = '<tr><td colspan="7">Error cargando usuarios.</td></tr>';
+      return;
+    }
+
+    let data;
+    try {
+      data = JSON.parse(body);
+    } catch (e) {
+      console.error('JSON inválido:', e, body.slice(0,500));
+      $tbody.innerHTML = '<tr><td colspan="7">Error cargando usuarios.</td></tr>';
+      return;
+    }
+
+    console.log('users data', data);
 
     const totalPages = Math.max(1, Math.ceil(data.total / state.per));
     if (state.page > totalPages) state.page = totalPages;

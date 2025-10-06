@@ -15,12 +15,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function scrollToHash(hash) {
-    const target = document.querySelector(hash);
+    if (/^#admin(?:\/|$)/i.test(hash)) return;
+    let target = null;
+    try { target = document.querySelector(hash); } catch(e) { return; }
     if (!target) return;
     const headerH = document.querySelector('.menu')?.offsetHeight || 0;
     const y = target.getBoundingClientRect().top + window.pageYOffset - headerH - 8;
     window.scrollTo({ top: y, behavior: 'smooth' });
   }
+
 
   // Interceptar clicks sólo si ya estás en Home
   const selector = Object.values(map).map(id => '#' + id).join(', ');
@@ -47,15 +50,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (location.hash && document.querySelector(location.hash)) {
-    setTimeout(() => { markActive(location.hash); scrollToHash(location.hash); }, 0);
+  if (location.hash) {
+    setTimeout(() => {
+      markActive(location.hash);
+      if (!/^#admin(?:\/|$)/i.test(location.hash)) {
+        try { scrollToHash(location.hash); } catch(e) {}
+      }
+    }, 0);
   } else {
     markActive('#learn');
   }
 
   window.addEventListener('hashchange', () => {
     markActive(location.hash);
-    scrollToHash(location.hash);
+    if (!/^#admin(?:\/|$)/i.test(location.hash)) {
+      try { scrollToHash(location.hash); } catch(e) {}
+    }
   });
 });
 
