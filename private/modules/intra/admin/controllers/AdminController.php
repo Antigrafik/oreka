@@ -1,10 +1,21 @@
 <?php
 require_once __DIR__ . '/../models/Admin.php';
+require_once __DIR__ . '/UsersController.php';
 
 class AdminController {
     public function render(): string {
 
         if (session_status() === PHP_SESSION_NONE) { session_start(); }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['ajax'] ?? '') === 'users_data') {
+            (new UsersController())->data();
+            return '';
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'users_update_role') {
+            (new UsersController())->updateRole();
+            return '';
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $action = $_POST['__action__'] ?? '';
