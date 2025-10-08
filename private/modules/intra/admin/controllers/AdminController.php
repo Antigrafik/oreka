@@ -1,6 +1,12 @@
 <?php
 require_once __DIR__ . '/../models/Admin.php';
 require_once __DIR__ . '/UsersAdminController.php';
+require_once __DIR__ . '/LearnAdminController.php';
+require_once __DIR__ . '/ForumAdminController.php';
+require_once __DIR__ . '/CommunityRecommendationsAdminController.php';
+require_once __DIR__ . '/CommunityRoutinesAdminController.php';
+require_once __DIR__ . '/CommunityTrialAdminController.php';
+require_once __DIR__ . '/CommunityMeetingAdminController.php';
 require_once __DIR__ . '/BannerAdminController.php';
 require_once __DIR__ . '/LegalAdminController.php';
 
@@ -19,6 +25,50 @@ class AdminController
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'users_update_role') {
             (new UsersAdminController())->updateRole();
+            return '';
+        }
+
+        // Learn
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'learn_update_points') {
+            (new LearnAdminController())->updatePoints();
+            return '';
+        }
+
+        // Forum (guardar/borrar) ← AÑADIR
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'forum_save') {
+            (new ForumAdminController())->save();
+            return '';
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'forum_delete') {
+            (new ForumAdminController())->delete();
+            return '';
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'forum_update_points') {
+            (new ForumAdminController())->updatePoints();
+            return '';
+        }
+
+        // Recommendations
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'recommendations_update_points') {
+            (new CommunityRecommendationsAdminController())->updatePoints();
+            return '';
+        }
+
+        // Routines
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'routines_update_points') {
+            (new CommunityRoutinesAdminController())->updatePoints();
+            return '';
+        }
+
+        // Trial
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'trial_update_points') {
+            (new CommunityTrialAdminController())->updatePoints();
+            return '';
+        }
+
+        // Meeting
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'meeting_update_points') {
+            (new CommunityMeetingAdminController())->updatePoints();
             return '';
         }
 

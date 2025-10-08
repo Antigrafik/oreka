@@ -13,7 +13,7 @@ $dbHost     = getenv("DB_HOST");
 $dbPort     = getenv("DB_PORT");
 $dbDatabase = getenv("DB_DATABASE");
 
-$dsn = "sqlsrv:Server=$dbHost,$dbPort;Database=$dbDatabase;TrustServerCertificate=Yes;LoginTimeout=15";
+$dsn = "sqlsrv:Server=$dbHost,$dbPort;Database=$dbDatabase;Encrypt=Yes;TrustServerCertificate=Yes;LoginTimeout=15";
 
 try {
     $pdo = new PDO($dsn, null, null, [

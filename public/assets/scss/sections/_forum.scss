@@ -28,15 +28,14 @@
   display: grid;
   grid-template-columns: 120px 1fr 200px;
   align-items: center;
-  background: #fff;
-  border: 2px solid var(--red);
+  border: 2px solid #5dbfc2;
   border-radius: 16px;
   overflow: hidden;
 }
 
 .forum-date {
-  background: var(--red);
-  color: #fff;
+  background: #5dbfc2;
+  color: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -71,7 +70,7 @@
   font-size: 12px;
   padding: 4px 8px;
   border-radius: 999px;
-  border: 2px solid var(--red);
+  border: 2px solid #5dbfc2;
   color: var(--text);
 }
 
@@ -94,11 +93,10 @@
   align-items: center;
   justify-content: center;
   padding: 0 16px;
-  border-left: 2px solid var(--red);
 }
 
 .forum-join.btn {
-  background: var(--red);
+  background: #5dbfc2;
   color: #fff;
   border: none;
   padding: 10px 16px;
@@ -120,7 +118,7 @@
   .forum-cta {
     grid-column: 1/-1;
     border-left: none;
-    border-top: 2px solid var(--red);
+    border-top: 2px solid #5dbfc2;
     padding: 12px;
   }
 }

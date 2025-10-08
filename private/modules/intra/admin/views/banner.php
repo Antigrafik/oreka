@@ -185,6 +185,13 @@ function banner_is_finished(array $r, DateTime $now): bool {
     }
     return false;
 }
+
+function banner_sanitize_inline(string $html): string {
+  $html = strip_tags($html, '<b><strong><i><em><u><br>');
+  $html = preg_replace('#javascript:#i', '', $html);
+  return $html;
+}
+
 ?>
 
 
@@ -221,7 +228,7 @@ function banner_is_finished(array $r, DateTime $now): bool {
 
             <div><?= htmlspecialchars($language['admin_banner']['status:'] ?? 'Estado: ') ?><strong><?= htmlspecialchars($label) ?></strong></div>
 
-            <div><?= htmlspecialchars($titleEs) ?> / <?= htmlspecialchars($titleEu) ?></div>
+            <div><?= banner_sanitize_inline($titleEs) ?> / <?= banner_sanitize_inline($titleEu) ?></div>
             <div><?= htmlspecialchars($language['admin_banner']['period:'] ?? 'Periodo: ') ?><?= $dsTxt ?> - <?= $dfTxt ?></div>
           </div>
 
