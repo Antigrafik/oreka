@@ -11,13 +11,14 @@ class Routines
         c.id,
         COALESCE(ct.name, ctf.name)  AS name,
         COALESCE(ct.slug, ctf.slug)  AS slug
-      FROM category_relation cr
-      JOIN category c ON c.id = cr.id_child
-      LEFT JOIN category_translation ct
-        ON ct.id_category = c.id AND ct.lang = ?
-      LEFT JOIN category_translation ctf
-        ON ctf.id_category = c.id AND ctf.lang = ?
+      FROM dbo.category_relation cr
+      JOIN dbo.category c ON c.id = cr.id_child
+      LEFT JOIN dbo.category_translation ct
+            ON ct.id_category = c.id AND ct.lang = ?
+      LEFT JOIN dbo.category_translation ctf
+            ON ctf.id_category = c.id AND ctf.lang = ?
       WHERE cr.id_parent = ?
+        AND c.status = N'publicado'      -- << solo publicadas
       ORDER BY name ASC";
     $st = $pdo->prepare($sql);
     $st->execute([$lang, $fallback, $parentId]);

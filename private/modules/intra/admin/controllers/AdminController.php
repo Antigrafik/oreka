@@ -54,9 +54,39 @@ class AdminController
             return '';
         }
 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'recommendations_add_category') {
+            (new CommunityRecommendationsAdminController())->addCategory();
+            return '';
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'recommendations_soft_delete') {
+            (new CommunityRecommendationsAdminController())->softDelete();
+            return '';
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'recommendations_toggle_status') {
+            (new CommunityRecommendationsAdminController())->toggleRecStatus();
+            return '';
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'recommendations_hard_delete') {
+            (new CommunityRecommendationsAdminController())->hardDeleteRecommendation();
+            return '';
+        }
+
         // Routines
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'routines_update_points') {
             (new CommunityRoutinesAdminController())->updatePoints();
+            return '';
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'routines_add_category') {
+            (new CommunityRoutinesAdminController())->addCategory();
+            return '';
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['__action__'] ?? '') === 'routines_soft_delete') {
+            (new CommunityRoutinesAdminController())->softDelete();
             return '';
         }
 

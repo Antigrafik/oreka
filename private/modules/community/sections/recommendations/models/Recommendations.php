@@ -50,10 +50,11 @@ class Recommendations
         JOIN dbo.category_relation    AS r2   ON r2.id_child = c2.id
         JOIN dbo.category_translation AS p1   ON p1.id_category = r2.id_parent AND p1.slug IN (N'tema')
         LEFT JOIN dbo.category_translation AS ct
-               ON ct.id_category = c2.id AND ct.[lang] = ?
+              ON ct.id_category = c2.id AND ct.[lang] = ?
         LEFT JOIN dbo.category_translation AS ctf
-               ON ctf.id_category = c2.id AND ctf.[lang] = ?
+              ON ctf.id_category = c2.id AND ctf.[lang] = ?
         WHERE cl2.id_link = l.id
+          AND c2.status = N'publicado'
       ) AS tema
       OUTER APPLY (
         SELECT TOP (1)
@@ -64,11 +65,13 @@ class Recommendations
         JOIN dbo.category_relation    AS r4   ON r4.id_child = c3.id
         JOIN dbo.category_translation AS p2   ON p2.id_category = r4.id_parent AND p2.slug IN (N'soporte')
         LEFT JOIN dbo.category_translation AS cs
-               ON cs.id_category = c3.id AND cs.[lang] = ?
+              ON cs.id_category = c3.id AND cs.[lang] = ?
         LEFT JOIN dbo.category_translation AS csf
-               ON csf.id_category = c3.id AND csf.[lang] = ?
+              ON csf.id_category = c3.id AND csf.[lang] = ?
         WHERE cl3.id_link = l.id
+          AND c3.status = N'publicado'
       ) AS soporte
+      WHERE r.[status] = N'publicado'   -- << SOLO PUBLICADAS
       ORDER BY r.created_at DESC;
     ";
 
@@ -76,4 +79,5 @@ class Recommendations
     $st->execute([$lang, $fallback, $lang, $fallback, $lang, $fallback]);
     return $st->fetchAll(PDO::FETCH_ASSOC);
   }
+
 }
