@@ -1,22 +1,38 @@
 <?php
 require_once PRIVATE_PATH . '/config/db_connect.php';
 
+// Cargar .env (limpio)
+$envPathFile = BASE_PATH . '/.env';
+if (is_readable($envPathFile)) {
+    foreach (file($envPathFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        $line = trim($line);
+        if ($line === '' || $line[0] === '#') continue;
+        [$k, $v] = array_map('trim', explode('=', $line, 2));
+        if ($k === '') continue;
+        // Quitar comillas envolventes
+        $v = trim($v, " \t\n\r\0\x0B\"'");
+        putenv("$k=$v");
+        $_ENV[$k] = $v;
+        $_SERVER[$k] = $v;
+    }
+}
+
 class Trial
 {
-  // Ajusta aquí límites y carpeta destino
   private array $allowedExt = ['jpg', 'jpeg', 'png', 'pdf'];
   private int $maxBytes     = 5 * 1024 * 1024; // 5 MB
   private int $pointsAward  = 10;
 
-  // Carpeta ABSOLUTA donde se guardarán los archivos (Windows)
-  // Nota: el nombre con $ es válido en NTFS.
-    private string $storageDirAbs = 'C:/Oreka/data$';
-  //en PRE dejar una y comentar la otra, borrar private string $storageDirAbs = 'C:/Oreka/data$'; y PRO
-    //private string $storageDirAbs = 'D:/Oreka/data$';
-    //private string $storageDirAbs = '\\\\KBBIISPRE2\\DATA$';
-  //EN PRO dejar una y comentar la otra, borrar private string $storageDirAbs = 'C:/Oreka/data$'; y PRE
-    //private string $storageDirAbs = '\\\\bbk.es\\BKDData\\Aplicaciones\\Oreka';
-    //private string $storageDirAbs = '\\\\kbbk03fs\\apps\\oreka';
+  private string $storageDirAbs;
+
+  public function __construct()
+  {
+    $dir = getenv('TRIAL_STORAGE_DIR');
+    if ($dir === false || $dir === '') {
+      throw new RuntimeException('TRIAL_STORAGE_DIR no está definida en el entorno.');
+    }
+    $this->storageDirAbs = rtrim($dir, "\\/");
+  }
 
   public function currentUserId(): ?int {
     global $pdo;
