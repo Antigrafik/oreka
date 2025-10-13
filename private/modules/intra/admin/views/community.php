@@ -17,4 +17,4 @@ $checked = !empty($moduleFlags['community']);
   <button class="btn btn-red" type="submit"><?= htmlspecialchars($language['admin_toggle']['save'] ?? 'Guardar') ?></button>
 </form>
 
-<p>(Ajustes de Comunidad, si los hubiera.)</p>
+

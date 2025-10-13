@@ -17,7 +17,7 @@ class Admin
                 COALESCE(MAX(t.[content]),
                          MAX(ct.[description]),
                          MAX(ctf.[description]))           AS description,
-                l.url,
+                l.module_url,
                 l.duration,
                 l.status
             FROM learn AS l
@@ -30,7 +30,7 @@ class Admin
                    ON ctf.id_category = c.id AND ctf.lang = ?
             LEFT JOIN translation     AS t   ON t.id_link   = lk.id AND t.lang = ?
             WHERE ISNULL(l.status,'active') <> 'hidden'
-            GROUP BY l.id, l.url, l.duration, l.status
+            GROUP BY l.id, l.module_url, l.duration, l.status
             ORDER BY l.id DESC";
 
         $st = $pdo->prepare($sql);

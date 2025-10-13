@@ -53,38 +53,17 @@ try {
 
 ?>
 
-<!-- <header class="main-header">
-  <div class="logo-left">
-    <img src="/assets/images/logo_oreka.png" alt="Oreka Logo">
-  </div>
-
-  <div class="user-center">
-    <span><?= htmlspecialchars($user) ?> | <?= htmlspecialchars($totalPuntos) ?> <?= htmlspecialchars($language['topbar']['points'] ?? 'puntos') ?></span>
-  </div>
-
-  <div class="logo-right-container">
-    <?php if ($showLegalButton): ?>
-      <a href="#legal" class="legal-link" title="<?= htmlspecialchars($language['topbar']['legal'] ?? 'Bases / Legal') ?>">
-        <?= htmlspecialchars($language['topbar']['legal'] ?? 'Bases / Legal') ?>
-      </a>
-    <?php endif; ?>
-    <img src="/assets/images/logo_kutxa.jpg" alt="Kutxa Logo" class="logo-right">
-  </div>
-</header> -->
-
-
 <header class="main-header">
   <div class="logo-left">
     <span><?= htmlspecialchars($user) ?> | <?= htmlspecialchars($totalPuntos) ?> <?= htmlspecialchars($language['topbar']['points'] ?? 'puntos') ?></span>
- 
   </div>
  
   <div class="user-center">
-    <img src="/assets/images/logos/logoHorOreka.svg" alt="Kutxa Logo">
+    <img src="/assets/images/logos/logoHorOreka.svg" alt="Oreka Logo">
   </div>
  
   <div class="logo-right-container">
  
-    <img src="/assets/images/logos/logoKB.svg" alt="Oreka Logo" class="logo-right">
+    <img src="/assets/images/logos/logoKB.svg" alt="Kutxa Logo" class="logo-right">
   </div>
 </header>

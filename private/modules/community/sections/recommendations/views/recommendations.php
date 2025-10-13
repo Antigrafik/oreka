@@ -33,133 +33,134 @@ if (!function_exists('lower_ascii')) {
 }
 ?>
 
-<section id="community-recommendations" class="recommendations">
+<section id="community-recommendations" class="subtitle-section">
   <h2><?= htmlspecialchars($language['recommendations']['title'] ?? '') ?></h2>
   <p class="lead"><?= htmlspecialchars($language['recommendations']['subtitle'] ?? '') ?></p>
-
+ 
   <?php if (empty($recommendations)): ?>
     <div class="empty"><?= htmlspecialchars($language['recommendations']['empty'] ?? '') ?></div>
   <?php else: ?>
-
-    <div class="filters">
-      <label class="filter">
-        <span><?= htmlspecialchars($language['recommendations']['theme'] ?? '') ?></span>
-        <select id="filter-tema">
-          <option value=""><?= htmlspecialchars($language['recommendations']['all'] ?? '') ?></option>
-          <?php foreach (($themes ?? []) as $t): ?>
-            <option value="<?= (int)$t['id'] ?>"><?= htmlspecialchars($t['name']) ?></option>
-          <?php endforeach; ?>
-        </select>
-      </label>
-
-      <label class="filter">
-        <span><?= htmlspecialchars($language['recommendations']['support'] ?? '') ?></span>
-        <select id="filter-soporte">
-          <option value=""><?= htmlspecialchars($language['recommendations']['all'] ?? '') ?></option>
-          <?php foreach (($supports ?? []) as $s): ?>
-            <option value="<?= (int)$s['id'] ?>"><?= htmlspecialchars($s['name']) ?></option>
-          <?php endforeach; ?>
-        </select>
-      </label>
-
-      <label class="filter">
-        <span><?= htmlspecialchars($language['recommendations']['sort_by'] ?? '') ?></span>
+ 
+  <div class="filters">
+    <label class="filter">
+      <select id="filter-tema">
+        <option value=""><?= htmlspecialchars($language['recommendations']['select_theme'] ?? 'Selecciona un tema') ?></option>
+        <?php foreach (($themes ?? []) as $t): ?>
+          <option value="<?= (int)$t['id'] ?>"><?= htmlspecialchars($t['name']) ?></option>
+        <?php endforeach; ?>
+      </select>
+    </label>
+ 
+    <label class="filter">
+      <select id="filter-soporte">
+        <option value=""><?= htmlspecialchars($language['recommendations']['select_support'] ?? 'Elige un soporte') ?></option>
+        <?php foreach (($supports ?? []) as $s): ?>
+          <option value="<?= (int)$s['id'] ?>"><?= htmlspecialchars($s['name']) ?></option>
+        <?php endforeach; ?>
+      </select>
+    </label>
+ 
+        <label class="filter">
         <select id="order-by">
-          <option value="likes"><?= htmlspecialchars($language['recommendations']['more_like'] ?? '') ?></option>
-          <option value="recent"><?= htmlspecialchars($language['recommendations']['recent'] ?? '') ?></option>
+            <option value=""><?= htmlspecialchars($language['recommendations']['all'] ?? 'Todos') ?></option>
+            <option value="likes"><?= htmlspecialchars($language['recommendations']['more_like'] ?? 'Más likes') ?></option>
+            <option value="recent"><?= htmlspecialchars($language['recommendations']['recent'] ?? 'Más recientes') ?></option>
         </select>
-      </label>
-
-      <label class="filter search">
-        <input id="search-recs" type="search"
-               placeholder="<?= htmlspecialchars($language['recommendations']['search'] ?? '') ?>"
-               autocomplete="off">
-      </label>
-    </div>
-
-    <section class="learn-slider recomendation-slider">
-      <button class="nav prev" aria-label="Anterior">‹</button>
-
-      <div class="viewport">
-        <ul class="track">
-          <?php foreach ($recommendations as $r): ?>
-            <?php
-              $tema_id    = (int)($r['tema_id'] ?? 0);
-              $soporte_id = (int)($r['soporte_id'] ?? 0);
-              $tema       = $r['tema'] ?? '';
-              $soporte    = $r['soporte'] ?? '';
-              $title      = $r['title'] ?? '';
-              $desc       = $r['description'] ?? '';
-              $author     = $r['content_author'] ?? '';
-              $by_user    = $r['recommended_by'] ?? '';
-              $likes      = (int)($r['likes'] ?? 0);
-              $dateSort   = $r['date_start'] ?? '';
-            ?>
-            <li class="slide"
-                data-tema-id="<?= $tema_id ?>"
-                data-soporte-id="<?= $soporte_id ?>"
-                data-likes="<?= $likes ?>"
-                data-date="<?= htmlspecialchars($dateSort) ?>">
-              <article class="card">
-                <div class="card-body">
-                  <?php if ($tema): ?><span class="badge"><?= htmlspecialchars($tema) ?></span><?php endif; ?>
-                  <h3 class="card-title"><?= htmlspecialchars($title) ?></h3>
-                  <?php if ($soporte): ?><p class="card-subtitle"><?= htmlspecialchars($soporte) ?></p><?php endif; ?>
-                  <?php if ($desc): ?><p class="card-text"><?= nl2br(htmlspecialchars($desc)) ?></p><?php endif; ?>
-                  <div class="card-footer">
-                    <div class="bylines">
-                      <span class="byline"><?= htmlspecialchars($language['recommendations']['authorship'] ?? '') . htmlspecialchars($author ?: '—') ?>.</span>
-                      <span class="byline"><?= htmlspecialchars($language['recommendations']['recommended_by'] ?? '') . htmlspecialchars($by_user ?: '—') ?>.</span>
-                    </div>
-                    <span class="likes"
-                          role="button"
-                          title="<?= htmlspecialchars($language['recommendations']['like'] ?? '') ?>"
-                          data-rec-id="<?= (int)($r['recommendation_id'] ?? 0) ?>"
-                          data-link-id="<?= (int)($r['link_id'] ?? 0) ?>"
-                          aria-pressed="false">
-                      <svg class="heart" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-                        <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z"></path>
-                      </svg>
-                      <span class="likes-count"><?= number_format($likes, 0, ',', '.') ?></span>
-                    </span>
-                  </div>
+        </label>
+ 
+ 
+    <label class="filter search">
+      <input id="search-recs" type="search"
+            placeholder="<?= htmlspecialchars($language['recommendations']['search'] ?? 'Buscar...') ?>"
+            autocomplete="off">
+    </label>
+  </div>
+ 
+    <div class="recommendation-feed">
+            <?php foreach ($recommendations as $r): ?>
+                <?php
+                $tema_id    = (int)($r['tema_id'] ?? 0);
+                $soporte_id = (int)($r['soporte_id'] ?? 0);
+                $tema       = $r['tema'] ?? '';
+                $soporte    = $r['soporte'] ?? '';
+                $title      = $r['title'] ?? '';
+                $desc       = $r['description'] ?? '';
+                $author     = $r['content_author'] ?? '';
+                $by_user    = $r['recommended_by'] ?? '';
+                $likes      = (int)($r['likes'] ?? 0);
+                $dateSort   = $r['date_start'] ?? '';
+                ?>
+                <article class="recommendation-item"
+                        data-tema-id="<?= $tema_id ?>"
+                        data-soporte-id="<?= $soporte_id ?>"
+                        data-likes="<?= $likes ?>"
+                        data-date="<?= htmlspecialchars($dateSort) ?>">
+ 
+                <header class="rec-meta">
+                    <span class="rec-tema"><?= htmlspecialchars($tema) ?></span>
+                    <span class="rec-soporte"><?= htmlspecialchars($soporte) ?></span>
+                </header>
+ 
+                <div class="rec-body">
+                    <?php if ($author || $title): ?>
+                    <p class="rec-header-line">
+                        <?= htmlspecialchars($author) ?>
+                        <?php if ($author && $title): ?> / <?php endif; ?>
+                        <?= htmlspecialchars($title) ?>
+                    </p>
+                    <?php endif; ?>
+ 
+                    <?php if ($desc): ?>
+                      <div class="rec-text-wrapper">
+                        <p class="rec-text"><?= nl2br(htmlspecialchars($desc)) ?></p>
+                        <button class="read-more-btn">Leer más</button>
+                      </div>
+                    <?php endif; ?>
+ 
                 </div>
-              </article>
-            </li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
-
-      <button class="nav next" aria-label="Siguiente">›</button>
-    </section>
+ 
+                <footer class="rec-footer">
+                    <span class="rec-user"><?= htmlspecialchars($by_user) ?></span>
+                    <button class="rec-like"
+                            data-rec-id="<?= (int)$r['recommendation_id'] ?>"
+                            aria-pressed="false">
+                    <i class="fa-regular fa-heart"></i>
+                    <span class="like-count"><?= (int)$likes ?></span>
+                    </button>
+                </footer>
+                </article>
+            <?php endforeach; ?>
+            </div>
+            <p class="no-results" style="display:none;">
+                <i class="fa-regular fa-face-frown"></i>
+                No hay recomendaciones que coincidan con los filtros seleccionados.
+            </p>
+ 
+            <!-- Texto “Mostrar más” -->
+            <div class="load-more-wrapper">
+            <p class="load-more-text">
+                Mostrar más
+            </p>
+          </div>
+ 
+ 
   <?php endif; ?>
 </section>
-
+ 
+ 
 <!-- === Crear nueva recomendación === -->
 <section class="recommendation-create">
-  <h2><?= htmlspecialchars($language['recommendations']['create_title'] ?? 'Añade tu recomendación') ?></h2>
-  <p class="lead"><?= htmlspecialchars($language['recommendations']['create_lead'] ?? 'Comparte aquello que te inspira y gana puntos.') ?></p>
-
-  <?php if (!empty($flash)): ?>
-    <div class="alert success"><?= htmlspecialchars($flash) ?></div>
-  <?php endif; ?>
-
-  <?php if (!empty($errors)): ?>
-    <div class="alert error">
-      <ul>
-        <?php foreach ($errors as $e): ?>
-          <li><?= htmlspecialchars($e) ?></li>
-        <?php endforeach; ?>
-      </ul>
-    </div>
-  <?php endif; ?>
-
-  <form id="form-recommendation" class="rec-form" method="post" action="">
+  <button class="btn-toggle-form" type="button">
+    <span class="plus">+</span>
+    <span class="text">Añadir recomendación</span>
+  </button>
+ 
+  <form id="form-recommendation" class="rec-form hidden" method="post" action="">
     <input type="hidden" name="form" value="new_recommendation">
     <?php if (!empty($_SESSION['csrf'])): ?>
       <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['csrf']) ?>">
     <?php endif; ?>
-
+ 
     <div class="rec-grid">
       <!-- Idioma -->
       <label class="field">
@@ -170,13 +171,13 @@ if (!function_exists('lower_ascii')) {
           <option value="eu" <?= ($post_lang === 'eu' ? 'selected' : '') ?>>Euskera</option>
         </select>
       </label>
-
+ 
       <!-- Tema -->
       <label class="field">
         <span><?= htmlspecialchars($language['recommendations']['theme'] ?? 'Tema') ?></span>
         <?php $post_tema = isset($old['tema_id']) ? (int)$old['tema_id'] : 0; ?>
         <select name="tema_id" required>
-          <option value=""><?= htmlspecialchars($language['recommendations']['select'] ?? 'Selecciona') ?></option>
+          <option value=""><?= htmlspecialchars($language['recommendations']['select'] ?? 'Selecciona un tema') ?></option>
           <?php foreach (($themes ?? []) as $t): ?>
             <option value="<?= (int)$t['id'] ?>" <?= ($post_tema === (int)$t['id'] ? 'selected' : '') ?>>
               <?= htmlspecialchars($t['name']) ?>
@@ -184,7 +185,7 @@ if (!function_exists('lower_ascii')) {
           <?php endforeach; ?>
         </select>
       </label>
-
+ 
       <!-- Soporte -->
       <label class="field">
         <span><?= htmlspecialchars($language['recommendations']['support'] ?? 'Soporte') ?></span>
@@ -198,7 +199,7 @@ if (!function_exists('lower_ascii')) {
           <?php endforeach; ?>
         </select>
       </label>
-
+ 
       <!-- Título -->
       <label class="field">
         <span><?= htmlspecialchars($language['recommendations']['title_label'] ?? 'Título') ?></span>
@@ -207,7 +208,7 @@ if (!function_exists('lower_ascii')) {
                maxlength="255" required
                value="<?= htmlspecialchars($old['title'] ?? '') ?>">
       </label>
-
+ 
       <!-- Autor -->
       <label class="field">
         <span><?= htmlspecialchars($language['recommendations']['author_label'] ?? 'Autor') ?></span>
@@ -216,7 +217,7 @@ if (!function_exists('lower_ascii')) {
                maxlength="255" required
                value="<?= htmlspecialchars($old['author'] ?? '') ?>">
       </label>
-
+ 
       <!-- Comentario -->
       <label class="field span-2">
         <span><?= htmlspecialchars($language['recommendations']['comment_label'] ?? 'Comentario') ?></span>
@@ -225,7 +226,7 @@ if (!function_exists('lower_ascii')) {
                   maxlength="2000" required><?= htmlspecialchars($old['comment'] ?? '') ?></textarea>
       </label>
     </div>
-
+ 
     <button class="btn" type="submit"><?= htmlspecialchars($language['recommendations']['submit'] ?? 'Enviar recomendación') ?></button>
   </form>
 </section>

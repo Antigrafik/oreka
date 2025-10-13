@@ -5,7 +5,6 @@ $checked = !empty($moduleFlags['recommendations']);
 
 $pdo = $GLOBALS['pdo'] ?? null;
 
-// --- Leer puntos vigentes del módulo 'recommendation' (singular en DB) ---
 $recPoints = 0;
 try {
   if ($pdo) {
@@ -18,9 +17,9 @@ try {
     $st->execute();
     $recPoints = (int)($st->fetchColumn() ?? 0);
   }
-} catch (Throwable $e) { /* opcional: log */ }
+} catch (Throwable $e) {}
 ?>
-<h2><?= htmlspecialchars($language['modules']['recommendations'] ?? 'Recomendaciones') ?></h2>
+<h2><?= htmlspecialchars($language['admin_recommendations']['recommendations'] ?? 'Recomendaciones') ?></h2>
 
 <form method="post" action="" class="mod-toggle">
   <input type="hidden" name="__action__"  value="toggle_module">
@@ -33,7 +32,6 @@ try {
   <button class="btn btn-red" type="submit"><?= htmlspecialchars($language['admin_toggle']['save'] ?? 'Guardar') ?></button>
 </form>
 
-<!-- === PUNTOS DEL MÓDULO RECOMMENDATION === -->
 <div id="rec-points-box" style="display:flex;gap:10px;align-items:center;margin:10px 0 18px">
   <div>
     <span><?= htmlspecialchars($language['admin_recommendations']['points_label'] ?? 'Puntos por actividad del módulo:') ?></span>
@@ -42,7 +40,7 @@ try {
 
   <form method="post" action="" id="rec-points-form" style="display:inline-flex;gap:8px;align-items:center">
     <input type="hidden" name="__action__" value="recommendations_update_points">
-    <input type="hidden" name="module_key" value="recommendations"><!-- plural en UI -->
+    <input type="hidden" name="module_key" value="recommendations">
     <input type="number" name="points" id="rec-points-input"
            value="<?= (int)$recPoints ?>" min="0" step="1"
            style="width:90px;display:none;padding:.35rem;border:1px solid #0aa;border-radius:8px">
@@ -76,7 +74,7 @@ try {
       const v = Number(input.value);
       if (!Number.isFinite(v) || v < 0) {
         e.preventDefault();
-        alert('Introduce un número de puntos válido (>= 0).');
+        alert('<?= htmlspecialchars($language['admin_recommendations']['valid_points'] ?? 'Introduce un número de puntos válido (>= 0).') ?>');
       }
     });
   }
@@ -84,13 +82,10 @@ try {
 </script>
 
 <?php
-/* ===== CONFIG: IDs padre para Tema y Soporte =====
-   Según tu mensaje: 10 (Tema), 11 (Soporte).
-   Si cambian en el futuro, basta con actualizar estas constantes. */
-$TOPIC_PARENT_ID   = 10; // Tema
-$SUPPORT_PARENT_ID = 11; // Soporte
 
-// Helper para leer hijos de un padre, incluyendo traducciones ES/EU
+$TOPIC_PARENT_ID   = 10;
+$SUPPORT_PARENT_ID = 11;
+
 function fetchChildrenWithTrs(PDO $pdo, int $parentId): array {
   $sql = "
     SELECT
@@ -121,7 +116,6 @@ $supports = $pdo ? fetchChildrenWithTrs($pdo, $SUPPORT_PARENT_ID) : [];
 ?>
 
 <?php
-// Devuelve "ES / EU" si hay ambos; si no, solo el que exista
 function pair_label(?string $es, ?string $eu): string {
   $es = trim((string)$es);
   $eu = trim((string)$eu);
@@ -129,13 +123,11 @@ function pair_label(?string $es, ?string $eu): string {
   return $es !== '' ? $es : $eu;
 }
 
-// ¿Hay contenido en ES?
 function has_es(array $r): bool {
   return (isset($r['title_es'])   && trim((string)$r['title_es'])   !== '')
       || (isset($r['content_es']) && trim((string)$r['content_es']) !== '');
 }
 
-// ¿Hay contenido en EU?
 function has_eu(array $r): bool {
   return (isset($r['title_eu'])   && trim((string)$r['title_eu'])   !== '')
       || (isset($r['content_eu']) && trim((string)$r['content_eu']) !== '');
@@ -160,12 +152,11 @@ function fmt_dt(?string $s): string {
   .subheader{ display:flex; align-items:center; justify-content:space-between; margin-top:20px }
 </style>
 
-<!-- ==================== TEMA ==================== -->
 <div class="subheader">
-  <h3 style="margin:0">Tema</h3>
+  <h3 style="margin:0"><?= htmlspecialchars($language['admin_recommendations']['topic'] ?? 'Tema') ?></h3>
   <div style="display:flex; gap:8px; align-items:center">
-    <button type="button" class="btn" id="btn-toggle-topic" aria-expanded="false">Ver</button>
-    <button type="button" class="btn" id="btn-add-topic">Añadir</button>
+    <button type="button" class="btn" id="btn-toggle-topic" aria-expanded="false"><?= htmlspecialchars($language['admin_recommendations']['view'] ?? 'Ver') ?></button>
+    <button type="button" class="btn" id="btn-add-topic"><?= htmlspecialchars($language['admin_recommendations']['add'] ?? 'Añadir') ?></button>
   </div>
 </div>
 
@@ -175,8 +166,8 @@ function fmt_dt(?string $s): string {
     <input type="hidden" name="parent_id" value="<?= (int)$TOPIC_PARENT_ID ?>">
     <input type="text" name="name_es" placeholder="Nombre (es)" required>
     <input type="text" name="name_eu" placeholder="Izena (eu)" required>
-    <button type="submit" class="btn">Guardar</button>
-    <button type="button" class="btn btn-red" data-cancel="#topic-add-form">Cancelar</button>
+    <button type="submit" class="btn"><?= htmlspecialchars($language['admin_recommendations']['save'] ?? 'Guardar') ?></button>
+    <button type="button" class="btn btn-red" data-cancel="#topic-add-form"><?= htmlspecialchars($language['admin_recommendations']['cancel'] ?? 'Cancelar') ?></button>
   </form>
 </div>
 
@@ -185,15 +176,15 @@ function fmt_dt(?string $s): string {
     <thead>
       <tr>
         <th>ID</th>
-        <th>Nombre (es)</th>
-        <th>Nombre (eu)</th>
-        <th>Estado</th>
-        <th style="width:1%">Acciones</th>
+        <th><?= htmlspecialchars($language['admin_recommendations']['name_es'] ?? 'Nombre (es)') ?></th>
+        <th><?= htmlspecialchars($language['admin_recommendations']['name_eu'] ?? 'Nombre (eu)') ?></th>
+        <th><?= htmlspecialchars($language['admin_recommendations']['status'] ?? 'Estado') ?></th>
+        <th style="width:1%"><?= htmlspecialchars($language['admin_recommendations']['actions'] ?? 'Acciones') ?></th>
       </tr>
     </thead>
     <tbody>
       <?php if (empty($topics)): ?>
-        <tr><td colspan="7" class="muted">Sin elementos.</td></tr>
+        <tr><td colspan="7" class="muted"><?= htmlspecialchars($language['admin_recommendations']['no_items'] ?? 'Sin elementos.') ?></td></tr>
       <?php else: foreach ($topics as $row): ?>
         <tr>
           <td><?= (int)$row['id'] ?></td>
@@ -202,11 +193,11 @@ function fmt_dt(?string $s): string {
           <td><?= htmlspecialchars($row['status'] ?? '') ?></td>
           <td>
             <form method="post" action=""
-                  onsubmit="return confirm('¿Seguro que quieres eliminar este elemento?');"
+                  onsubmit="return confirm('<?= htmlspecialchars($language['admin_recommendations']['confirm_delete'] ?? '¿Seguro que quieres eliminar este elemento?') ?>');"
                   style="margin:0">
               <input type="hidden" name="__action__" value="recommendations_soft_delete">
               <input type="hidden" name="category_id" value="<?= (int)$row['id'] ?>">
-              <button type="submit" class="btn btn-red">Eliminar</button>
+              <button type="submit" class="btn btn-red"><?= htmlspecialchars($language['admin_recommendations']['delete'] ?? 'Eliminar') ?></button>
             </form>
           </td>
         </tr>
@@ -215,12 +206,11 @@ function fmt_dt(?string $s): string {
   </table>
 </div>
 
-<!-- ==================== SOPORTE ==================== -->
 <div class="subheader">
-  <h3 style="margin:0">Soporte</h3>
+  <h3 style="margin:0"><?= htmlspecialchars($language['admin_recommendations']['support'] ?? 'Soporte') ?></h3>
   <div style="display:flex; gap:8px; align-items:center">
-    <button type="button" class="btn" id="btn-toggle-support" aria-expanded="false">Ver</button>
-    <button type="button" class="btn" id="btn-add-support">Añadir</button>
+    <button type="button" class="btn" id="btn-toggle-support" aria-expanded="false"><?= htmlspecialchars($language['admin_recommendations']['view'] ?? 'Ver') ?></button>
+    <button type="button" class="btn" id="btn-add-support"><?= htmlspecialchars($language['admin_recommendations']['add'] ?? 'Añadir') ?></button>
   </div>
 </div>
 
@@ -228,10 +218,10 @@ function fmt_dt(?string $s): string {
   <form method="post" action="">
     <input type="hidden" name="__action__" value="recommendations_add_category">
     <input type="hidden" name="parent_id" value="<?= (int)$SUPPORT_PARENT_ID ?>">
-    <input type="text" name="name_es" placeholder="Nombre (es)" required>
-    <input type="text" name="name_eu" placeholder="Izena (eu)" required>
-    <button type="submit" class="btn">Guardar</button>
-    <button type="button" class="btn btn-red" data-cancel="#support-add-form">Cancelar</button>
+    <input type="text" name="name_es" placeholder="<?= htmlspecialchars($language['admin_recommendations']['name_es'] ?? 'Nombre (es)') ?>" required>
+    <input type="text" name="name_eu" placeholder="<?= htmlspecialchars($language['admin_recommendations']['name_eu'] ?? 'Izena (eu)') ?>" required>
+    <button type="submit" class="btn"><?= htmlspecialchars($language['admin_recommendations']['save'] ?? 'Guardar') ?></button>
+    <button type="button" class="btn btn-red" data-cancel="#support-add-form"><?= htmlspecialchars($language['admin_recommendations']['cancel'] ?? 'Cancelar') ?></button>
   </form>
 </div>
 
@@ -240,15 +230,15 @@ function fmt_dt(?string $s): string {
     <thead>
       <tr>
         <th>ID</th>
-        <th>Nombre (es)</th>
-        <th>Nombre (eu)</th>
-        <th>Estado</th>
-        <th style="width:1%">Acciones</th>
+        <th><?= htmlspecialchars($language['admin_recommendations']['name_es'] ?? 'Nombre (es)') ?></th>
+        <th><?= htmlspecialchars($language['admin_recommendations']['name_eu'] ?? 'Izena (eu)') ?></th>
+        <th><?= htmlspecialchars($language['admin_recommendations']['status'] ?? 'Estado') ?></th>
+        <th style="width:1%"><?= htmlspecialchars($language['admin_recommendations']['actions'] ?? 'Acciones') ?></th>
       </tr>
     </thead>
     <tbody>
       <?php if (empty($supports)): ?>
-        <tr><td colspan="7" class="muted">Sin elementos.</td></tr>
+        <tr><td colspan="7" class="muted"><?= htmlspecialchars($language['admin_recommendations']['no_elements'] ?? 'Sin elementos.') ?></td></tr>
       <?php else: foreach ($supports as $row): ?>
         <tr>
           <td><?= (int)$row['id'] ?></td>
@@ -257,11 +247,11 @@ function fmt_dt(?string $s): string {
           <td><?= htmlspecialchars($row['status'] ?? '') ?></td>
           <td>
             <form method="post" action=""
-                  onsubmit="return confirm('¿Seguro que quieres eliminar este elemento?');"
+                  onsubmit="return confirm('<?= htmlspecialchars($language['admin_recommendations']['delete_confirm'] ?? '¿Seguro que quieres eliminar este elemento?') ?>');"
                   style="margin:0">
               <input type="hidden" name="__action__" value="recommendations_soft_delete">
               <input type="hidden" name="category_id" value="<?= (int)$row['id'] ?>">
-              <button type="submit" class="btn btn-red">Eliminar</button>
+              <button type="submit" class="btn btn-red"><?= htmlspecialchars($language['admin_recommendations']['delete'] ?? 'Eliminar') ?></button>
             </form>
           </td>
         </tr>
@@ -281,46 +271,41 @@ function fmt_dt(?string $s): string {
     btn.addEventListener('click', ()=>{
       const box = document.querySelector(btn.getAttribute('data-cancel'));
       if (box) box.style.display='none';
-      // limpiar inputs
       box.querySelectorAll('input[type="text"]').forEach(i=> i.value='');
     });
   });
 
-  // Validación mínima: ambos idiomas obligatorios
   document.querySelectorAll('#topic-add-form form, #support-add-form form').forEach(form=>{
     form.addEventListener('submit', (e)=>{
       const es = form.querySelector('input[name="name_es"]')?.value.trim();
       const eu = form.querySelector('input[name="name_eu"]')?.value.trim();
       if (!es || !eu) {
         e.preventDefault();
-        alert('Debes rellenar el nombre en Español y en Euskera.');
+        alert('<?= htmlspecialchars($language['admin_recommendations']['fill_names'] ?? 'Debes rellenar el nombre en Español y en Euskera.') ?>');
       }
     });
   });
 
-  // Toggle Ver/Ocultar para Tema
   on($('#btn-toggle-topic'), 'click', () => {
     const wrap = $('#topic-table-wrap');
     const btn  = $('#btn-toggle-topic');
     if (!wrap || !btn) return;
     const isHidden = (wrap.style.display === 'none' || wrap.style.display === '');
     wrap.style.display = isHidden ? 'block' : 'none';
-    btn.textContent = isHidden ? 'Ocultar' : 'Ver';
+    btn.textContent = isHidden ? '<?= htmlspecialchars($language['admin_recommendations']['hide'] ?? 'Ocultar') ?>' : '<?= htmlspecialchars($language['admin_recommendations']['view'] ?? 'Ver') ?>';
     btn.setAttribute('aria-expanded', String(isHidden));
   });
 
-  // Toggle Ver/Ocultar para Soporte
   on($('#btn-toggle-support'), 'click', () => {
     const wrap = $('#support-table-wrap');
     const btn  = $('#btn-toggle-support');
     if (!wrap || !btn) return;
     const isHidden = (wrap.style.display === 'none' || wrap.style.display === '');
     wrap.style.display = isHidden ? 'block' : 'none';
-    btn.textContent = isHidden ? 'Ocultar' : 'Ver';
+    btn.textContent = isHidden ? '<?= htmlspecialchars($language['admin_recommendations']['hide'] ?? 'Ocultar') ?>' : '<?= htmlspecialchars($language['admin_recommendations']['view'] ?? 'Ver') ?>';
     btn.setAttribute('aria-expanded', String(isHidden));
   });
 
-  // Estado inicial: oculto y botones en "Ver"
   (function initTablesToggle() {
     const topic = $('#topic-table-wrap');
     const support = $('#support-table-wrap');
@@ -328,42 +313,32 @@ function fmt_dt(?string $s): string {
     if (support) support.style.display = 'none';
     const b1 = $('#btn-toggle-topic');
     const b2 = $('#btn-toggle-support');
-    if (b1) { b1.textContent = 'Ver'; b1.setAttribute('aria-expanded', 'false'); }
-    if (b2) { b2.textContent = 'Ver'; b2.setAttribute('aria-expanded', 'false'); }
+    if (b1) { b1.textContent = '<?= htmlspecialchars($language['admin_recommendations']['view'] ?? 'Ver') ?>'; b1.setAttribute('aria-expanded', 'false'); }
+    if (b2) { b2.textContent = '<?= htmlspecialchars($language['admin_recommendations']['view'] ?? 'Ver') ?>'; b2.setAttribute('aria-expanded', 'false'); }
   })();
 </script>
 
 <?php
-/* ============================================================
-   LISTADO DE RECOMENDACIONES (filtros + paginación + tabla)
-   — PÉGALO AL FINAL DE community_recommendations.php —
-   ============================================================ */
-
 if (!isset($pdo) || !$pdo) {
-  echo '<p>No hay conexión a la base de datos.</p>';
+  echo '<p><?= htmlspecialchars($language["admin_recommendations"]["db_error"] ?? "No hay conexión a la base de datos.") ?></p>';
   return;
 }
 
-/* ---- Parámetros de filtros/paginación ---- */
 $page      = max(1, (int)($_GET['page'] ?? 1));
 $perPage   = min(100, max(5, (int)($_GET['per_page'] ?? 10)));
-$order     = ($_GET['order'] ?? 'recent'); // recent | likes
-$topicId   = (int)($_GET['topic'] ?? 0);   // categoría hija de Tema (id_parent=10)
-$supportId = (int)($_GET['support'] ?? 0); // categoría hija de Soporte (id_parent=11)
+$order     = ($_GET['order'] ?? 'recent');
+$topicId   = (int)($_GET['topic'] ?? 0);
+$supportId = (int)($_GET['support'] ?? 0);
 $q         = trim((string)($_GET['q'] ?? ''));
 
 $offset = ($page - 1) * $perPage;
 
-/* ---- Usamos $topics y $supports que ya calculaste arriba ---- */
-/* Si no existen (por si moviste el bloque), los recalculamos:  */
 if (!isset($topics) || !is_array($topics))   $topics   = fetchChildrenWithTrs($pdo, $TOPIC_PARENT_ID);
 if (!isset($supports) || !is_array($supports)) $supports = fetchChildrenWithTrs($pdo, $SUPPORT_PARENT_ID);
 
-/* ---- WHERE dinámico (compartido por COUNT y SELECT) ---- */
 $where  = ["r.id IS NOT NULL"];
 $params = [];
 
-/* filtrar por Tema */
 if ($topicId > 0) {
   $where[] = "EXISTS (
       SELECT 1
@@ -375,7 +350,7 @@ if ($topicId > 0) {
   )";
   array_push($params, $TOPIC_PARENT_ID, $topicId);
 }
-/* filtrar por Soporte */
+
 if ($supportId > 0) {
   $where[] = "EXISTS (
       SELECT 1
@@ -387,7 +362,7 @@ if ($supportId > 0) {
   )";
   array_push($params, $SUPPORT_PARENT_ID, $supportId);
 }
-/* buscador */
+
 if ($q !== '') {
   $where[] = "(
       es.title LIKE ? OR eu.title LIKE ?
@@ -399,12 +374,10 @@ if ($q !== '') {
   array_push($params, $like,$like,$like,$like,$like,$like);
 }
 
-/* ---- ORDER BY ---- */
-$orderSql = ($order === 'likes')
-  ? "ORDER BY r.likes DESC, r.created_at DESC"
-  : "ORDER BY r.created_at DESC, r.id DESC";
+// $orderSql = ($order === 'likes')
+//   ? "ORDER BY r.likes DESC, r.created_at DESC"
+//   : "ORDER BY r.created_at DESC, r.id DESC";
 
-/* ---- TOTAL ---- */
 $sqlCount = "
   ;WITH base AS (
     SELECT DISTINCT r.id
@@ -437,12 +410,10 @@ $totalPages = max(1, (int)ceil($total / $perPage));
 if ($page > $totalPages) $page = $totalPages;
 $offset = ($page - 1) * $perPage;
 
-/* ---- SELECT paginado ---- */
 $sql = "
   SELECT
       r.id             AS rec_id,
       r.author         AS rec_author,
-      r.likes          AS rec_likes,
       r.created_at     AS rec_created_at,
       r.status         AS rec_status,
       l.id             AS link_id,
@@ -543,21 +514,19 @@ $__baseUrlPath = (function () {
 ?>
 
 <?php
-// ==== Endpoint AJAX: devuelve solo tbody + pager como JSON ==== //
 if (($_GET['ajax'] ?? '') === 'reclist') {
   ob_start();
   if (empty($rows)) {
-    echo '<tr><td colspan="11" class="reclist-muted">No hay recomendaciones que cumplan los criterios.</td></tr>';
+    echo '<tr><td colspan="11" class="reclist-muted">'.htmlspecialchars($language['admin_recommendations']['no_recommendations'] ?? 'No hay recomendaciones que cumplan los criterios.').'</td></tr>';
   } else {
     foreach ($rows as $r) {
       $topicLbl   = htmlspecialchars(pair_label($r['topic_es'] ?? '',   $r['topic_eu'] ?? ''), ENT_QUOTES);
       $supportLbl = htmlspecialchars(pair_label($r['support_es'] ?? '', $r['support_eu'] ?? ''), ENT_QUOTES);
 
-      // Fila ES solo si hay datos en ES
       if (has_es($r)) {
         $statusRaw = strtolower((string)($r['rec_status'] ?? 'publicado'));
-        $statusTxt = ($statusRaw === 'borrador') ? 'borrador' : 'publicado';
-        $toggleLabel = ($statusTxt === 'publicado') ? 'Borrador' : 'Publicar';
+        $statusTxt = ($statusRaw === 'borrador') ? htmlspecialchars($language['admin_recommendations']['draft'] ?? 'Borrador') : htmlspecialchars($language['admin_recommendations']['published'] ?? 'Publicar');
+        $toggleLabel = ($statusTxt === 'publicado') ? htmlspecialchars($language['admin_recommendations']['draft'] ?? 'Borrador') : htmlspecialchars($language['admin_recommendations']['published'] ?? 'Publicar');
 
         echo '<tr>';
         echo '<td class="small">'.$topicLbl.'</td>';
@@ -567,23 +536,19 @@ if (($_GET['ajax'] ?? '') === 'reclist') {
         echo '<td>'.nl2br(htmlspecialchars($r['content_es'] ?? '', ENT_QUOTES)).'</td>';
         echo '<td>'.htmlspecialchars($r['rec_author'] ?? '', ENT_QUOTES).'</td>';
         echo '<td>'.htmlspecialchars($r['username'] ?? '', ENT_QUOTES).'</td>';
-        echo '<td class="nowrap">'.(int)($r['rec_likes'] ?? 0).'</td>';
+        // echo '<td class="nowrap">'.(int)($r['rec_likes'] ?? 0).'</td>';
         echo '<td class="nowrap">'.htmlspecialchars(fmt_dt($r['rec_created_at'] ?? ''), ENT_QUOTES).'</td>';
-
-        // NUEVA celda: ESTADO
         echo '<td class="nowrap">'.htmlspecialchars($statusTxt, ENT_QUOTES).'</td>';
-
-        // Celda: ACCIONES
         echo '<td class="nowrap">';
         echo '  <form method="post" action="" class="rec-action" style="display:inline">';
         echo '    <input type="hidden" name="__action__" value="recommendations_toggle_status">';
         echo '    <input type="hidden" name="rec_id" value="'.(int)$r['rec_id'].'">';
         echo '    <button type="submit" class="btn">'.htmlspecialchars($toggleLabel, ENT_QUOTES).'</button>';
         echo '  </form>';
-        echo '  <form method="post" action="" class="rec-action" style="display:inline" onsubmit="return confirm(\'¿Seguro que quieres eliminar esta recomendación y sus relaciones?\');">';
+        echo '  <form method="post" action="" class="rec-action" style="display:inline" onsubmit="return confirm(\''.htmlspecialchars($language['admin_recommendations']['confirm_delete'] ?? '¿Seguro que quieres eliminar este elemento?').'\');">';
         echo '    <input type="hidden" name="__action__" value="recommendations_hard_delete">';
         echo '    <input type="hidden" name="rec_id" value="'.(int)$r['rec_id'].'">';
-        echo '    <button type="submit" class="btn btn-red">Eliminar</button>';
+        echo '    <button type="submit" class="btn btn-red">'.htmlspecialchars($language['admin_recommendations']['delete'] ?? 'Eliminar').'</button>';
         echo '  </form>';
         echo '</td>';
         echo '</tr>';
@@ -592,8 +557,8 @@ if (($_GET['ajax'] ?? '') === 'reclist') {
       // Fila EU solo si hay datos en EU
       if (has_eu($r)) {
         $statusRaw = strtolower((string)($r['rec_status'] ?? 'publicado'));
-        $statusTxt = ($statusRaw === 'borrador') ? 'borrador' : 'publicado';
-        $toggleLabel = ($statusTxt === 'publicado') ? 'Borrador' : 'Publicar';
+        $statusTxt = ($statusRaw === 'borrador') ? htmlspecialchars($language['admin_recommendations']['draft'] ?? 'Borrador') : htmlspecialchars($language['admin_recommendations']['published'] ?? 'Publicar');
+        $toggleLabel = ($statusTxt === 'publicado') ? htmlspecialchars($language['admin_recommendations']['draft'] ?? 'Borrador') : htmlspecialchars($language['admin_recommendations']['published'] ?? 'Publicar');
 
         echo '<tr>';
         echo '<td class="small">'.$topicLbl.'</td>';
@@ -603,7 +568,7 @@ if (($_GET['ajax'] ?? '') === 'reclist') {
         echo '<td>'.nl2br(htmlspecialchars($r['content_eu'] ?? '', ENT_QUOTES)).'</td>';
         echo '<td>'.htmlspecialchars($r['rec_author'] ?? '', ENT_QUOTES).'</td>';
         echo '<td>'.htmlspecialchars($r['username'] ?? '', ENT_QUOTES).'</td>';
-        echo '<td class="nowrap">'.(int)($r['rec_likes'] ?? 0).'</td>';
+        // echo '<td class="nowrap">'.(int)($r['rec_likes'] ?? 0).'</td>';
         echo '<td class="nowrap">'.htmlspecialchars(fmt_dt($r['rec_created_at'] ?? ''), ENT_QUOTES).'</td>';
 
         // NUEVA celda: ESTADO
@@ -616,10 +581,10 @@ if (($_GET['ajax'] ?? '') === 'reclist') {
         echo '    <input type="hidden" name="rec_id" value="'.(int)$r['rec_id'].'">';
         echo '    <button type="submit" class="btn">'.htmlspecialchars($toggleLabel, ENT_QUOTES).'</button>';
         echo '  </form>';
-        echo '  <form method="post" action="" class="rec-action" style="display:inline" onsubmit="return confirm(\'¿Seguro que quieres eliminar esta recomendación y sus relaciones?\');">';
+        echo '  <form method="post" action="" class="rec-action" style="display:inline" onsubmit="return confirm(\''.htmlspecialchars($language['admin_recommendations']['confirm_delete'] ?? '¿Seguro que quieres eliminar este elemento?').'\');">';
         echo '    <input type="hidden" name="__action__" value="recommendations_hard_delete">';
         echo '    <input type="hidden" name="rec_id" value="'.(int)$r['rec_id'].'">';
-        echo '    <button type="submit" class="btn btn-red">Eliminar</button>';
+        echo '    <button type="submit" class="btn btn-red">'.htmlspecialchars($language['admin_recommendations']['delete'] ?? 'Eliminar').'</button>';
         echo '  </form>';
         echo '</td>';
         echo '</tr>';
@@ -680,12 +645,12 @@ if (($_GET['ajax'] ?? '') === 'reclist') {
 </style>
 
 <hr>
-<h3 style="margin:12px 0">Listado de recomendaciones</h3>
+<h3 style="margin:12px 0"><?= htmlspecialchars($language['admin_recommendations']['list'] ?? 'Listado de recomendaciones') ?></h3>
 
 
 <form id="reclist-filters" class="reclist-filters" onsubmit="return false;">
   <label>
-    Tema:
+    <?= htmlspecialchars($language['admin_recommendations']['topic'] ?? 'Tema') ?>:
     <select name="topic" id="flt-topic">
       <option value="0">Todos</option>
       <?php foreach ($topics as $t): ?>
@@ -712,7 +677,7 @@ if (($_GET['ajax'] ?? '') === 'reclist') {
     Orden:
     <select name="order" id="flt-order">
       <option value="recent" <?= (($_GET['order']??'recent')==='recent')?'selected':'' ?>>Más recientes</option>
-      <option value="likes"  <?= (($_GET['order']??'recent')==='likes')?'selected':''  ?>>Más likes</option>
+      <!-- <option value="likes"  <?= (($_GET['order']??'recent')==='likes')?'selected':''  ?>>Más likes</option> -->
     </select>
   </label>
 
@@ -758,8 +723,8 @@ if (($_GET['ajax'] ?? '') === 'reclist') {
 
       <?php if (has_es($r)): 
         $statusRaw = strtolower((string)($r['rec_status'] ?? 'publicado'));
-        $statusTxt = ($statusRaw === 'borrador') ? 'borrador' : 'publicado';
-        $toggleLabel = ($statusTxt === 'publicado') ? 'Borrador' : 'Publicar';
+        $statusTxt = ($statusRaw === 'borrador') ? htmlspecialchars($language['admin_recommendations']['draft'] ?? 'Borrador') : htmlspecialchars($language['admin_recommendations']['published'] ?? 'Publicar');
+        $toggleLabel = ($statusTxt === 'publicado') ? htmlspecialchars($language['admin_recommendations']['draft'] ?? 'Borrador') : htmlspecialchars($language['admin_recommendations']['published'] ?? 'Publicar');
       ?>
         <tr>
           <td class="small"><?= $topicLbl ?></td>
@@ -769,7 +734,7 @@ if (($_GET['ajax'] ?? '') === 'reclist') {
           <td><?= nl2br(htmlspecialchars($r['content_es'] ?? '', ENT_QUOTES)) ?></td>
           <td><?= htmlspecialchars($r['rec_author'] ?? '', ENT_QUOTES) ?></td>
           <td><?= htmlspecialchars($r['username'] ?? '', ENT_QUOTES) ?></td>
-          <td class="nowrap"><?= (int)($r['rec_likes'] ?? 0) ?></td>
+          <!-- <td class="nowrap"><?= (int)($r['rec_likes'] ?? 0) ?></td> -->
           <td class="nowrap"><?= htmlspecialchars(fmt_dt($r['rec_created_at'] ?? ''), ENT_QUOTES) ?></td>
 
           <!-- NUEVA celda: ESTADO -->
@@ -783,10 +748,10 @@ if (($_GET['ajax'] ?? '') === 'reclist') {
               <button type="submit" class="btn"><?= $toggleLabel ?></button>
             </form>
             <form method="post" action="" class="rec-action" style="display:inline"
-                  onsubmit="return confirm('¿Seguro que quieres eliminar esta recomendación y sus relaciones?');">
+                  onsubmit="return confirm('<?= htmlspecialchars($language['admin_recommendations']['confirm_delete'] ?? '¿Seguro que quieres eliminar esta recomendación y sus relaciones?') ?>');">
               <input type="hidden" name="__action__" value="recommendations_hard_delete">
               <input type="hidden" name="rec_id" value="<?= (int)$r['rec_id'] ?>">
-              <button type="submit" class="btn btn-red">Eliminar</button>
+              <button type="submit" class="btn btn-red"><?= htmlspecialchars($language['admin_recommendations']['delete'] ?? 'Eliminar') ?></button>
             </form>
           </td>
         </tr>
@@ -795,8 +760,8 @@ if (($_GET['ajax'] ?? '') === 'reclist') {
 
       <?php if (has_eu($r)): 
         $statusRaw = strtolower((string)($r['rec_status'] ?? 'publicado'));
-        $statusTxt = ($statusRaw === 'borrador') ? 'borrador' : 'publicado';
-        $toggleLabel = ($statusTxt === 'publicado') ? 'Borrador' : 'Publicar';
+        $statusTxt = ($statusRaw === 'borrador') ? htmlspecialchars($language['admin_recommendations']['draft'] ?? 'Borrador') : htmlspecialchars($language['admin_recommendations']['published'] ?? 'Publicar');
+        $toggleLabel = ($statusTxt === 'publicado') ? htmlspecialchars($language['admin_recommendations']['draft'] ?? 'Borrador') : htmlspecialchars($language['admin_recommendations']['published'] ?? 'Publicar');
       ?>
         <tr>
           <td class="small"><?= $topicLbl ?></td>
@@ -806,7 +771,7 @@ if (($_GET['ajax'] ?? '') === 'reclist') {
           <td><?= nl2br(htmlspecialchars($r['content_eu'] ?? '', ENT_QUOTES)) ?></td>
           <td><?= htmlspecialchars($r['rec_author'] ?? '', ENT_QUOTES) ?></td>
           <td><?= htmlspecialchars($r['username'] ?? '', ENT_QUOTES) ?></td>
-          <td class="nowrap"><?= (int)($r['rec_likes'] ?? 0) ?></td>
+          <!-- <td class="nowrap"><?= (int)($r['rec_likes'] ?? 0) ?></td> -->
           <td class="nowrap"><?= htmlspecialchars(fmt_dt($r['rec_created_at'] ?? ''), ENT_QUOTES) ?></td>
 
           <!-- NUEVA celda: ESTADO -->
@@ -820,10 +785,10 @@ if (($_GET['ajax'] ?? '') === 'reclist') {
               <button type="submit" class="btn"><?= $toggleLabel ?></button>
             </form>
             <form method="post" action="" class="rec-action" style="display:inline"
-                  onsubmit="return confirm('¿Seguro que quieres eliminar esta recomendación y sus relaciones?');">
+                  onsubmit="return confirm('<?= htmlspecialchars($language['admin_recommendations']['confirm_delete'] ?? '¿Seguro que quieres eliminar esta recomendación y sus relaciones?') ?>');">
               <input type="hidden" name="__action__" value="recommendations_hard_delete">
               <input type="hidden" name="rec_id" value="<?= (int)$r['rec_id'] ?>">
-              <button type="submit" class="btn btn-red">Eliminar</button>
+              <button type="submit" class="btn btn-red"><?= htmlspecialchars($language['admin_recommendations']['delete'] ?? 'Eliminar') ?></button>
             </form>
           </td>
         </tr>

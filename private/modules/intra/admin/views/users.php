@@ -3,25 +3,25 @@
 global $language, $baseUrl;
 ?>
 <section class="p-4">
-  <h2 class="mb-3">Usuarios</h2>
+  <h2 class="mb-3"><?= htmlspecialchars($language['admin_users']['users'] ?? 'Usuarios') ?></h2>
 
   <div class="filters" style="display:grid; gap:8px; grid-template-columns: 1fr 160px 160px 120px;">
-    <input id="f-q" type="search" placeholder="Buscar: usuario, nombre, apellidos, NIF, email…" />
+    <input id="f-q" type="search" placeholder='<?= htmlspecialchars($language['admin_users']['search_ph'] ?? 'Buscar: usuario, nombre, apellidos, NIF, email…') ?>'/>
     <select id="f-role">
-      <option value="">Todos los roles</option>
-      <option value="user"  ${u.roles==='user' || u.roles==='usuario' ? 'selected' : ''}>usuario</option>
-      <option value="admin" ${u.roles==='admin' ? 'selected' : ''}>admin</option>
+      <option value=""><?= htmlspecialchars($language['admin_users']['all_roles'] ?? 'Todos los roles') ?></option>
+      <option value="user"  ${u.roles==='user' || u.roles==='usuario' ? 'selected' : ''}><?= htmlspecialchars($language['admin_users']['user'] ?? 'Usuario') ?></option>
+      <option value="admin" ${u.roles==='admin' ? 'selected' : ''}><?= htmlspecialchars($language['admin_users']['admin'] ?? 'Admin') ?></option>
     </select>
     <select id="f-sort">
-      <option value="usuario|ASC">Orden: Usuario ↑</option>
-      <option value="usuario|DESC">Orden: Usuario ↓</option>
-      <option value="roles|ASC">Orden: Rol ↑</option>
-      <option value="roles|DESC">Orden: Rol ↓</option>
+      <option value="usuario|ASC"><?= htmlspecialchars($language['admin_users']['sort_user_asc'] ?? 'Orden: Usuario ↑') ?></option>
+      <option value="usuario|DESC"><?= htmlspecialchars($language['admin_users']['sort_user_desc'] ?? 'Orden: Usuario ↓') ?></option>
+      <option value="roles|ASC"><?= htmlspecialchars($language['admin_users']['sort_role_asc'] ?? 'Orden: Rol ↑') ?></option>
+      <option value="roles|DESC"><?= htmlspecialchars($language['admin_users']['sort_role_desc'] ?? 'Orden: Rol ↓') ?></option>
     </select>
     <select id="f-per">
-      <option value="20" selected>20 por página</option>
-      <option value="50">50 por página</option>
-      <option value="100">100 por página</option>
+      <option value="20" selected><?= htmlspecialchars($language['admin_users']['20_per_page'] ?? '20 orrialdeko ') ?></option>
+      <option value="50"><?= htmlspecialchars($language['admin_users']['50_per_page'] ?? '50 orrialdeko ') ?></option>
+      <option value="100"><?= htmlspecialchars($language['admin_users']['100_per_page'] ?? '100 orrialdeko ') ?></option>
     </select>
   </div>
 
@@ -29,21 +29,21 @@ global $language, $baseUrl;
     <table id="users-table" class="table" style="width:100%; border-collapse:collapse;">
       <thead>
         <tr>
-          <th style="text-align:left;">Usuario</th>
-          <th>Nombre</th>
-          <th>Apellidos</th>
-          <th>NIF</th>
-          <th>Email</th>
-          <th>Rol</th>
-          <th style="width:140px;">Acción</th>
+          <th style="text-align:left;"><?= htmlspecialchars($language['admin_users']['user'] ?? 'Usuario') ?></th>
+          <th><?= htmlspecialchars($language['admin_users']['name'] ?? 'Nombre') ?></th>
+          <th><?= htmlspecialchars($language['admin_users']['surname'] ?? 'Apellidos') ?></th>
+          <th><?= htmlspecialchars($language['admin_users']['nif'] ?? 'NIF') ?></th>
+          <th><?= htmlspecialchars($language['admin_users']['email'] ?? 'Email') ?></th>
+          <th><?= htmlspecialchars($language['admin_users']['role'] ?? 'Rol') ?></th>
+          <th style="width:140px;"><?= htmlspecialchars($language['admin_users']['action'] ?? 'Acción') ?></th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
     <div id="pager" class="mt-2" style="display:flex; gap:8px; align-items:center;">
-      <button id="prev">« Anterior</button>
+      <button id="prev">« <?= htmlspecialchars($language['admin_users']['prev'] ?? 'Anterior') ?></button>
       <span id="pageinfo"></span>
-      <button id="next">Siguiente »</button>
+      <button id="next"><?= htmlspecialchars($language['admin_users']['next'] ?? 'Siguiente') ?> »</button>
     </div>
   </div>
 </section>
@@ -83,22 +83,21 @@ global $language, $baseUrl;
       page: state.page, per: state.per, sort: state.sort, dir: state.dir, role: state.role, q: state.q
     }).forEach(([k,v])=> url.searchParams.set(k, v));
 
-    console.log('Llamando a:', url.href);  // <-- DEBUG
+    console.log('Llamando a:', url.href);
 
     const res = await fetch(url, { credentials: 'same-origin' });
     const ctype = (res.headers.get('content-type') || '').toLowerCase();
-    const body  = await res.text();  // <-- leemos como texto SIEMPRE
+    const body  = await res.text();
 
     if (!res.ok) {
       console.error('HTTP', res.status, body.slice(0,500));
-      $tbody.innerHTML = '<tr><td colspan="7">Error cargando usuarios.</td></tr>';
+      $tbody.innerHTML = '<tr><td colspan="7"><?= htmlspecialchars($language['admin_users']['error_loading'] ?? 'Error cargando usuarios.') ?></td></tr>';
       return;
     }
 
-    // Si no es JSON, lo mostramos para ver qué devolvió el servidor
     if (!ctype.includes('application/json')) {
       console.error('Respuesta NO JSON. content-type:', ctype, 'body:', body.slice(0,500));
-      $tbody.innerHTML = '<tr><td colspan="7">Error cargando usuarios.</td></tr>';
+      $tbody.innerHTML = '<tr><td colspan="7"><?= htmlspecialchars($language['admin_users']['error_loading'] ?? 'Error cargando usuarios.') ?></td></tr>';
       return;
     }
 
@@ -107,7 +106,7 @@ global $language, $baseUrl;
       data = JSON.parse(body);
     } catch (e) {
       console.error('JSON inválido:', e, body.slice(0,500));
-      $tbody.innerHTML = '<tr><td colspan="7">Error cargando usuarios.</td></tr>';
+      $tbody.innerHTML = '<tr><td colspan="7"><?= htmlspecialchars($language['admin_users']['error_loading'] ?? 'Error cargando usuarios.') ?></td></tr>';
       return;
     }
 
@@ -131,11 +130,11 @@ global $language, $baseUrl;
         <td>${escapeHTML(u.email ?? '')}</td>
         <td>
           <select class="role-select" data-id="${u.id}">
-            <option value="user" ${u.roles==='user'?'selected':''}>usuario</option>
-            <option value="admin" ${u.roles==='admin'?'selected':''}>admin</option>
+            <option value="user" ${u.roles==='user'?'selected':''}><?= htmlspecialchars($language['admin_users']['user'] ?? 'Usuario') ?></option>
+            <option value="admin" ${u.roles==='admin'?'selected':''}><?= htmlspecialchars($language['admin_users']['admin'] ?? 'Admin') ?></option>
           </select>
         </td>
-        <td><button class="btn-update" data-id="${u.id}">Actualizar</button></td>
+        <td><button class="btn-update" data-id="${u.id}"><?= htmlspecialchars($language['admin_users']['update'] ?? 'Actualizar') ?></button></td>
       `;
       $tbody.appendChild(tr);
     });
@@ -149,7 +148,7 @@ global $language, $baseUrl;
         btn.disabled = true;
 
         const form = new URLSearchParams();
-        form.set('__action__', 'users_update_role'); // ← importante
+        form.set('__action__', 'users_update_role');
         form.set('id', id);
         form.set('role', role);
         const resp = await fetch(API_UPD, {
@@ -166,7 +165,7 @@ global $language, $baseUrl;
 
         const j = await resp.json();
         btn.disabled = false;
-        alert(j.ok ? 'Rol actualizado' : ('Error: ' + (j.msg || 'no se pudo')));
+        alert(j.ok ? '<?= htmlspecialchars($language['admin_users']['role_updated'] ?? 'Rol actualizado correctamente.') ?>' : ('<?= htmlspecialchars($language['admin_users']['error_role'] ?? 'Error, no se pudo actualizar el rol: ') ?>' + (j.msg)));
 
       });
     });

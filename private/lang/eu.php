@@ -121,6 +121,96 @@ return [
         'save'      => 'Gorde',
     ],
 
+    'admin_users' => [
+        'users'          => 'Erabiltzaileak',
+        'search_ph'      => 'Bilatu: erabiltzailea, izena, abizenak, NIF, email…',
+        'all_roles'      => 'Rol guztiak',
+        'sort_user_asc'  => 'Agindua: Erabiltzailea ↑',
+        'sort_user_desc' => 'Agindua: Erabiltzailea ↓',
+        'sort_role_asc'  => 'Ordena: Rola ↑',
+        'sort_role_desc' => 'Ordena: Rola ↓',
+        '20_per_page'    => '20 orrialdeko ',
+        '50_per_page'    => '50 orrialdeko ',
+        '100_per_page'   => '100 orrialdeko ',
+        'admin'          => 'Admin',
+        'user'           => 'Erabiltzailea',
+        'name'           => 'Izena',
+        'surname'        => 'Abizenak',
+        'nif'            => 'IFZ',
+        'email'          => 'Email',
+        'role'           => 'Rol',
+        'action'         => 'Ekintza',
+        'prev'           => 'Aurrekoa',
+        'next'           => 'Hurrengoa',
+        'error_loading'  => 'Errorea erabiltzaileak kargatzen.',
+        'update'         => 'Eguneratu',
+        'role_updated'   => 'Rola behar bezala eguneratuta. ',
+        'error_role'     => 'Errorea, ezin izan da rola eguneratu:',
+
+    ],
+
+    'admin_learn' => [
+        'points_label' => 'Moduluko jardueraren araberako puntuak:',
+        'edit_points'  => 'Puntuak aldatu',
+        'save_points'  => 'Puntuak gorde',
+    ],
+
+    'admin_forum' => [
+        'points_label' => 'Moduluko jardueraren araberako puntuak:',
+        'edit_points'  => 'Puntuak aldatu',
+        'save_points'  => 'Puntuak gorde',
+        'add_activity' => 'Gehitu jarduera',
+    ],
+
+    'admin_recommendations' => [
+        'recommendations' => 'Gomendioak',
+        'points_label'    => 'Puntuak moduluak gomendatuta:',
+        'edit_points'     => 'Puntuak aldatu',
+        'save_points'     => 'Puntuak gorde',
+        'valid_points'    => 'Sartu puntu baliodun zenbaki bat (>= 0).',
+        'topic'           => 'Gaia',
+        'view'            => 'Ikusi',
+        'add'             => 'Gehitu',
+        'save'            => 'Gorde',
+        'cancel'          => 'Utzi',
+        'name_es'        => 'Izena (es)',
+        'name_eu'       => 'Izena (eu)',
+        'status'       => 'Egoera',
+        'actions' => 'Ekintzak',
+        'no_items' => 'Ez dago gai motarik.',
+        'confirm_delete' => 'Ziur gaude gai hau ezabatu nahi dugula?',
+        'delete' => 'Ezabatu',
+        'support' => 'Euskarria',
+        'fill_names' => 'Bete bi izenak (es eta eu).',
+        'no_recommendations' => 'Ez dago gomendiorik irizpideak betetzen dituztenak.',
+        'hide' => 'Ezkutatu',
+        'view' => 'Ikusi',
+        'db_error' => 'Datu-basearekin ez dago konexiorik',
+        'draft' => 'Zirriborroa',
+        'published' => 'Argitaratua',
+        'list' => 'Gomendioen zerrenda',
+
+
+    ],
+
+    'admin_routines' => [
+        'points_label' => 'Moduluko jardueraren araberako puntuak:',
+        'edit_points'  => 'Puntuak aldatu',
+        'save_points'  => 'Puntuak gorde',
+    ],
+
+    'admin_trial' => [
+        'points_label' => 'Moduluko jardueraren araberako puntuak:',
+        'edit_points'  => 'Puntuak aldatu',
+        'save_points'  => 'Puntuak gorde',
+    ],
+
+    'admin_meeting' => [
+        'points_label' => 'Moduluko jardueraren araberako puntuak:',
+        'edit_points'  => 'Puntuak aldatu',
+        'save_points'  => 'Puntuak gorde',
+    ],
+
     'admin_banner' => [
         'banner'            => 'Banner',
         'add_draw'          => 'Gehitu zozketa',
@@ -195,6 +285,7 @@ return [
         'title_eu_label'    => 'Izenburua (EU)',
         'content_eu_label'  => 'Edukia (EU)',
         'save_draft'        => 'Zirriborroa gorde',
+        'published'         => 'Argitaratua',
         'publish'           => 'Argitaratu',
         'flash_ok'          => 'Ondo gorde da.',
         'flash_error'       => 'Errorea gordetzean:',

@@ -19,12 +19,12 @@ unset($_SESSION['flash_msg_meeting'], $_SESSION['errors_meeting'], $_SESSION['ol
 $L = $language['meeting'] ?? [];
 ?>
 
-<section id="community-meeting" class="recommendations">
+<section id="community-meeting" class="subtitle-section">
   <h2><?= htmlspecialchars($L['title'] ?? 'Quedadas deportivas') ?></h2>
   <p class="lead"><?= htmlspecialchars($L['subtitle'] ?? '¿Buscas compañeras/os para tu equipo, organizar un torneo o una quedada?') ?></p>
-
+ 
   <?php if (empty($meetings)): ?>
-    <div class="empty"><?= htmlspecialchars($L['empty'] ?? 'No hay quedadas todavía.') ?></div>
+    <div class="empty-color"><?= htmlspecialchars($L['empty'] ?? 'No hay quedadas todavía.') ?></div>
   <?php else: ?>
     <section class="learn-slider meeting-slider">
       <button class="nav prev" aria-label="Anterior">‹</button>
@@ -54,27 +54,30 @@ $L = $language['meeting'] ?? [];
     </section>
   <?php endif; ?>
 </section>
-
+ 
 <!-- === Crear nueva quedada === -->
 <section class="meeting-create">
-  <h2><?= htmlspecialchars($L['create_title'] ?? 'Crea tu quedada') ?></h2>
-  <p class="lead"><?= htmlspecialchars($L['create_lead'] ?? 'Rellena el formulario para que las personas interesadas contacten contigo.') ?></p>
-
+  <button class="btn-toggle-form" type="button">
+    <span class="plus">+</span>
+    <span class="text">Crear quedada</span>
+  </button>
+ 
   <?php if (!empty($flash)): ?>
     <div class="alert success"><?= htmlspecialchars($flash) ?></div>
   <?php endif; ?>
-
+ 
   <?php if (!empty($errors)): ?>
     <div class="alert error">
-      <ul style="margin:0; padding-left:18px;">
+      <ul>
         <?php foreach ($errors as $e): ?><li><?= htmlspecialchars($e) ?></li><?php endforeach; ?>
       </ul>
     </div>
   <?php endif; ?>
-
-  <form id="form-meeting" class="rec-form" method="post" action="">
+ 
+  <form id="form-meeting" class="rec-form hidden" method="post" action="">
+ 
     <input type="hidden" name="form" value="meeting_submit">
-
+ 
     <div class="rec-grid">
       <!-- Idioma -->
       <label class="field">
@@ -85,7 +88,7 @@ $L = $language['meeting'] ?? [];
           <option value="eu" <?= ($post_lang === 'eu' ? 'selected' : '') ?>>Euskera</option>
         </select>
       </label>
-
+ 
       <!-- Actividad -->
       <label class="field span-2">
         <span><?= htmlspecialchars($L['activity_label'] ?? 'Actividad deportiva') ?></span>
@@ -93,25 +96,25 @@ $L = $language['meeting'] ?? [];
                placeholder="<?= htmlspecialchars($L['activity_ph'] ?? 'Ej. Partido de futbito / Caminata...') ?>"
                value="<?= htmlspecialchars($old['activity'] ?? '') ?>">
       </label>
-
+ 
       <!-- Lugar -->
       <label class="field">
         <span><?= htmlspecialchars($L['place_label'] ?? 'Lugar') ?></span>
         <input type="text" name="place" required value="<?= htmlspecialchars($old['place'] ?? '') ?>">
       </label>
-
+ 
       <!-- Fecha -->
       <label class="field">
         <span><?= htmlspecialchars($L['date_label'] ?? 'Fecha') ?></span>
         <input type="date" name="date" required value="<?= htmlspecialchars($old['date'] ?? '') ?>">
       </label>
-
+ 
       <!-- Horario -->
       <label class="field">
         <span><?= htmlspecialchars($L['time_label'] ?? 'Horario') ?></span>
         <input type="time" name="time" value="<?= htmlspecialchars($old['time'] ?? '') ?>">
       </label>
-
+ 
       <!-- Email -->
       <label class="field">
         <span><?= htmlspecialchars($L['email_label'] ?? 'Email de contacto') ?></span>
@@ -123,7 +126,8 @@ $L = $language['meeting'] ?? [];
         </div>
       </label>
     </div>
-
+ 
     <button class="btn" type="submit"><?= htmlspecialchars($L['submit'] ?? 'Publicar quedada') ?></button>
   </form>
 </section>
+ 

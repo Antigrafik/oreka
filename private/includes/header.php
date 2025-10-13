@@ -6,13 +6,9 @@
     <title><?= $globalConfig['site_title'] ?? 'Mi Sitio' ?></title>
     <link rel="icon" href="<?= $globalConfig['favicon'] ?>" type="image/png">
 
-    <!-- Estilos -->
-    <link rel="stylesheet" href="<?= $globalConfig['stylesheet'] ?>">
-    <!-- <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="stylesheet" href="/assets/css/myspace.css">
-    <link rel="stylesheet" href="/assets/css/admin.css">
-    <link rel="stylesheet" href="/assets/css/legal.css"> -->
+    <?php foreach ($globalConfig['stylesheet'] as $style): ?>
+        <link rel="stylesheet" href="<?php echo $style; ?>">
+    <?php endforeach; ?>
     <link rel="stylesheet" href="/assets/css/banner.css">
-    <link rel="stylesheet" href="/assets/css/forum.css">
 </head>
 <body>

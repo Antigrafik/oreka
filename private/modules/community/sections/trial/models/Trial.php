@@ -6,8 +6,17 @@ class Trial
   // Ajusta aquí límites y carpeta destino
   private array $allowedExt = ['jpg', 'jpeg', 'png', 'pdf'];
   private int $maxBytes     = 5 * 1024 * 1024; // 5 MB
-  private string $publicDir = '/assets/images/trial'; // relativo a /public
   private int $pointsAward  = 10;
+
+  // Carpeta ABSOLUTA donde se guardarán los archivos (Windows)
+  // Nota: el nombre con $ es válido en NTFS.
+    private string $storageDirAbs = 'C:/Oreka/data$';
+  //en PRE dejar una y comentar la otra, borrar private string $storageDirAbs = 'C:/Oreka/data$'; y PRO
+    //private string $storageDirAbs = 'D:/Oreka/data$';
+    //private string $storageDirAbs = '\\\\KBBIISPRE2\\DATA$';
+  //EN PRO dejar una y comentar la otra, borrar private string $storageDirAbs = 'C:/Oreka/data$'; y PRE
+    //private string $storageDirAbs = '\\\\bbk.es\\BKDData\\Aplicaciones\\Oreka';
+    //private string $storageDirAbs = '\\\\kbbk03fs\\apps\\oreka';
 
   public function currentUserId(): ?int {
     global $pdo;
@@ -103,11 +112,11 @@ class Trial
       }
     }
 
-    // Preparar carpeta destino
-    $absPublic = rtrim(BASE_PATH . '/public', '/');
-    $destDir   = $absPublic . $this->publicDir;
+    // Preparar carpeta destino ABSOLUTA en C:\Oreka\data$
+    $destDir = rtrim($this->storageDirAbs, "\\/");
+
     if (!is_dir($destDir)) {
-      @mkdir($destDir, 0775, true);
+      @mkdir($destDir, 0775, true); // En Windows, los permisos se ignoran
     }
     if (!is_dir($destDir) || !is_writable($destDir)) {
       return ['ok' => false, 'msg' => 'No se puede escribir en la carpeta de destino.'];
@@ -131,19 +140,22 @@ class Trial
       // 3) Guardar archivo con nombre: idTrial-userId-YYYY-MM-DD.ext
       $date        = date('Y-m-d');
       $fileName    = $idTrial . '-' . $idUser . '-' . $date . '.' . $ext;
-      $destPathAbs = $destDir . '/' . $fileName;
+      $destPathAbs = $destDir . DIRECTORY_SEPARATOR . $fileName;
+
       if (!move_uploaded_file($file['tmp_name'], $destPathAbs)) {
         throw new RuntimeException('No se pudo mover el archivo subido.');
       }
 
-      // Ruta que guardamos en BD (relativa a /public)
-      $relPath = ltrim($this->publicDir . '/' . $fileName, '/');
+      // Ruta que guardamos en BD:
+      // Como ahora no está bajo /public, guardamos la ruta ABSOLUTA del sistema.
+      // (Si prefieres sólo el nombre de archivo o una ruta relativa a un alias web, cámbialo aquí)
+      $storedPath = $destPathAbs;
 
       // 4) image
       $trialCategoryId = $this->getTrialCategoryId(); // opcional
       $sqlImg = "INSERT INTO image (id_category, path) VALUES (?, ?)";
       $stI = $pdo->prepare($sqlImg);
-      $stI->execute([$trialCategoryId, $relPath]);
+      $stI->execute([$trialCategoryId, $storedPath]);
       $idImage = (int)$pdo->lastInsertId();
 
       // 5) actualizar trial con id_image

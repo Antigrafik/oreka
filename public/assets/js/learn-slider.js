@@ -1,146 +1,97 @@
-// learn-slider.js (fix ancho=0 al regresar y doble init)
 document.addEventListener('DOMContentLoaded', () => {
-  const sliders = document.querySelectorAll('.learn-slider, .recomendation-slider');
-  if (!sliders.length) return;
+  const slider = document.querySelector('.learn-slider');
+  if (!slider) return;
 
-  sliders.forEach((slider) => {
-    // evita doble inicialización si el script se carga más de una vez
-    if (slider.dataset.initialized === 'true') return;
-    slider.dataset.initialized = 'true';
+  const viewport = slider.querySelector('.viewport');
+  const track = slider.querySelector('.track');
+  const slides = slider.querySelectorAll('.slide');
+  const prevBtn = slider.querySelector('.nav.prev');
+  const nextBtn = slider.querySelector('.nav.next');
 
-    const viewport = slider.querySelector('.viewport');
-    const track    = slider.querySelector('.track');
-    const prevBtn  = slider.querySelector('.prev');
-    const nextBtn  = slider.querySelector('.next');
-    if (!viewport || !track || !prevBtn || !nextBtn) return;
+  if (!viewport || slides.length === 0) return;
 
-    const state = {
-      index: 0,
-      total: 0,
-      anim: true,
-      step: 0,
-      slideW: 0,
-      perView: 1,
-      ro: null,  // ResizeObserver
-    };
+  let currentIndex = 0;
 
-    // breakpoints base
-    let basePerView = 3;
-    let GUTTER  = 24;
-    let SIDE    = 12;
+  // === Función: calcula el desplazamiento por slide + gap ===
+  function getScrollAmount() {
+    const slide = slides[0];
+    const trackStyle = window.getComputedStyle(track);
+    const gap = parseFloat(trackStyle.gap) || 0;
+    const slideWidth = slide.getBoundingClientRect().width;
+    return slideWidth + gap;
+  }
 
-    const setBasePerView = () => {
-      const w = window.innerWidth;
-      basePerView = (w <= 640) ? 1 : (w <= 1024 ? 2 : 3);
-      GUTTER      = (w <= 640) ? 16 : 24;
-      SIDE        = (w <= 640) ? 8  : 12;
-    };
+  // === Función: mover a una card específica ===
+  function scrollToCard(index) {
+    if (index < 0) index = 0;
+    if (index >= slides.length) index = slides.length - 1;
 
-    const computeSizes = () => {
-      track.style.padding = `0 ${SIDE}px`;
-      const inner = viewport.clientWidth - (SIDE * 2) - ((state.perView - 1) * GUTTER);
-      const slideWidth = Math.max(0, Math.floor(inner / state.perView));
+    const targetSlide = slides[index];
+    if (!targetSlide) return;
 
-      Array.from(track.children).forEach(li => {
-        li.style.flex     = `0 0 ${slideWidth}px`;
-        li.style.minWidth = `${slideWidth}px`;
-        li.style.maxWidth = `${slideWidth}px`;
-        li.style.margin   = `0 ${Math.floor(GUTTER/2)}px`;
-      });
+    viewport.scrollTo({
+      left: targetSlide.offsetLeft,
+      behavior: 'smooth'
+    });
 
-      state.slideW = slideWidth;
-      state.step   = slideWidth + GUTTER;
-    };
+    currentIndex = index;
+    updateNavButtons();
+  }
 
-    const jump = () => {
-      track.style.transition = state.anim ? 'transform .35s ease' : 'none';
-      const x = -(state.index * state.step);
-      track.style.transform = `translate3d(${x}px,0,0)`;
-    };
+  // === Función: mostrar / ocultar flechas según posición ===
+  function updateNavButtons() {
+    const scrollLeft = viewport.scrollLeft;
+    const maxScrollLeft = viewport.scrollWidth - viewport.clientWidth;
 
-    // Espera a que el viewport tenga ancho (>0) antes de medir
-    const ensureSized = () => {
-      if (viewport.clientWidth > 0) {
-        computeSizes();
-        jump();
-        if (state.ro) { state.ro.disconnect(); state.ro = null; }
-        return true;
-      }
-      if (!state.ro && 'ResizeObserver' in window) {
-        state.ro = new ResizeObserver(() => {
-          if (viewport.clientWidth > 0) {
-            computeSizes();
-            jump();
-            state.ro.disconnect();
-            state.ro = null;
-          }
-        });
-        state.ro.observe(viewport);
-      }
-      // fallback: reintento en el siguiente frame
-      requestAnimationFrame(() => {
-        if (viewport.clientWidth === 0) ensureSized();
-      });
-      return false;
-    };
+    if (scrollLeft <= 0) {
+      prevBtn.classList.add('hidden');
+    } else {
+      prevBtn.classList.remove('hidden');
+    }
 
-    const rebuild = () => {
-      const originals = Array.from(track.querySelectorAll('.slide:not(.clone)'));
-      if (!originals.length) return;
+    if (scrollLeft >= maxScrollLeft - 1) {
+      nextBtn.classList.add('hidden');
+    } else {
+      nextBtn.classList.remove('hidden');
+    }
+  }
 
-      state.perView = Math.max(1, Math.min(basePerView, originals.length));
+  // === Eventos de navegación ===
+  nextBtn.addEventListener('click', () => {
+    const amount = getScrollAmount();
+    viewport.scrollBy({ left: amount, behavior: 'smooth' });
+    setTimeout(updateNavButtons, 400);
+  });
 
-      // limpia track y reinyecta originales
-      track.innerHTML = '';
-      originals.forEach(el => track.appendChild(el));
+  prevBtn.addEventListener('click', () => {
+    const amount = getScrollAmount();
+    viewport.scrollBy({ left: -amount, behavior: 'smooth' });
+    setTimeout(updateNavButtons, 400);
+  });
 
-      const slides = Array.from(track.children);
-      const headClones = slides.slice(0, state.perView).map(s => { const c = s.cloneNode(true); c.classList.add('clone'); return c; });
-      const tailClones = slides.slice(-state.perView).map(s => { const c = s.cloneNode(true); c.classList.add('clone'); return c; });
+  // === Recalcular índice actual al hacer scroll manual ===
+  viewport.addEventListener('scroll', () => {
+    let closestIndex = 0;
+    let closestDistance = Infinity;
 
-      tailClones.forEach(c => track.insertBefore(c, track.firstChild));
-      headClones.forEach(c => track.appendChild(c));
-
-      state.total = slides.length;
-      state.index = state.perView;
-
-      // ¡importante!: medir solo cuando haya ancho
-      ensureSized();
-    };
-
-    const next = () => { state.anim = true; state.index++; jump(); };
-    const prev = () => { state.anim = true; state.index--; jump(); };
-
-    track.addEventListener('transitionend', () => {
-      const maxIndex = state.total + state.perView - 1;
-      if (state.index > maxIndex) {
-        state.anim = false;
-        state.index = state.perView;
-        jump();
-      } else if (state.index < state.perView) {
-        state.anim = false;
-        state.index = state.total + state.perView - 1;
-        jump();
+    slides.forEach((slide, index) => {
+      const distance = Math.abs(slide.offsetLeft - viewport.scrollLeft);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = index;
       }
     });
 
-    const onResize = () => {
-      const prevBase = basePerView;
-      setBasePerView();
-      const willBe = Math.max(1, Math.min(basePerView, state.total || 1));
-      if (basePerView !== prevBase || willBe !== state.perView) {
-        rebuild();
-      } else {
-        ensureSized(); // recalcula solo si ya hay ancho
-      }
-    };
-
-    nextBtn.addEventListener('click', next);
-    prevBtn.addEventListener('click', prev);
-    window.addEventListener('resize', onResize);
-    window.addEventListener('pageshow', onResize); // volver desde historial/bfcache
-
-    setBasePerView();
-    rebuild();
+    currentIndex = closestIndex;
+    updateNavButtons();
   });
+
+  // === Reajustar al redimensionar ===
+  const resizeObserver = new ResizeObserver(() => {
+    scrollToCard(currentIndex);
+  });
+  resizeObserver.observe(viewport);
+
+  // === Inicialización ===
+  updateNavButtons();
 });

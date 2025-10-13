@@ -1,6 +1,6 @@
 <?php
  global $language;
-
+ 
  global $pdo;
 $show = true;
 try {
@@ -11,27 +11,27 @@ try {
 } catch (Throwable $e) {}
 if (!$show) return;
 ?>
-
-<section id="routines">
+ 
+<section id="routines"  class="subtitle-section">
   <h2><?= htmlspecialchars($language['routines']['title'] ?? '') ?></h2>
   <p class="lead"><?= htmlspecialchars($language['routines']['subtitle'] ?? '') ?></p>
-
+ 
   <?php
     $success = $_SESSION['flash_success_routines'] ?? null;
     $error   = $_SESSION['flash_error_routines']   ?? null;
     unset($_SESSION['flash_success_routines'], $_SESSION['flash_error_routines']);
   ?>
-
+ 
   <?php if ($success): ?>
     <div class="alert success"><?= htmlspecialchars($success) ?></div>
   <?php endif; ?>
   <?php if ($error): ?>
     <div class="alert error"><?= htmlspecialchars($error) ?></div>
   <?php endif; ?>
-
+ 
   <form method="post" id="routine-form" class="routine-grid">
     <input type="hidden" name="form" value="routines_submit">
-
+ 
     <!-- Tipo -->
     <div class="field">
       <label><?= htmlspecialchars($language['routines']['type'] ?? '') ?>:</label>
@@ -44,7 +44,7 @@ if (!$show) return;
         <?php endforeach; ?>
       </select>
     </div>
-
+ 
     <!-- Categoría dependiente -->
     <div class="field">
       <label><?= htmlspecialchars($language['routines']['category'] ?? '') ?>:</label>
@@ -61,7 +61,7 @@ if (!$show) return;
         <?php endif; ?>
       </select>
     </div>
-
+ 
     <!-- Frecuencia -->
     <div class="field">
       <label><?= htmlspecialchars($language['routines']['frequency'] ?? '') ?>:</label>
@@ -72,7 +72,7 @@ if (!$show) return;
         <?php endfor; ?>
       </select>
     </div>
-
+ 
     <!-- Duración -->
     <div class="field">
       <label><?= htmlspecialchars($language['routines']['duration'] ?? '') ?>:</label>
@@ -83,26 +83,26 @@ if (!$show) return;
         step="1"
         placeholder="<?= htmlspecialchars($language['routines']['placeholder_duration'] ?? '') ?>">
     </div>
-
+ 
     <div class="actions">
       <button type="submit" class="btn">
         <?= htmlspecialchars($language['routines']['btn'] ?? '') ?>
       </button>
     </div>
   </form>
-
+ 
   <script>
     (function () {
       const typeSel = document.getElementById('type_id');
       const catSel  = document.getElementById('category_id');
-
+ 
       // Mapa precargado desde PHP: { [idTipo]: [{id, name, slug}, ...] }
       const CATS_BY_TYPE = <?= json_encode($catsByType, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
-
+ 
       // Textos localizados desde PHP
       const T_SELECT            = <?= json_encode($language['routines']['select'] ?? '') ?>;
       const T_SELECT_TYPE_FIRST = <?= json_encode($language['routines']['select_type_first'] ?? '') ?>;
-
+ 
       function resetCategories(placeholder) {
         catSel.innerHTML = '';
         const opt = document.createElement('option');
@@ -110,7 +110,7 @@ if (!$show) return;
         opt.textContent = placeholder || T_SELECT;
         catSel.appendChild(opt);
       }
-
+ 
       function fillCategories(list) {
         resetCategories(T_SELECT);
         list.forEach(c => {
@@ -120,7 +120,7 @@ if (!$show) return;
           catSel.appendChild(opt);
         });
       }
-
+ 
       function onTypeChange() {
         const tid = parseInt(typeSel.value, 10);
         if (Number.isFinite(tid) && tid > 0 && CATS_BY_TYPE[tid]) {
@@ -131,9 +131,9 @@ if (!$show) return;
           catSel.disabled = true;
         }
       }
-
+ 
       typeSel.addEventListener('change', onTypeChange);
-
+ 
       // Estado inicial coherente
       if (!typeSel.value) {
         resetCategories(T_SELECT_TYPE_FIRST);

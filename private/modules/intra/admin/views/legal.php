@@ -61,7 +61,7 @@ $checked = !empty($moduleFlags['legal']);
       <?= htmlspecialchars($language['legal_editor']['tab_eu'] ?? 'Euskera') ?>
     </button>
     <span style="margin-left:auto;opacity:.7">
-      <?= $currStat ? htmlspecialchars($language['legal_editor']['published_badge'] ?? 'Publicado')
+      <?= $currStat ? htmlspecialchars($language['legal_editor']['published'] ?? 'Publicado')
                     : htmlspecialchars($language['legal_editor']['draft_badge'] ?? 'Borrador') ?>
     </span>
   </nav>
@@ -100,9 +100,6 @@ $checked = !empty($moduleFlags['legal']);
   </section>
 
   <div style="display:flex;gap:8px;margin-top:12px">
-    <button type="submit" class="btn btn-outline" name="mode" value="save" id="btn-save">
-      <?= htmlspecialchars($language['legal_editor']['save'] ?? 'Guardar') ?>
-    </button>
     <button type="submit" class="btn btn-red" name="mode" value="publish" id="btn-publish">
       <?= htmlspecialchars($language['legal_editor']['publish'] ?? 'Publicar') ?>
     </button>

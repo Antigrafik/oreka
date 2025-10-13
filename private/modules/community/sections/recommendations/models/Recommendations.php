@@ -21,7 +21,6 @@ class Recommendations
         COALESCE(t.[content], tf.[content]) AS [description],
         r.author                            AS content_author,
         recby.recommended_by,
-        r.likes,
         tema.name                           AS tema,
         tema.id                             AS tema_id,
         soporte.name                        AS soporte,

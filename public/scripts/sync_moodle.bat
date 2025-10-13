@@ -1,2 +1,0 @@
-@echo off
-curl "https://www.aulavirtual.kutxabank.com/webservice/rest/server.php?wstoken=9d076fd25cc057e331cc3bdd41a80015&wsfunction=local_wscontent_get_content_data&moodlewsrestformat=json"
