@@ -374,9 +374,9 @@ if ($q !== '') {
   array_push($params, $like,$like,$like,$like,$like,$like);
 }
 
-// $orderSql = ($order === 'likes')
-//   ? "ORDER BY r.likes DESC, r.created_at DESC"
-//   : "ORDER BY r.created_at DESC, r.id DESC";
+ $orderSql = ($order === 'likes')
+   ? "ORDER BY r.likes DESC, r.created_at DESC"
+   : "ORDER BY r.created_at DESC, r.id DESC";
 
 $sqlCount = "
   ;WITH base AS (
