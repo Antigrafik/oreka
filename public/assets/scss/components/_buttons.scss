@@ -1,1 +1,27 @@
-@use '../abstracts' as a;
+@use '../abstracts' as *;
+
+.btn-toggle-recommendation, .btn-toggle-meeting {
+  background-color: $primary;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.6rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 300px;
+  justify-content: center;
+  margin: 0 auto;
+
+  &:hover {
+    background-color: $primary-dark;
+  }
+
+  .plus {
+    font-size: 1.4rem;
+    font-weight: bold;
+  }
+}

@@ -1,85 +1,108 @@
 @use '../abstracts' as *;
 
+/* contenedor lateral */
 .menu {
-  position: sticky;
-  top: $topbarH;
+  position: fixed;
+  inset: 75px auto 0 0;        /* debajo de tu topbar de 60px; ajusta si cambia */
+  width: 60px;                  /* colapsado */
+  height: calc(100vh - 75px);
+  background: #5dbfc2;          /* $primary */
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  transition: width .25s ease;
   z-index: 1000;
-  backdrop-filter: blur(8px);
-  background-color: $bg-nav;
-  border-bottom: 1px solid $border-nav;
-  box-shadow: $shadow-nav;
-  display: flex;               /* menú y botón legal en la misma franja */
-  justify-content: space-between;
-  align-items: center;
+  overflow: hidden; 
 }
 
+/* desplegado */
+.menu.is-open { width: 160px; }
+
+/* lista de items */
 .menu-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  height: 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 8px;
+}
+
+/* cada enlace del menú (espera <a class="menu-item"><i>…</i><span>Texto</span></a>) */
+.menu-inner .menu-item,
+.menu-legal .menu-item {
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 0 28px;
-  font: 500 15px/1.2 "Segoe UI", Roboto, Arial, sans-serif;
-  color: $fg-nav;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color .2s ease, color .2s ease;
   white-space: nowrap;
-
-  a {
-    color: $fg-nav;
-    text-decoration: none;
-    position: relative;
-    padding: 6px 2px;
-    transition: color .2s ease;
-
-    &::after {
-      content: "";
-      position: absolute;
-      left: 0; right: 0; bottom: -6px;
-      height: 2px;
-      transform: scaleX(0);
-      transform-origin: left;
-      background: linear-gradient(90deg, $primary, $primary-dark);
-      transition: transform .22s ease;
-      border-radius: 2px;
-    }
-
-    &:hover {
-      color: $accent;
-      &::after { transform: scaleX(1); }
-    }
-
-    &.is-active {
-      color: $accent;
-      &::after { transform: scaleX(1); }
-    }
-  }
 }
 
-.sep {
-  width: 1px;
-  height: 18px;
-  background: $border-nav;
-  display: inline-block;
-  vertical-align: middle;
-  margin: 0 6px;
+.menu-inner .menu-item i {        /* icono FA */
+  font-size: 1.15rem;
+  width: 24px;
+  text-align: center;
 }
 
-/* Botón Bases/Legal alineado a la derecha */
+.menu .menu-item span {      /* etiqueta */
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+/* mostrar labels cuando está abierto */
+.menu.is-open .menu-item span { opacity: 1; transform: translateX(0); }
+
+/* hover/activo */
+.menu-inner .menu-item:hover,
+.menu-inner .menu-item.active { color:  $primary-dark; } /* $primary-dark */
+
+/* separadores que ya imprimes con implode */
+.menu .sep {
+  display: block;
+  height: 1px;
+  margin: 6px 8px;
+  background: rgba(255,255,255,.25);
+}
+
+/* bloque legal al fondo, separado */
 .menu-legal {
-  margin-right: 28px;
+  margin-top: auto;
+  padding: 10px 8px 14px;
+  border-top: 1px solid rgba(255,255,255,.25);
+  background-color: $primary-dark;
+}
 
-  .legal-link {
-    color: $primary;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    padding: 5px 12px;
+.menu-legal .menu-item { justify-content: flex-start; }
+.menu-legal:hover, .menu-legal:active{ justify-content: flex-start; }
 
-    &:hover {
-      background: rgba($primary, .2);
-      border-color: $primary;
-      color: $primary;
-    }
-  }
+/* scroll limpio */
+.menu-inner::-webkit-scrollbar { width: 8px; }
+.menu-inner::-webkit-scrollbar-thumb { background: rgba(0,0,0,.15); border-radius: 8px; }
+
+.menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px auto 4px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  color: #fff;
+  background: rgba(0,0,0,0.2);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.menu-toggle:hover {
+  background: rgba(0,0,0,0.3);
+}
+.menu-toggle i {
+  transition: transform 0.2s ease;
+}
+.menu:not(.is-open) .menu-toggle span {
+  display: none;
 }

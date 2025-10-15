@@ -57,7 +57,7 @@ $L = $language['meeting'] ?? [];
  
 <!-- === Crear nueva quedada === -->
 <section class="meeting-create">
-  <button class="btn-toggle-form" type="button">
+  <button id="btn-meeting" class="btn-toggle-meeting" type="button">
     <span class="plus">+</span>
     <span class="text">Crear quedada</span>
   </button>

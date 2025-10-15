@@ -10,5 +10,8 @@
         <link rel="stylesheet" href="<?php echo $style; ?>">
     <?php endforeach; ?>
     <link rel="stylesheet" href="/assets/css/banner.css">
+    <link rel="stylesheet" href="/assets/css/admin.css">
+    <link rel="stylesheet" href="/assets/css/myspace.css">
+    <link rel="stylesheet" href="/assets/css/legal.css">
 </head>
 <body>

@@ -1,1 +1,88 @@
-@use '../abstracts' as a;
+@use '../abstracts' as *;
+
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: $web-font;
+  background-color: #f8f9fa;
+  color: #333;
+  height: 100%;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+form.hidden, .hidden{display:none}
+
+
+
+h1, h2, h3 { color: $text-color; font-weight: 700; line-height: 1.2; margin: 0 0 .5rem; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); }
+h2 { font-size: clamp(1.5rem, 4vw, 2.25rem); }
+h3 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
+
+p, li, small { color: rgba($text-color, .9); }
+
+.title-section {
+  padding: 35px 75px;
+}
+
+.subtitle-section {
+  padding: 25px 75px 15px;
+  text-align: center;
+
+  h2 {
+    margin-bottom: 0.25rem;
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+  }
+
+  .lead {
+    margin-top: 0;
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: rgba($text-color, .75);
+  }
+}
+
+/* === Alineaciones globales === */
+
+/* Contenedor o texto alineado a la izquierda (por defecto) */
+.align-left,
+.text-left {
+  text-align: left;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+/* Centrado */
+.align-center,
+.text-center {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* A la derecha */
+.align-right,
+.text-right {
+  text-align: right;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* Variante: centrar el bloque y su contenido */
+.center-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; /* útil para títulos y subtítulos */
+  text-align: center;
+}
+
+/* Opcional: ajustar imágenes o elementos visuales */
+.img-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

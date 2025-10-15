@@ -1,35 +1,33 @@
-#community-meeting {
-  max-width: 1200px;
-  margin: 0 auto 12px;
-  padding: 0 16px;
-}
+@use '../abstracts' as *;
 
-#community-meeting h2 {
-  font-size: 32px;
-  margin: 0 0 6px;
-  text-align: center;
-}
-
-#community-meeting .lead {
-  text-align: center;
-  color: #666;
-  margin: 0 0 16px;
-}
-
-/* Formulario de creación (reutiliza .rec-form global) */
 .meeting-create {
-  max-width: 1200px;
-  margin: 40px auto 0;
-  padding: 0 16px;
-}
+    text-align: center;
+    padding-top: 2rem;
+  .alert {
+    max-width: 700px;
+    margin: 0 auto 1rem;
+    padding: 0.75rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
 
-.meeting-create h2 {
-  font-size: 28px;
-  margin: 0 0 6px;
-  text-align: left; /* pon center si lo prefieres */
-}
+    &.success {
+      background-color: #e7f7ed;
+      border: 1px solid #93d3a2;
+      color: #2f6b39;
+    }
 
-.meeting-create .lead {
-  color: #666;
-  margin: 0 0 12px;
+    &.error {
+      background-color: #fdeaea;
+      border: 1px solid #e39b9b;
+      color: #912a2a;
+
+      ul {
+        margin: 0;
+        padding-left: 1.2rem;
+        text-align: left;
+      }
+    }
+  }
+
+
 }

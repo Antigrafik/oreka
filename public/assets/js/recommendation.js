@@ -82,13 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (noResultsMsg) {
       noResultsMsg.style.display = filtered.length === 0 ? 'block' : 'none';
     }
-
-    // Scroll arriba del feed (ajustado por el alto del menú fijo)
-    const section = document.getElementById('community-recommendations');
-    const offset = 90;
-
-    const top = section.getBoundingClientRect().top + window.scrollY - offset;
-    window.scrollTo({ top, behavior: 'smooth' });
   }
 
   // ==== EVENTOS ====
@@ -102,52 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
       showArticles(visibleCount);
     });
   }
-
-// ==== TOGGLE FORMULARIO “CREAR QUEDADA” ====
-const toggleMeetingBtn = document.querySelector('.meeting-create .btn-toggle-form');
-const meetingForm = document.getElementById('form-meeting');
-
-if (toggleMeetingBtn && meetingForm) {
-  toggleMeetingBtn.addEventListener('click', () => {
-    const isHidden = meetingForm.classList.toggle('hidden');
-
-    const plusEl = toggleMeetingBtn.querySelector('.plus');
-    const textEl = toggleMeetingBtn.querySelector('.text');
-    if (plusEl) plusEl.textContent = isHidden ? '+' : '–';
-    if (textEl) textEl.textContent = isHidden ? 'Crear quedada' : 'Ocultar formulario';
-
-    if (!isHidden) {
-      const sectionCreate = document.querySelector('.meeting-create');
-      const offset = 90;
-      if (sectionCreate) {
-        const top = sectionCreate.getBoundingClientRect().top + window.scrollY - offset;
-        window.scrollTo({ top, behavior: 'smooth' });
-      }
-    }
-  });
-}
-
   // ==== INICIALIZACIÓN ====
   applyFilters();
-
-// ==== COMPORTAMIENTO LEER MÁS / LEER MENOS ====
-document.querySelectorAll('.rec-text-wrapper').forEach(wrapper => {
-  const text = wrapper.querySelector('.rec-text');
-  const button = wrapper.querySelector('.read-more-btn');
-
-  if (!text || !button) return;
-
-  const lineLimit = parseInt(getComputedStyle(text).lineHeight) * 3;
-  const isOverflowing = text.scrollHeight > lineLimit;
-
-  if (!isOverflowing) {
-    button.style.display = 'none';
-  }
-
-  button.addEventListener('click', () => {
-    text.classList.toggle('expanded');
-    button.textContent = text.classList.contains('expanded') ? 'Leer menos' : 'Leer más';
-  });
-});
 
 });

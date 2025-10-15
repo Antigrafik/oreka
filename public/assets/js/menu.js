@@ -60,4 +60,5 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('hashchange', () => {
     markActive(location.hash);
   });
+
 });

@@ -150,7 +150,7 @@ if (!function_exists('lower_ascii')) {
  
 <!-- === Crear nueva recomendación === -->
 <section class="recommendation-create">
-  <button class="btn-toggle-form" type="button">
+  <button id="btn-recommendation" class="btn-toggle-recommendation" type="button">
     <span class="plus">+</span>
     <span class="text">Añadir recomendación</span>
   </button>

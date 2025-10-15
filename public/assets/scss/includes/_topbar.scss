@@ -1,72 +1,62 @@
 @use '../abstracts' as *;
+
+
 .main-header {
-  position: sticky;
-  top: 0;
-  height: $topbarH;
-  background: $primary;
-  overflow: hidden;
+  position: fixed;
+  inset: 0 0 auto 0;           /* top:0; left:0; right:0 */
+  height: 75px;
+  z-index: 1100;               /* por encima del contenido */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 14px;
-  color: #fff;
-  font: 600 13px/1 "Segoe UI", Roboto, Arial, sans-serif;
-  z-index: 1000;
+  background-color: $primary;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-/* Izquierda: saludo + puntos */
+/* Texto izquierda */
 .logo-left {
-  display: flex;
-  align-items: center;
-
-  span {
-    color: #fff;
-    font-size: 13px;
-    opacity: .95;
-  }
+  flex: 1;
+  font-weight: 500;
+  font-size: 0.95rem;
 }
 
-/* Centro: logo Oreka */
+/* Logo central */
 .user-center {
+  flex: 0;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-
-  img {
-    height: 34px;
-    width: auto;
-    display: block;
-  }
 }
 
-/* Derecha: botón legal + logo Kutxabank */
+.user-center img {
+  height: 40px;
+}
+
+/* Logo Kutxa derecha */
 .logo-right-container {
+  flex: 1;
   display: flex;
-  align-items: center;
-  gap: 12px;
+  justify-content: flex-end;
+}
 
-  .legal-link {
-    color: #fff;
-    font-size: 12px;
-    font-weight: 600;
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 999px;
-    background: rgba(255,255,255,.15);
-    border: 1px solid rgba(255,255,255,.4);
-    transition: background .15s ease, border-color .15s ease;
+.logo-right {
+  height: 40px;
+  filter: brightness(0) invert(1); /* opcional si el logo es oscuro */
+}
 
-    &:hover {
-      background: rgba(255,255,255,.25);
-      border-color: #fff;
-    }
+/* Responsive */
+@media (max-width: 768px) {
+  .main-header {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.5rem 1rem;
   }
 
-  .logo-right {
-    height: 28px;
-    width: auto;
-    display: block;
+  .user-center {
+    position: static;
+    transform: none;
+    margin: 0.5rem auto;
   }
 }

@@ -1,283 +1,315 @@
 @use '../abstracts' as *;
 
-.recommendation-create {
-  margin: 40px auto 0;
-  max-width: 1200px;
-  padding: 0 16px;
-}
-
-.recommendation-create .lead {
-  margin: 0 0 1rem;
-  color: #666;
-}
-
-.rec-form .rec-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.rec-form .field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.rec-form .field.span-2 {
-  grid-column: span 2;
-}
-
-.rec-form input,
-.rec-form select,
-.rec-form textarea {
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  outline: none;
-  font: inherit;
-  color: var(--text);
-  background: #fff;
-}
-
-.rec-form button.btn {
-  margin-top: 12px;
-}
-
-/* Alertas (usar globalmente) */
-.alert {
-  padding: 10px 12px;
-  border-radius: 8px;
-  margin: 10px 0;
-}
-
-.alert.success {
-  background: #e7f7ee;
-  border: 1px solid #8ad1a3;
-  color: #216b3a;
-}
-
-.alert.error {
-  background: #fdeaea;
-  border: 1px solid #f5b5b5;
-  color: #7d1f1f;
-}
-
-/* (Opcional) variante si mantienes btn-primary */
-.btn-primary {
-  background: var(--red);
-  color: #fff;
-}
-
-#community-recommendations {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
-
-#community-recommendations > h2 {
-  text-align: center;
-  font-size: 40px;
-  letter-spacing: 1px;
-  margin: 20px 0 6px;
-}
-
-#community-recommendations > .lead {
-  text-align: center;
-  margin: 0 auto 24px;
-  max-width: 680px;
-  color: #666;
-}
-
-/* === Filtros: mismo look & feel y tipografía global === */
-#community-recommendations .filters {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  align-items: center;
-  margin: 12px 0 16px;
-}
-
-#community-recommendations .filters .filter {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-#community-recommendations .filters .filter span {
-  font-weight: 600;
-}
-
-/* Tipografía y estilo de inputs/selects como en el resto */
-#community-recommendations .filters select,
-#community-recommendations .filters input[type=search] {
-  font: inherit; /* <- asegura misma fuente */
-  color: var(--text);
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
-  outline: none;
-}
-
-/* El buscador que crece al final, como ya tenías */
-#community-recommendations .filters .search {
-  margin-left: auto;
-  flex: 1 1 260px;
-}
-
-#community-recommendations .filters .search input {
-  width: 100%;
-}
-
-.recommendations .lead {
-  margin: 0 0 1rem;
-  color: #666;
-}
+/*FILTROS DE RECOMENDACIONES*/
 
 .filters {
   display: flex;
-  gap: 12px;
   flex-wrap: wrap;
-  align-items: center;
-  margin: 12px 0 16px;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.filters .filter {
+.filter {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  text-align: center;
 }
 
-.filters .filter span {
+.filter span {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.3rem;
+}
+
+.filter select,
+.filter input {
+  border: none;
+  border-bottom: 2px solid #ccc;
+  background: transparent;
+  padding: 0.3rem 0;
+  font-size: 1rem;
+  color: #333;
+  transition: border-color 0.2s;
+}
+
+.filter select:focus,
+.filter input:focus {
+  outline: none;
+  border-color: #00897b;
+}
+
+/*FEED DE RECOMENDACIONES*/
+
+.recommendation-feed {
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+  font-family: inherit;
+}
+
+.recommendation-item {
+  padding: 1.2rem 1.5rem;
+  transition: background 0.2s ease;
+}
+
+/* Alternancia de color */
+.recommendation-item:nth-child(odd) {
+  background-color: #fafafa;
+}
+
+.recommendation-item:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+.recommendation-item:hover {
+  background-color: #eaeaea;
+}
+
+/* Encabezado con tema y soporte */
+.rec-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.rec-tema {
+  color: #00796b;        /* verde azulado */
   font-weight: 600;
 }
 
-.filters .search {
-  margin-left: auto;
-  flex: 1 1 260px;
+.rec-soporte {
+  color: #888;
+  font-size: 0.8rem;
 }
 
-.filters input[type=search] {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+/* Línea autor / título */
+.rec-header-line {
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 0.3rem;
 }
 
-.card-subtitle {
-  margin: 0.25rem 0 0.5rem;
-  opacity: 0.7;
-  font-style: italic;
+/* Descripción */
+.rec-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;       /* número de líneas visibles */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5em;          /* ajusta según tu diseño */
+  max-height: calc(1.5em *2); /* igual que 3 líneas */
+  transition: all 0.3s ease;
 }
 
-.card-footer {
+.rec-text.expanded {
+  -webkit-line-clamp: unset;
+  max-height: none;
+}
+
+
+.read-more-btn {
+  background: none;
+  border: none;
+  color: #00897b;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+}
+
+/* Pie con autor y likes */
+.rec-footer {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-}
-
-.card-footer .bylines {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-}
-
-.card-footer .byline + .byline {
-  margin-top: 2px;
-}
-
-.card-footer .likes {
-  cursor: pointer;
-  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  font-size: 0.9rem;
 }
 
-.card-footer .likes svg {
-  vertical-align: middle;
-}
-
-.card-footer .likes .heart {
-  color: var(--red);
-}
-
-/* Fin Estilos Community-Recomendation*/
-/* ===== Routines (misma estética que Learn) ===== */
-#routines {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
-
-#routines > h2 {
-  text-align: center;
-  font-size: 40px;
-  letter-spacing: 1px;
-  margin: 20px 0 6px;
-}
-
-#routines > .lead {
-  text-align: center;
-  margin: 0 auto 24px;
-  max-width: 680px;
+.rec-user {
   color: #666;
 }
 
-/* Grid del formulario (4 columnas en desktop, 1 en móvil) */
-#routines .routine-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  align-items: end;
+.rec-like {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: none;
+  background: none;
+  color: #777;
+  cursor: pointer;
+  transition: color 0.2s ease;
 }
 
-@media (max-width: 900px) {
-  #routines .routine-grid {
-    grid-template-columns: 1fr;
+.rec-like:hover {
+  color: #00796b;
+}
+
+.rec-like i {
+  font-size: 1rem;
+}
+
+.rec-like i { color: #999; }         /* sin likes */
+.rec-like.liked i { color: #e74c3c; } /* mi like (rojo) */
+.rec-like.has-likes i { color: #777; }
+
+/* ==============================
+   FORMULARIO DE RECOMENDACIONES
+   ============================== */
+
+.recommendation-create {
+  text-align: center;
+  margin-top: 2rem;
+
+  .lead {
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+
+}
+
+.load-more-wrapper {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.load-more-text {
+  color: $primary;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.load-more-text:hover {
+  opacity: 0.7;
+}
+
+.no-results {
+  display: none;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: $primary;
+  font-size: 1rem;
+  font-weight: 500;
+  background: #fafafa;
+  border: 1px dashed rgba($primary, 0.4);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  line-height: 1.4;
+  transition: all 0.3s ease;
+
+  i {
+    font-size: 1.6rem;
+    color: $primary;
+    opacity: 0.8;
   }
 }
-/* Campos */
-#routines .field label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 6px;
+
+/* ==============================
+   FORMULARIO DE RUTINAS
+   ============================== */
+
+#routines {
+
+  .alert {
+    max-width: 700px;
+    margin: 0 auto 1rem;
+    padding: 0.75rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+
+    &.success {
+      background-color: #e7f7ed;
+      border: 1px solid #93d3a2;
+      color: #2f6b39;
+    }
+
+    &.error {
+      background-color: #fdeaea;
+      border: 1px solid #e39b9b;
+      color: #912a2a;
+    }
+  }
+
+  /* Contenedor del formulario */
+  .routine-grid {
+    background: #f6f6f6;
+    border-radius: 10px;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 1.5rem 1.8rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    text-align: left;
+    transition: all 0.3s ease;
+
+    .field {
+      display: flex;
+      flex-direction: column;
+
+      label {
+        font-size: 0.95rem;
+        color: #444;
+        font-weight: 500;
+        margin-bottom: 0.4rem;
+      }
+
+      select,
+      input[type="number"],
+      input[type="text"] {
+        border: none;
+        border-bottom: 2px solid #ccc;
+        background: transparent;
+        padding: 0.4rem 0;
+        font-size: 1rem;
+        color: #333;
+        transition: border-color 0.2s ease;
+
+        &:focus {
+          outline: none;
+          border-color: $primary;
+        }
+
+        &:disabled {
+          color: #aaa;
+          background: #f0f0f0;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .actions {
+      grid-column: 1 / -1;
+      text-align: center;
+      margin-top: 1rem;
+
+      .btn {
+        background-color: $primary;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 0.8rem 1.6rem;
+        font-size: 1.05rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+
+        &:hover {
+          background-color: $primary-dark;
+        }
+
+        &:active {
+          transform: scale(0.97);
+        }
+      }
+    }
+  }
 }
 
-#routines .field select,
-#routines .field input {
-  font: inherit;
-  color: var(--text);
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  outline: none;
-  width: 100%;
-  background: #fff;
-}
 
-/* Botón */
-#routines .actions {
-  grid-column: 1/-1; /* botón centrado en toda la fila */
-  display: flex;
-  justify-content: center;
-  margin-top: 4px;
-}
-
-/* Alertas (globales, si aún no están) */
-.alert {
-  padding: 10px 12px;
-  border-radius: 8px;
-  margin: 10px 0;
-}
-
-.alert.success {
-  background: #e7f7ee;
-  border: 1px solid #8ad1a3;
-  color: #216b3a;
-}
-
-.alert.error {
-  background: #fdeaea;
-  border: 1px solid #f5b5b5;
-  color: #7d1f1f;
-}
